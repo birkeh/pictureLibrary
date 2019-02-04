@@ -48,10 +48,12 @@ CONFIG += c++11
 
 SOURCES += \
         main.cpp \
-        cmainwindow.cpp
+        cmainwindow.cpp \
+    cexif.cpp
 
 HEADERS += \
-        cmainwindow.h
+        cmainwindow.h \
+    cexif.h
 
 FORMS += \
         cmainwindow.ui
