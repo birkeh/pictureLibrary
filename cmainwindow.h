@@ -1,7 +1,11 @@
 #ifndef CMAINWINDOW_H
 #define CMAINWINDOW_H
 
+
+#include "cexif.h"
+
 #include <QMainWindow>
+
 
 namespace Ui {
 class cMainWindow;
@@ -16,7 +20,8 @@ public:
 	~cMainWindow();
 
 private:
-	Ui::cMainWindow *ui;
+	Ui::cMainWindow*	ui;
+	cEXIFTagList		m_exifTagList;
 };
 
 #endif // CMAINWINDOW_H
