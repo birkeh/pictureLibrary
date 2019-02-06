@@ -66,4 +66,48 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 DISTFILES += \
     README.md \
     LICENSE \
-    Doxyfile
+    Doxyfile \
+    qdarkstyle/rc/branch_closed-on.png \
+    qdarkstyle/rc/branch_closed.png \
+    qdarkstyle/rc/branch_open-on.png \
+    qdarkstyle/rc/branch_open.png \
+    qdarkstyle/rc/checkbox_checked.png \
+    qdarkstyle/rc/checkbox_checked_disabled.png \
+    qdarkstyle/rc/checkbox_checked_focus.png \
+    qdarkstyle/rc/checkbox_indeterminate.png \
+    qdarkstyle/rc/checkbox_indeterminate_disabled.png \
+    qdarkstyle/rc/checkbox_indeterminate_focus.png \
+    qdarkstyle/rc/checkbox_unchecked.png \
+    qdarkstyle/rc/checkbox_unchecked_disabled.png \
+    qdarkstyle/rc/checkbox_unchecked_focus.png \
+    qdarkstyle/rc/close-hover.png \
+    qdarkstyle/rc/close-pressed.png \
+    qdarkstyle/rc/close.png \
+    qdarkstyle/rc/down_arrow.png \
+    qdarkstyle/rc/down_arrow_disabled.png \
+    qdarkstyle/rc/Hmovetoolbar.png \
+    qdarkstyle/rc/Hsepartoolbar.png \
+    qdarkstyle/rc/left_arrow.png \
+    qdarkstyle/rc/left_arrow_disabled.png \
+    qdarkstyle/rc/radio_checked.png \
+    qdarkstyle/rc/radio_checked_disabled.png \
+    qdarkstyle/rc/radio_checked_focus.png \
+    qdarkstyle/rc/radio_unchecked.png \
+    qdarkstyle/rc/radio_unchecked_disabled.png \
+    qdarkstyle/rc/radio_unchecked_focus.png \
+    qdarkstyle/rc/right_arrow.png \
+    qdarkstyle/rc/right_arrow_disabled.png \
+    qdarkstyle/rc/sizegrip.png \
+    qdarkstyle/rc/stylesheet-branch-end.png \
+    qdarkstyle/rc/stylesheet-branch-more.png \
+    qdarkstyle/rc/stylesheet-vline.png \
+    qdarkstyle/rc/transparent.png \
+    qdarkstyle/rc/undock.png \
+    qdarkstyle/rc/up_arrow.png \
+    qdarkstyle/rc/up_arrow_disabled.png \
+    qdarkstyle/rc/Vmovetoolbar.png \
+    qdarkstyle/rc/Vsepartoolbar.png \
+    qdarkstyle/style.qss
+
+RESOURCES += \
+    qdarkstyle/style.qrc
