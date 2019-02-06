@@ -11,17 +11,30 @@ namespace Ui {
 class cMainWindow;
 }
 
+/**
+ * @brief
+ *
+ */
 class cMainWindow : public QMainWindow
 {
 	Q_OBJECT
 
 public:
+	/**
+	 * @brief
+	 *
+	 * @param parent
+	 */
 	explicit cMainWindow(QWidget *parent = nullptr);
+	/**
+	 * @brief
+	 *
+	 */
 	~cMainWindow();
 
 private:
-	Ui::cMainWindow*	ui;
-	cEXIFTagList		m_exifTagList;
+	Ui::cMainWindow*	ui; /**< TODO: describe */
+	cEXIFTagList		m_exifTagList; /**< TODO: describe */
 };
 
 #endif // CMAINWINDOW_H
