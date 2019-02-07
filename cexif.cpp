@@ -1,6 +1,8 @@
 #include "cexif.h"
 
 #include <QDebug>
+#include <QImage>
+#include <QPicture>
 
 #include <exiv2/exiv2.hpp>
 
@@ -15,7 +17,12 @@ cEXIF::cEXIF(cEXIFTagList* lpEXIFTagList) :
 
 bool cEXIF::fromFile(const QString& szFileName)
 {
+	if(!QFile::exists(szFileName))
+		return(false);
+
 	m_exifValueList.clear();
+	m_previewList.clear();
+
 	m_szFileName	= "";
 
 	Exiv2::Image::AutoPtr			image		= Exiv2::ImageFactory::open(szFileName.toStdString());
@@ -45,6 +52,24 @@ bool cEXIF::fromFile(const QString& szFileName)
 	m_iHeight		= image->pixelHeight();
 	m_szFileName	= szFileName;
 
+	Exiv2::PreviewManager			previewManager(*image);
+	Exiv2::PreviewPropertiesList	previewPropertiesList	= previewManager.getPreviewProperties();
+
+	for(Exiv2::PreviewPropertiesList::const_iterator i = previewPropertiesList.begin();i != previewPropertiesList.end();i++)
+	{
+		Exiv2::PreviewImage				previewImage			= previewManager.getPreviewImage(*i);
+
+		QImage							image;
+		image.loadFromData(static_cast<const uchar*>(previewImage.pData()), static_cast<qint32>(previewImage.size()));
+		m_previewList.append(image);
+	}
+
+	if(!m_previewList.count())
+	{
+		QImage	image;
+		if(image.load(szFileName))
+			m_previewList.append(image.scaled(160, 120, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
+	}
 	return(true);
 }
 
@@ -115,7 +140,7 @@ QString cEXIF::exposureTime()
 {
 	qreal	value	= getTag(0x829a, 5).value<qreal>();
 
-	if(value == 0)
+	if(value == 0.0)
 		return("error");
 
 	if(value >= 1.0)
@@ -171,6 +196,11 @@ QString cEXIF::gps()
 QString cEXIF::fileName()
 {
 	return(m_szFileName);
+}
+
+QList<QImage> cEXIF::previewList()
+{
+	return(m_previewList);
 }
 
 QVariant cEXIF::getTag(qint32 iTAGID, qint32 iIFDID)

@@ -4,7 +4,13 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+VERSION = 0.0.1.0
+QMAKE_TARGET_COMPANY = WIN-DESIGN
+QMAKE_TARGET_PRODUCT = pictureLibrary
+QMAKE_TARGET_DESCRIPTION = pictureLibrary
+QMAKE_TARGET_COPYRIGHT = (c) 2019 WIN-DESIGN
+
+QT       += core gui sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -38,6 +44,7 @@ unix {
 # depend on your compiler). Please consult the documentation of the
 # deprecated API in order to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
+DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 
 # You can also make your code fail to compile if you use deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -49,11 +56,17 @@ CONFIG += c++11
 SOURCES += \
         main.cpp \
         cmainwindow.cpp \
-    cexif.cpp
+    cexif.cpp \
+    csplashscreen.cpp \
+    common.cpp \
+    cpicturelibrary.cpp
 
 HEADERS += \
         cmainwindow.h \
-    cexif.h
+    cexif.h \
+    csplashscreen.h \
+    common.h \
+    cpicturelibrary.h
 
 FORMS += \
         cmainwindow.ui
@@ -110,4 +123,5 @@ DISTFILES += \
     qdarkstyle/style.qss
 
 RESOURCES += \
-    qdarkstyle/style.qrc
+    qdarkstyle/style.qrc \
+    picturelibrary.qrc

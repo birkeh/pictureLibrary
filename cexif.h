@@ -4,6 +4,7 @@
 #include <QString>
 #include <QVariant>
 #include <QDateTime>
+#include <QImage>
 
 #include <QMetaType>
 #include <QList>
@@ -420,13 +421,20 @@ public:
 	 * @return QString
 	 */
 	QString			fileName();
+	/**
+	 * @brief
+	 *
+	 * @return QList<QImage>
+	 */
+	QList<QImage>	previewList();
 
 private:
-	cEXIFTagList*	m_lpEXIFTagList; /**< TODO: describe */
-	cEXIFValueList	m_exifValueList; /**< TODO: describe */
-	qint32			m_iWidth; /**< TODO: describe */
-	qint32			m_iHeight; /**< TODO: describe */
-	QString			m_szFileName; /**< TODO: describe */
+	cEXIFTagList*	m_lpEXIFTagList;	/**< TODO: describe */
+	cEXIFValueList	m_exifValueList;	/**< TODO: describe */
+	qint32			m_iWidth;			/**< TODO: describe */
+	qint32			m_iHeight;			/**< TODO: describe */
+	QString			m_szFileName;		/**< TODO: describe */
+	QList<QImage>	m_previewList;		/**< TODO: describe */
 
 	/**
 	 * @brief
