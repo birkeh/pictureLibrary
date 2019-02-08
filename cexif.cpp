@@ -1,5 +1,7 @@
 #include "cexif.h"
 
+#include "common.h"
+
 #include <QDebug>
 #include <QImage>
 #include <QPicture>
@@ -7,8 +9,7 @@
 #include <exiv2/exiv2.hpp>
 
 
-cEXIF::cEXIF(cEXIFTagList* lpEXIFTagList) :
-	m_lpEXIFTagList(lpEXIFTagList),
+cEXIF::cEXIF() :
 	m_iWidth(0),
 	m_iHeight(0),
 	m_szFileName("")
@@ -25,7 +26,7 @@ bool cEXIF::fromFile(const QString& szFileName)
 
 	m_szFileName	= "";
 
-	Exiv2::Image::AutoPtr			image		= Exiv2::ImageFactory::open(szFileName.toStdString());
+	Exiv2::Image::UniquePtr			image		= Exiv2::ImageFactory::open(szFileName.toStdString());
 	if(!image.get())
 		return(false);
 
@@ -38,7 +39,7 @@ bool cEXIF::fromFile(const QString& szFileName)
 	Exiv2::ExifData::const_iterator	end			= exifData.end();
 	for(Exiv2::ExifData::const_iterator i = exifData.begin(); i != end; ++i)
 	{
-		cEXIFTag*	lpTag	= m_lpEXIFTagList->find(i->tag(), i->ifdId());
+		cEXIFTag*	lpTag	= m_exifTagList.find(i->tag(), i->ifdId());
 
 		if(lpTag)
 		{
@@ -68,8 +69,50 @@ bool cEXIF::fromFile(const QString& szFileName)
 	{
 		QImage	image;
 		if(image.load(szFileName))
-			m_previewList.append(image.scaled(160, 120, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
+			m_thumbnail	= image.scaled(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
 	}
+	else
+	{
+		qint32	index		= -1;
+		qint32	widthDiff	= std::numeric_limits<qint32>::max();
+		qint32	heightDiff	= std::numeric_limits<qint32>::max();
+
+		for(qint32 i = 0;i < m_previewList.count();i++)
+		{
+			qint32	wd		= m_previewList[i].width() - THUMBNAIL_WIDTH;
+			qint32	hd		= m_previewList[i].height() - THUMBNAIL_HEIGHT;
+
+			if(wd >= 0 && hd >= 0)
+			{
+				if(wd <= widthDiff && hd <= heightDiff)
+				{
+					index		= i;
+					widthDiff	= wd;
+					heightDiff	= hd;
+				}
+			}
+		}
+
+		if(index == -1)
+		{
+			for(qint32 i = 0;i < m_previewList.count();i++)
+			{
+				qint32	wd		= m_previewList[i].width() - THUMBNAIL_WIDTH;
+				qint32	hd		= m_previewList[i].height() - THUMBNAIL_HEIGHT;
+
+				if(abs(wd) <= widthDiff && abs(hd) <= heightDiff)
+				{
+					index	= i;
+					widthDiff	= abs(wd);
+					heightDiff	= abs(hd);
+				}
+			}
+		}
+
+		if(index != -1)
+			m_thumbnail	= m_previewList[index].scaled(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
+	}
+
 	return(true);
 }
 
@@ -116,9 +159,12 @@ qint32 cEXIF::iso()
 
 QString cEXIF::flash()
 {
-	cEXIFFlashList	list;
+	return(m_exifFlashList.flash(getTag(0x9209, 5).value<qint32>()));
+}
 
-	return(list.flash(getTag(0x9209, 5).value<qint32>()));
+qint32 cEXIF::flashID()
+{
+	return(getTag(0x9209, 5).value<qint32>());
 }
 
 qreal cEXIF::focalLength()
@@ -203,9 +249,14 @@ QList<QImage> cEXIF::previewList()
 	return(m_previewList);
 }
 
+QImage cEXIF::thumbnail()
+{
+	return(m_thumbnail);
+}
+
 QVariant cEXIF::getTag(qint32 iTAGID, qint32 iIFDID)
 {
-	cEXIFTag*	lpTag	= m_lpEXIFTagList->find(iTAGID, iIFDID);
+	cEXIFTag*	lpTag	= m_exifTagList.find(iTAGID, iIFDID);
 
 	if(!lpTag)
 		return(QVariant());
@@ -220,7 +271,7 @@ QVariant cEXIF::getTag(qint32 iTAGID, qint32 iIFDID)
 
 QList<QVariant> cEXIF::getTagList(qint32 iTAGID, qint32 iIFDID)
 {
-	cEXIFTag*	lpTag	= m_lpEXIFTagList->find(iTAGID, iIFDID);
+	cEXIFTag*	lpTag	= m_exifTagList.find(iTAGID, iIFDID);
 
 	if(!lpTag)
 		return(QList<QVariant>());

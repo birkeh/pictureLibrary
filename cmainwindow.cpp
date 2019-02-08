@@ -8,6 +8,9 @@
 #include <QTextStream>
 #include <QSettings>
 #include <QLabel>
+#include <QStandardItem>
+#include <QIcon>
+#include <QPixmap>
 
 
 cMainWindow::cMainWindow(cSplashScreen* lpSplashScreen, QWidget *parent) :
@@ -17,23 +20,32 @@ cMainWindow::cMainWindow(cSplashScreen* lpSplashScreen, QWidget *parent) :
 {
 	initUI();
 	createActions();
-
-	cEXIF	exif(&m_exifTagList);
-//	exif.fromFile(QDir::homePath() + "\\OneDrive - WINDESIGN\\exif-samples-master\\20181123_125857.jpg");
-//	exif.fromFile(QDir::homePath() + "\\OneDrive - WINDESIGN\\exif-samples-master\\IMG_1371.CR2");
-//	exif.fromFile(QDir::homePath() + "\\OneDrive - WINDESIGN\\exif-samples-master\\tiff\\BSG1.tiff");
-//	exif.fromFile(QDir::homePath() + "\\OneDrive - WINDESIGN\\exif-samples-master\\IMG_3444.CR2");
-//	exif.fromFile(QDir::homePath() + "\\OneDrive - WINDESIGN\\exif-samples-master\\IMG_0248_49_50_easyHDR-dramatic-strong.jpg");
-//	exif.fromFile(QDir::homePath() + "\\OneDrive - WINDESIGN\\exif-samples-master\\IMG_3466_7_8_easyHDR-dramatic-dark.tif");
-	exif.fromFile(QDir::homePath() + "\\OneDrive - WINDESIGN\\exif-samples-master\\IMG_0248_49_50_easyHDR-dramatic-strong.jpg");
-
-	QList<QImage>	previewList	= exif.previewList();
-	for(int i = 0;i < previewList.count();i++)
-	{
-		QLabel*	lpLabel	= new QLabel;
-		lpLabel->setPixmap(QPixmap::fromImage(previewList[i]));
-		ui->m_lpMainLayout->addWidget(lpLabel);
-	}
+	loadData();
+//	cPicture	picture;
+//	picture.fromFile(QDir::homePath() + "\\OneDrive - WINDESIGN\\exif-samples-master\\IMG_1371.CR2");
+//	picture.toDB();
+//	picture.fromFile(QDir::homePath() + "\\OneDrive - WINDESIGN\\exif-samples-master\\20181123_125857.jpg");
+//	picture.toDB();
+//	picture.fromFile(QDir::homePath() + "\\OneDrive - WINDESIGN\\exif-samples-master\\IMG_1371.CR2");
+//	picture.toDB();
+//	picture.fromFile(QDir::homePath() + "\\OneDrive - WINDESIGN\\exif-samples-master\\tiff\\BSG1.tiff");
+//	picture.toDB();
+//	picture.fromFile(QDir::homePath() + "\\OneDrive - WINDESIGN\\exif-samples-master\\IMG_3444.CR2");
+//	picture.toDB();
+//	picture.fromFile(QDir::homePath() + "\\OneDrive - WINDESIGN\\exif-samples-master\\IMG_0248_49_50_easyHDR-dramatic-strong.jpg");
+//	picture.toDB();
+//	picture.fromFile(QDir::homePath() + "\\OneDrive - WINDESIGN\\exif-samples-master\\IMG_3466_7_8_easyHDR-dramatic-dark.tif");
+//	picture.toDB();
+//	picture.fromFile(QDir::homePath() + "\\OneDrive - WINDESIGN\\exif-samples-master\\IMG_0248_49_50_easyHDR-dramatic-strong.jpg");
+//	picture.toDB();
+//	picture.fromFile(QDir::homePath() + "\\OneDrive - WINDESIGN\\exif-samples-master\\DSC_0214.NEF");
+//	picture.toDB();
+//	picture.fromFile(QDir::homePath() + "\\OneDrive - WINDESIGN\\exif-samples-master\\DSC_0215.NEF");
+//	picture.toDB();
+//	picture.fromFile(QDir::homePath() + "\\OneDrive - WINDESIGN\\exif-samples-master\\IMG_1652.JPG");
+//	picture.toDB();
+//	picture.fromFile(QDir::homePath() + "\\OneDrive - WINDESIGN\\exif-samples-master\\IMG_1657.JPG");
+//	picture.toDB();
 }
 
 cMainWindow::~cMainWindow()
@@ -44,6 +56,8 @@ cMainWindow::~cMainWindow()
 void cMainWindow::initUI()
 {
 	ui->setupUi(this);
+	m_lpThumbnailViewModel	= new QStandardItemModel;
+	ui->m_lpThumbnailView->setModel(m_lpThumbnailViewModel);
 
 	QIcon::setThemeName("TangoMFK");
 }
@@ -77,6 +91,19 @@ void cMainWindow::createActions()
 //	connect(ui->m_lpRechercheList,	&QTreeView::customContextMenuRequested,	this,	&cMainWindow::onRechercheContextMenu);
 
 //	connect(ui->m_lpOutlineList,	&cTreeView::dropped,					this,	&cMainWindow::onOutlineDropped);
+}
+
+void cMainWindow::loadData()
+{
+	m_pictureList.load();
+
+	for(int x = 0;x < m_pictureList.count();x++)
+	{
+		QImage			thumbnail	= m_pictureList[x]->thumbnail();
+		QStandardItem*	lpItem		= new QStandardItem(QIcon(QPixmap::fromImage(thumbnail)), m_pictureList[x]->fileName());
+		lpItem->setTextAlignment(Qt::AlignCenter | Qt::AlignBottom);
+		m_lpThumbnailViewModel->appendRow(lpItem);
+	}
 }
 
 void cMainWindow::closeEvent(QCloseEvent *event)

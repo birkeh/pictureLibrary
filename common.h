@@ -7,7 +7,14 @@
 #define COMMON_H
 
 
+#include <QImage>
+#include <QByteArray>
+
 #include <QDebug>
+
+
+#define THUMBNAIL_WIDTH		160
+#define THUMBNAIL_HEIGHT	120
 
 
 #ifdef __GNUC__
@@ -17,6 +24,23 @@
 #else
 	#define myDebug qDebug() << __FILE__ << "(" << __LINE__ << ") - " << __FUNCTION__ << ":"
 #endif
+
+/*!
+ \brief
+
+ \fn blob2Image
+ \param ba
+ \return QPixmap
+*/
+QImage			blob2Image(const QByteArray& ba);
+/*!
+ \brief
+
+ \fn image2Blob
+ \param image
+ \return QByteArray
+*/
+QByteArray		image2Blob(const QImage& image);
 
 
 #endif // COMMON_H

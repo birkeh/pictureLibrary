@@ -9,6 +9,8 @@
 #include <QMetaType>
 #include <QList>
 
+#include <QSqlDatabase>
+
 
 /**
  * @brief
@@ -291,7 +293,7 @@ public:
 class cEXIF
 {
 public:
-	cEXIF(cEXIFTagList* lpEXIFTagList);
+	cEXIF();
 
 	/**
 	 * @brief
@@ -299,142 +301,159 @@ public:
 	 * @param szFileName
 	 * @return bool
 	 */
-	bool			fromFile(const QString& szFileName);
+	bool					fromFile(const QString& szFileName);
 
 	/**
 	 * @brief
 	 *
 	 * @return qint32
 	 */
-	qint32			imageWidth();
+	qint32					imageWidth();
 	/**
 	 * @brief
 	 *
 	 * @return qint32
 	 */
-	qint32			imageHeight();
+	qint32					imageHeight();
 	/**
 	 * @brief
 	 *
 	 * @return QString
 	 */
-	QString			cameraMake();
+	QString					cameraMake();
 	/**
 	 * @brief
 	 *
 	 * @return QString
 	 */
-	QString			cameraModel();
+	QString					cameraModel();
 	/**
 	 * @brief
 	 *
 	 * @return QDateTime
 	 */
-	QDateTime		dateTime();
+	QDateTime				dateTime();
 	/**
 	 * @brief
 	 *
 	 * @return QString
 	 */
-	QString			fNumber();
+	QString					fNumber();
 	/**
 	 * @brief
 	 *
 	 * @return qint32
 	 */
-	qint32			iso();
+	qint32					iso();
 	/**
 	 * @brief
 	 *
 	 * @return QString
 	 */
-	QString			flash();
+	QString					flash();
+	/**
+	 * @brief
+	 *
+	 * @return qint32
+	 */
+	qint32					flashID();
 	/**
 	 * @brief
 	 *
 	 * @return qreal
 	 */
-	qreal			focalLength();
+	qreal					focalLength();
 	/**
 	 * @brief
 	 *
 	 * @return QString
 	 */
-	QString			lensMake();
+	QString					lensMake();
 	/**
 	 * @brief
 	 *
 	 * @return QString
 	 */
-	QString			lensModel();
+	QString					lensModel();
 	/**
 	 * @brief
 	 *
 	 * @return QString
 	 */
-	QString			exposureTime();
+	QString					exposureTime();
 	/**
 	 * @brief
 	 *
 	 * @return qint32
 	 */
-	qint32			exposureBias();
+	qint32					exposureBias();
 	/**
 	 * @brief
 	 *
 	 * @return QString
 	 */
-	QString			exifVersion();
+	QString					exifVersion();
 	/**
 	 * @brief
 	 *
 	 * @return QDateTime
 	 */
-	QDateTime		dateTimeOriginal();
+	QDateTime				dateTimeOriginal();
 	/**
 	 * @brief
 	 *
 	 * @return QDateTime
 	 */
-	QDateTime		dateTimeDigitized();
+	QDateTime				dateTimeDigitized();
 	/**
 	 * @brief
 	 *
 	 * @return qint32
 	 */
-	qint32			whiteBalance();
+	qint32					whiteBalance();
 	/**
 	 * @brief
 	 *
 	 * @return qreal
 	 */
-	qreal			focalLength35();
+	qreal					focalLength35();
 	/**
 	 * @brief
 	 *
 	 * @return QString
 	 */
-	QString			gps();
+	QString					gps();
 	/**
 	 * @brief
 	 *
 	 * @return QString
 	 */
-	QString			fileName();
+	QString					fileName();
 	/**
 	 * @brief
 	 *
 	 * @return QList<QImage>
 	 */
-	QList<QImage>	previewList();
+	QList<QImage>			previewList();
+	/**
+	 * @brief
+	 *
+	 * @return QImage
+	 */
+	QImage					thumbnail();
 
 private:
-	cEXIFTagList*	m_lpEXIFTagList;	/**< TODO: describe */
-	cEXIFValueList	m_exifValueList;	/**< TODO: describe */
-	qint32			m_iWidth;			/**< TODO: describe */
-	qint32			m_iHeight;			/**< TODO: describe */
-	QString			m_szFileName;		/**< TODO: describe */
-	QList<QImage>	m_previewList;		/**< TODO: describe */
+	cEXIFValueList			m_exifValueList;						/**< TODO: describe */
+	qint32					m_iWidth;								/**< TODO: describe */
+	qint32					m_iHeight;								/**< TODO: describe */
+	QString					m_szFileName;							/**< TODO: describe */
+	QList<QImage>			m_previewList;							/**< TODO: describe */
+	QImage					m_thumbnail;							/**< TODO: describe */
+
+	cEXIFCompressionList	m_exifCompressionList;					/**< TODO: describe */
+	cEXIFLightSourceList	m_exifLightSourceList;					/**< TODO: describe */
+	cEXIFFlashList			m_exifFlashList;						/**< TODO: describe */
+	cEXIFTagList			m_exifTagList;							/**< TODO: describe */
 
 	/**
 	 * @brief
@@ -443,7 +462,7 @@ private:
 	 * @param iIFDID
 	 * @return QVariant
 	 */
-	QVariant		getTag(qint32 iTAGID, qint32 iIFDID);
+	QVariant				getTag(qint32 iTAGID, qint32 iIFDID);
 	/**
 	 * @brief
 	 *
@@ -451,7 +470,7 @@ private:
 	 * @param iIFDID
 	 * @return QList<QVariant>
 	 */
-	QList<QVariant>	getTagList(qint32 iTAGID, qint32 iIFDID);
+	QList<QVariant>			getTagList(qint32 iTAGID, qint32 iIFDID);
 };
 
 #endif // CEXIF_H

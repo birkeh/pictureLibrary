@@ -20,18 +20,18 @@ TEMPLATE = app
 win32-msvc* {
     contains(QT_ARCH, i386) {
         message("msvc 32-bit")
-        INCLUDEPATH += C:/dev/3rdParty/exiv2
+        INCLUDEPATH += C:/dev/3rdParty/exiv2/include
         LIBS += -LC:\dev\3rdParty\exiv2\lib -lexiv2.dll
     } else {
         message("msvc 64-bit")
-        INCLUDEPATH += C:/dev/3rdParty/exiv2
+        INCLUDEPATH += C:/dev/3rdParty/exiv2/include
         LIBS += -LC:\dev\3rdParty\exiv2\lib -lexiv2.dll
     }
 }
 
 win32-g++ {
     message("mingw")
-    INCLUDEPATH += C:/dev/3rdParty/exiv2
+    INCLUDEPATH += C:/dev/3rdParty/exiv2/include
     LIBS += -LC:\dev\3rdParty\exiv2\lib -lexiv2.dll
 }
 
@@ -59,14 +59,16 @@ SOURCES += \
     cexif.cpp \
     csplashscreen.cpp \
     common.cpp \
-    cpicturelibrary.cpp
+    cpicturelibrary.cpp \
+    cpicture.cpp
 
 HEADERS += \
         cmainwindow.h \
     cexif.h \
     csplashscreen.h \
     common.h \
-    cpicturelibrary.h
+    cpicturelibrary.h \
+    cpicture.h
 
 FORMS += \
         cmainwindow.ui

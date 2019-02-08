@@ -3,12 +3,13 @@
 
 
 #include "cpicturelibrary.h"
-
-#include "cexif.h"
 #include "csplashscreen.h"
+#include "cpicture.h"
 
 #include <QMainWindow>
 #include <QCloseEvent>
+
+#include <QStandardItemModel>
 
 
 namespace Ui {
@@ -38,23 +39,30 @@ public:
 	~cMainWindow();
 
 private:
-	Ui::cMainWindow*	ui;										/**< TODO: describe */
-	cSplashScreen*		m_lpSplashScreen;						/*!< Splash Screen */
-	cEXIFTagList		m_exifTagList;							/**< TODO: describe */
-	cPictureLibrary		m_pictureLibrary;						/**< TODO: describe */
+	Ui::cMainWindow*		ui;										/**< TODO: describe */
+	QStandardItemModel*		m_lpThumbnailViewModel;					/**< TODO: describe */
+	cSplashScreen*			m_lpSplashScreen;						/*!< Splash Screen */
+	cPictureLibrary			m_pictureLibrary;						/**< TODO: describe */
+	cPictureList			m_pictureList;							/**< TODO: describe */
 
 	/*!
 	 \brief
 
 	 \fn initUI
 	*/
-	void				initUI();
+	void					initUI();
 	/*!
 	 \brief
 
 	 \fn createActions
 	*/
-	void				createActions();
+	void					createActions();
+	/*!
+	 \brief
+
+	 \fn loadData
+	*/
+	void					loadData();
 
 protected:
 	/*!
@@ -63,7 +71,7 @@ protected:
 	 \fn closeEvent
 	 \param event
 	*/
-	void				closeEvent(QCloseEvent* event);
+	void					closeEvent(QCloseEvent* event);
 };
 
 #endif // CMAINWINDOW_H
