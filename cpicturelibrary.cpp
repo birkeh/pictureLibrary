@@ -15,7 +15,6 @@ cPictureLibrary::cPictureLibrary(QObject *parent) : QObject(parent)
 
 bool cPictureLibrary::openDatabase()
 {
-	QSqlQuery	query;
 	QSettings	settings;
 	QString		szDB	= settings.value("database/path").toString();
 
@@ -29,6 +28,7 @@ bool cPictureLibrary::openDatabase()
 		return(false);
 	}
 
+	QSqlQuery	query;
 	if(!m_db.tables().contains("config"))
 		createDatabase();
 	else

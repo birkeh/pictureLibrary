@@ -1,3 +1,5 @@
+#include "common.h"
+
 #include "cmainwindow.h"
 #include "ui_cmainwindow.h"
 
