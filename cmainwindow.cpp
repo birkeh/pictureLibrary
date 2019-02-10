@@ -101,9 +101,23 @@ void cMainWindow::loadData()
 
 	for(int x = 0;x < m_pictureList.count();x++)
 	{
-		QImage			thumbnail	= m_pictureList[x]->thumbnail();
-		QStandardItem*	lpItem		= new QStandardItem(QIcon(QPixmap::fromImage(thumbnail)), m_pictureList[x]->fileName());
-		lpItem->setTextAlignment(Qt::AlignCenter | Qt::AlignBottom);
+		QIcon			icon;
+
+		if(m_pictureList[x]->thumbnail().width() != THUMBNAIL_WIDTH || m_pictureList[x]->thumbnail().height() != THUMBNAIL_HEIGHT)
+		{
+			QImage			thumbnail(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, m_pictureList[x]->thumbnail().format());
+			thumbnail.fill(Qt::black);
+
+			QPainter		painter(&thumbnail);
+			painter.drawImage((THUMBNAIL_WIDTH-m_pictureList[x]->thumbnail().width())/2, (THUMBNAIL_HEIGHT-m_pictureList[x]->thumbnail().height())/2, m_pictureList[x]->thumbnail());
+			painter.end();
+			icon	= QIcon(QPixmap::fromImage(thumbnail));
+		}
+		else
+			icon	= QIcon(QPixmap::fromImage(m_pictureList[x]->thumbnail()));
+
+		QStandardItem*	lpItem		= new QStandardItem(icon, m_pictureList[x]->fileName());
+		lpItem->setTextAlignment(Qt::AlignCenter);
 		m_lpThumbnailViewModel->appendRow(lpItem);
 	}
 }
