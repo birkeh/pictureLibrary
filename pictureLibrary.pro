@@ -125,7 +125,11 @@ DISTFILES += \
     qdarkstyle/rc/up_arrow_disabled.png \
     qdarkstyle/rc/Vmovetoolbar.png \
     qdarkstyle/rc/Vsepartoolbar.png \
-    qdarkstyle/style.qss
+    qdarkstyle/style.qss \
+    images/folders-structure-12877515.jpg \
+    images/melhores-bancos-de-imagens-fotos.jpg \
+    images/shutterstock_166366640.jpg \
+    images/splash.psd
 
 RESOURCES += \
     qdarkstyle/style.qrc \
