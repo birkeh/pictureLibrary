@@ -33,6 +33,7 @@ win32-g++ {
 
 unix {
     message("*nix")
+    -lraw -lexiv2
 }
 
 QMAKE_CXXFLAGS += -DLIBRAW_NODLL -DLIBRAW_NOTHREADS
