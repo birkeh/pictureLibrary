@@ -5,6 +5,7 @@
 
 #include <QSqlQuery>
 #include <QSqlError>
+#include <QFileInfo>
 
 
 cPicture::cPicture(qint32 iID, QObject *parent) :
@@ -63,6 +64,12 @@ bool cPicture::fromFile(const QString& szFileName)
 	m_whiteBalance			= exif.whiteBalance();
 	m_focalLength35			= exif.focalLength35();
 	m_gps					= exif.gps();
+
+	if(!m_dateTime.isValid())
+	{
+		QFileInfo	fileInfo(m_szFileName);
+		setDateTime(fileInfo.birthTime());
+	}
 
 	return(true);
 }

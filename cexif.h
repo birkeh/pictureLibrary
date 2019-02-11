@@ -21,8 +21,8 @@ class cEXIFCompression
 public:
 	cEXIFCompression(const qint32& iID, const QString& szCompression);
 
-	qint32		m_iID; /**< TODO: describe */
-	QString		m_szCompression; /**< TODO: describe */
+	qint32		m_iID;				/**< TODO: describe */
+	QString		m_szCompression;	/**< TODO: describe */
 };
 
 Q_DECLARE_METATYPE(cEXIFCompression*)
@@ -72,8 +72,8 @@ class cEXIFLightSource
 public:
 	cEXIFLightSource(const qint32& iID, const QString& szLightSource);
 
-	qint32		m_iID; /**< TODO: describe */
-	QString		m_szLightSource; /**< TODO: describe */
+	qint32		m_iID;				/**< TODO: describe */
+	QString		m_szLightSource;	/**< TODO: describe */
 };
 
 Q_DECLARE_METATYPE(cEXIFLightSource*)
@@ -121,8 +121,8 @@ class cEXIFFlash
 public:
 	cEXIFFlash(const qint32& iID, const QString& szFlash);
 
-	qint32		m_iID; /**< TODO: describe */
-	QString		m_szFlash; /**< TODO: describe */
+	qint32		m_iID;		/**< TODO: describe */
+	QString		m_szFlash;	/**< TODO: describe */
 };
 
 Q_DECLARE_METATYPE(cEXIFFlash*)
@@ -170,11 +170,11 @@ class cEXIFTag
 public:
 	cEXIFTag(const qint32& iTAGID, const QString& szTAGName, const qint32& iIFDID, const qint32& iTypeID, const QString& szDescription);
 
-	qint32		m_iTAGID; /**< TODO: describe */
-	QString		m_szTAGName; /**< TODO: describe */
-	qint32		m_iIFDID; /**< TODO: describe */
-	qint32		m_iTypeID; /**< TODO: describe */
-	QString		m_szDescription; /**< TODO: describe */
+	qint32		m_iTAGID;			/**< TODO: describe */
+	QString		m_szTAGName;		/**< TODO: describe */
+	qint32		m_iIFDID;			/**< TODO: describe */
+	qint32		m_iTypeID;			/**< TODO: describe */
+	QString		m_szDescription;	/**< TODO: describe */
 };
 
 Q_DECLARE_METATYPE(cEXIFTag*)
@@ -246,8 +246,8 @@ public:
 	QList<QVariant>	valueList();
 
 private:
-	cEXIFTag*		m_lpEXIFTag; /**< TODO: describe */
-	QList<QVariant>	m_valueList; /**< TODO: describe */
+	cEXIFTag*		m_lpEXIFTag;	/**< TODO: describe */
+	QList<QVariant>	m_valueList;	/**< TODO: describe */
 
 	/**
 	 * @brief

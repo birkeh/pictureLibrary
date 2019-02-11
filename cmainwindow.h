@@ -6,10 +6,13 @@
 #include "csplashscreen.h"
 #include "cpicture.h"
 
+#include "ctoolboxinfo.h"
+
 #include <QMainWindow>
 #include <QCloseEvent>
 
 #include <QStandardItemModel>
+#include <QItemSelection>
 
 
 namespace Ui {
@@ -72,6 +75,9 @@ protected:
 	 \param event
 	*/
 	void					closeEvent(QCloseEvent* event);
+
+private slots:
+	void					onThumbnailSelected(const QItemSelection& selection, const QItemSelection& previous);
 };
 
 #endif // CMAINWINDOW_H

@@ -52,6 +52,7 @@ cMainWindow::cMainWindow(cSplashScreen* lpSplashScreen, QWidget *parent) :
 
 cMainWindow::~cMainWindow()
 {
+	delete m_lpThumbnailViewModel;
 	delete ui;
 }
 
@@ -66,7 +67,8 @@ void cMainWindow::initUI()
 
 void cMainWindow::createActions()
 {
-//	setToolButtonStyle(Qt::ToolButtonFollowStyle);
+	setToolButtonStyle(Qt::ToolButtonFollowStyle);
+
 //	createFileActions();
 //	createEditActions();
 //	createTextActions();
@@ -76,6 +78,7 @@ void cMainWindow::createActions()
 
 //	createContextActions();
 
+	connect(ui->m_lpThumbnailView->selectionModel(),	&QItemSelectionModel::selectionChanged,				this,	&cMainWindow::onThumbnailSelected);
 //	connect(ui->m_lpMainTab,		&QTabWidget::currentChanged,			this,	&cMainWindow::onMainTabCurrentChanged);
 //	connect(ui->m_lpMainTab,		&QTabWidget::tabCloseRequested,			this,	&cMainWindow::onMainTabTabCloseRequested);
 //	connect(ui->m_lpMdiArea,		&QMdiArea::subWindowActivated,			this,	&cMainWindow::onMdiAreaSubWindowActivated);
@@ -118,6 +121,7 @@ void cMainWindow::loadData()
 
 		QStandardItem*	lpItem		= new QStandardItem(icon, m_pictureList[x]->fileName());
 		lpItem->setTextAlignment(Qt::AlignCenter);
+		lpItem->setData(QVariant::fromValue(m_pictureList[x]));
 		m_lpThumbnailViewModel->appendRow(lpItem);
 	}
 }
@@ -135,4 +139,19 @@ void cMainWindow::closeEvent(QCloseEvent *event)
 		settings.setValue("main/maximized", QVariant::fromValue(false));
 
 	event->accept();
+}
+
+void cMainWindow::onThumbnailSelected(const QItemSelection& /*selection*/, const QItemSelection& /*previous*/)
+{
+	cToolBoxInfo*	lpToolBoxInfo	= static_cast<cToolBoxInfo*>(ui->m_lpToolBox->widget(0));
+
+	if(ui->m_lpThumbnailView->selectionModel()->selectedIndexes().count() != 1)
+	{
+		lpToolBoxInfo->setPicture(nullptr);
+		return;
+	}
+
+	QStandardItem*	lpItem			= m_lpThumbnailViewModel->itemFromIndex(ui->m_lpThumbnailView->currentIndex());
+	cPicture*		lpPicture		= lpItem->data().value<cPicture*>();
+	lpToolBoxInfo->setPicture(lpPicture);
 }

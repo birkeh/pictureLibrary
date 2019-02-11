@@ -20,24 +20,22 @@ TEMPLATE = app
 win32-msvc* {
     contains(QT_ARCH, i386) {
         message("msvc 32-bit")
-        INCLUDEPATH += C:/dev/3rdParty/exiv2/include
-        LIBS += -LC:\dev\3rdParty\exiv2\lib -lexiv2.dll
     } else {
         message("msvc 64-bit")
-        INCLUDEPATH += C:/dev/3rdParty/exiv2/include
-        LIBS += -LC:\dev\3rdParty\exiv2\lib -lexiv2.dll
     }
 }
 
 win32-g++ {
     message("mingw")
-    INCLUDEPATH += C:/dev/3rdParty/exiv2/include
-    LIBS += -LC:\dev\3rdParty\exiv2\lib -lexiv2.dll
+    INCLUDEPATH += C:\dev\3rdParty\exiv2\include C:\dev\3rdParty\libraw
+    LIBS += -LC:\dev\3rdParty\exiv2\lib -lexiv2.dll -LC:\dev\3rdParty\libraw\lib -lraw -lws2_32
 }
 
 unix {
     message("*nix")
 }
+
+QMAKE_CXXFLAGS += -DLIBRAW_NODLL -DLIBRAW_NOTHREADS
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings
@@ -60,7 +58,9 @@ SOURCES += \
     csplashscreen.cpp \
     common.cpp \
     cpicturelibrary.cpp \
-    cpicture.cpp
+    cpicture.cpp \
+    cimage.cpp \
+    ctoolboxinfo.cpp
 
 HEADERS += \
         cmainwindow.h \
@@ -68,10 +68,13 @@ HEADERS += \
     csplashscreen.h \
     common.h \
     cpicturelibrary.h \
-    cpicture.h
+    cpicture.h \
+    cimage.h \
+    ctoolboxinfo.h
 
 FORMS += \
-        cmainwindow.ui
+        cmainwindow.ui \
+    ctoolboxinfo.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

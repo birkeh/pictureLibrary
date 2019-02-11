@@ -7,10 +7,19 @@
 #include <QSqlDatabase>
 
 
+/**
+ * @brief
+ *
+ */
 class cPictureLibrary : public QObject
 {
 	Q_OBJECT
 public:
+	/**
+	 * @brief
+	 *
+	 * @param parent
+	 */
 	explicit cPictureLibrary(QObject *parent = nullptr);
 
 	/*!
