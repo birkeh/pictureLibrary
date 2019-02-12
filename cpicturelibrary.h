@@ -35,7 +35,7 @@ public:
 	 \fn rootPath
 	 \return QString
 	*/
-	QString rootPath();
+	QString						rootPath();
 
 	/*!
 	 \brief

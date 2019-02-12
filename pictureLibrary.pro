@@ -33,7 +33,7 @@ win32-g++ {
 
 unix {
     message("*nix")
-    -lraw -lexiv2
+    LIBS += -lraw -lexiv2
 }
 
 QMAKE_CXXFLAGS += -DLIBRAW_NODLL -DLIBRAW_NOTHREADS
@@ -61,7 +61,8 @@ SOURCES += \
     cpicturelibrary.cpp \
     cpicture.cpp \
     cimage.cpp \
-    ctoolboxinfo.cpp
+    ctoolboxinfo.cpp \
+    cimportdialog.cpp
 
 HEADERS += \
         cmainwindow.h \
@@ -71,11 +72,13 @@ HEADERS += \
     cpicturelibrary.h \
     cpicture.h \
     cimage.h \
-    ctoolboxinfo.h
+    ctoolboxinfo.h \
+    cimportdialog.h
 
 FORMS += \
         cmainwindow.ui \
-    ctoolboxinfo.ui
+    ctoolboxinfo.ui \
+    cimportdialog.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

@@ -1,6 +1,8 @@
 #include "common.h"
 
 #include "cmainwindow.h"
+#include "cimportdialog.h"
+
 #include "ui_cmainwindow.h"
 
 #include <QDebug>
@@ -18,11 +20,16 @@
 cMainWindow::cMainWindow(cSplashScreen* lpSplashScreen, QWidget *parent) :
 	QMainWindow(parent),
 	ui(new Ui::cMainWindow),
-	m_lpSplashScreen(lpSplashScreen)
+	m_lpSplashScreen(lpSplashScreen),
+	m_lpFileMenu(nullptr),
+	m_lpFileToolBar(nullptr)
 {
 	initUI();
 	createActions();
 	loadData();
+
+	updateRecentFileActions();
+
 //	cPicture	picture;
 //	picture.fromFile(QDir::homePath() + "\\OneDrive - WINDESIGN\\exif-samples-master\\IMG_1371.CR2");
 //	picture.toDB();
@@ -63,13 +70,34 @@ void cMainWindow::initUI()
 	ui->m_lpThumbnailView->setModel(m_lpThumbnailViewModel);
 
 	QIcon::setThemeName("TangoMFK");
+
+	QSettings	settings;
+
+	if(!settings.value("main/maximized").toBool())
+	{
+		qint32		iX		= settings.value("main/x", QVariant::fromValue(-1)).toInt();
+		qint32		iY		= settings.value("main/y", QVariant::fromValue(-1)).toInt();
+		qint32		iWidth	= settings.value("main/width", QVariant::fromValue(-1)).toInt();
+		qint32		iHeight	= settings.value("main/height", QVariant::fromValue(-1)).toInt();
+
+		if(iWidth != -1 && iHeight != -1)
+			resize(iWidth, iHeight);
+		if(iX != -1 && iY != -1)
+			move(iX, iY);
+	}
+
+	qint32		iWidth1	= settings.value("main/splitter1", QVariant::fromValue(-1)).toInt();
+	qint32		iWidth2	= settings.value("main/splitter2", QVariant::fromValue(-1)).toInt();
+	qint32		iWidth3	= settings.value("main/splitter3", QVariant::fromValue(-1)).toInt();
+
+	ui->m_lpSplitter->setSizes(QList<int>() << iWidth1 << iWidth2 << iWidth3);
 }
 
 void cMainWindow::createActions()
 {
 	setToolButtonStyle(Qt::ToolButtonFollowStyle);
 
-//	createFileActions();
+	createFileActions();
 //	createEditActions();
 //	createTextActions();
 //	createToolsActions();
@@ -138,7 +166,82 @@ void cMainWindow::closeEvent(QCloseEvent *event)
 	else
 		settings.setValue("main/maximized", QVariant::fromValue(false));
 
+	QList<qint32>	sizes	= ui->m_lpSplitter->sizes();
+
+	for(int x = 0;x < sizes.count();x++)
+		settings.setValue(QString("main/splitter%1").arg(x+1), QVariant::fromValue(sizes[x]));
+
 	event->accept();
+}
+
+void cMainWindow::createFileActions()
+{
+	m_lpFileMenu				= menuBar()->addMenu(tr("&File"));
+	m_lpFileToolBar				= addToolBar(tr("File Actions"));
+
+	const QIcon	newIcon			= QIcon::fromTheme("document-new");
+	m_lpFileNewAction			= m_lpFileMenu->addAction(newIcon, tr("&New"), this, &cMainWindow::onFileNew);
+	m_lpFileToolBar->addAction(m_lpFileNewAction);
+	m_lpFileNewAction->setPriority(QAction::LowPriority);
+	m_lpFileNewAction->setShortcut(QKeySequence::New);
+
+	const QIcon	openIcon		= QIcon::fromTheme("document-open");
+	m_lpFileOpenAction			= m_lpFileMenu->addAction(openIcon, tr("&Open..."), this, &cMainWindow::onFileOpen);
+	m_lpFileOpenAction->setShortcut(QKeySequence::Open);
+	m_lpFileToolBar->addAction(m_lpFileOpenAction);
+
+	m_lpFileMenu->addSeparator();
+
+	m_lpFileImportAction		= m_lpFileMenu->addAction(tr("&Import..."), this, &cMainWindow::onFileImport);
+	m_lpFileToolBar->addAction(m_lpFileImportAction);
+
+	m_lpFileMenu->addSeparator();
+
+//	const QIcon	saveIcon		= QIcon::fromTheme("document-save");
+//	m_lpFileSaveAction			= m_lpFileMenu->addAction(saveIcon, tr("&Save"), this, &cMainWindow::onFileSave);
+//	m_lpFileSaveAction->setShortcut(QKeySequence::Save);
+//	m_lpFileSaveAction->setEnabled(false);
+//	m_lpFileToolBar->addAction(m_lpFileSaveAction);
+
+//	m_lpFileSaveAsAction		= m_lpFileMenu->addAction(tr("Save &As..."), this, &cMainWindow::onFileSaveAs);
+//	m_lpFileSaveAsAction->setPriority(QAction::LowPriority);
+//	m_lpFileMenu->addSeparator();
+
+//#ifndef QT_NO_PRINTER
+//	const QIcon	printIcon		= QIcon::fromTheme("document-print");
+//	m_lpFilePrintAction			= m_lpFileMenu->addAction(printIcon, tr("&Print..."), this, &cMainWindow::onFilePrint);
+//	m_lpFilePrintAction->setPriority(QAction::LowPriority);
+//	m_lpFilePrintAction->setShortcut(QKeySequence::Print);
+//	m_lpFileToolBar->addAction(m_lpFilePrintAction);
+
+//	const QIcon	filePrintIcon	= QIcon::fromTheme("document-print");
+//	m_lpFilePrintPreviewAction	= m_lpFileMenu->addAction(filePrintIcon, tr("Print Preview..."), this, &cMainWindow::onFilePrintPreview);
+
+//	const QIcon	exportPdfIcon	= QIcon::fromTheme("document-pdf");
+//	m_lpFileExportPDFAction		= m_lpFileMenu->addAction(exportPdfIcon, tr("&Export PDF..."), this, &cMainWindow::onFilePrintPdf);
+//	m_lpFileExportPDFAction->setPriority(QAction::LowPriority);
+//	m_lpFileExportPDFAction->setShortcut(Qt::CTRL + Qt::Key_D);
+//	m_lpFileToolBar->addAction(m_lpFileExportPDFAction);
+
+//	m_lpFileMenu->addSeparator();
+//#endif
+
+//	m_lpFilePropertiesAction	= m_lpFileMenu->addAction(tr("P&roperties..."), this, &cMainWindow::onFileProperties);
+//	m_lpFilePropertiesAction->setPriority(QAction::LowPriority);
+//	m_lpFileMenu->addSeparator();
+
+	for(int i = 0; i < MaxRecentFiles;i++)
+	{
+		m_lpRecentFileAction[i]	= new QAction(this);
+		m_lpRecentFileAction[i]->setVisible(false);
+		m_lpFileMenu->addAction(m_lpRecentFileAction[i]);
+		connect(m_lpRecentFileAction[i], &QAction::triggered, this, &cMainWindow::openRecentFile);
+	}
+	m_lpSeparatorRecent			= m_lpFileMenu->addSeparator();
+	m_lpSeparatorRecent->setVisible(false);
+
+	m_lpFileQuitAction			= m_lpFileMenu->addAction(tr("&Quit"), this, &QWidget::close);
+	m_lpFileQuitAction->setShortcut(Qt::CTRL + Qt::Key_Q);
 }
 
 void cMainWindow::onThumbnailSelected(const QItemSelection& /*selection*/, const QItemSelection& /*previous*/)
@@ -154,4 +257,184 @@ void cMainWindow::onThumbnailSelected(const QItemSelection& /*selection*/, const
 	QStandardItem*	lpItem			= m_lpThumbnailViewModel->itemFromIndex(ui->m_lpThumbnailView->currentIndex());
 	cPicture*		lpPicture		= lpItem->data().value<cPicture*>();
 	lpToolBoxInfo->setPicture(lpPicture);
+}
+
+void cMainWindow::setCurrentFile(const QString& fileName)
+{
+	QSettings	settings;
+	QStringList	files	= settings.value("file/recentFiles").toStringList();
+	files.removeAll(fileName);
+	files.prepend(fileName);
+	while(files.size() > MaxRecentFiles)
+		files.removeLast();
+
+	settings.setValue("file/recentFiles", files);
+
+	updateRecentFileActions();
+}
+
+void cMainWindow::updateRecentFileActions()
+{
+	QSettings	settings;
+	QStringList	files			= settings.value("file/recentFiles").toStringList();
+
+	int			numRecentFiles	= qMin(files.size(), (int)MaxRecentFiles);
+
+	for(int i = 0; i < numRecentFiles; i++)
+	{
+		QString	text	= tr("&%1 %2").arg(i + 1).arg(QFileInfo(files[i]).fileName());
+		m_lpRecentFileAction[i]->setText(text);
+		m_lpRecentFileAction[i]->setData(files[i]);
+		m_lpRecentFileAction[i]->setVisible(true);
+	}
+
+	for(int j = numRecentFiles; j < MaxRecentFiles; j++)
+		m_lpRecentFileAction[j]->setVisible(false);
+
+	m_lpSeparatorRecent->setVisible(numRecentFiles > 0);
+}
+
+void cMainWindow::openRecentFile()
+{
+	QAction*	lpAction	= qobject_cast<QAction*>(sender());
+	if(lpAction)
+	{
+//		if(m_lpStoryBook)
+//		{
+//			if(m_bSomethingChanged)
+//			{
+//				switch(QMessageBox::question(this, tr("Save"), m_lpStoryBook->title() + tr(" has been changed.\nDo you want to save?"), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel))
+//				{
+//				case QMessageBox::Yes:
+//					if(!onFileSave())
+//						return;
+//					break;
+//				case QMessageBox::No:
+//					break;
+//				case QMessageBox::Cancel:
+//					return;
+//				default:
+//					return;
+//				}
+//			}
+//		}
+
+//		QString	szProjectName	= lpAction->data().toString();
+//		if(szProjectName.isEmpty())
+//			return;
+
+//		delete m_lpStoryBook;
+
+//		m_lpStoryBook	= new cStoryBook(szProjectName);
+
+//		m_lpStoryBook->fillOutlineList(ui->m_lpOutlineList);
+//		m_lpStoryBook->fillCharacterList(ui->m_lpCharacterList);
+//		m_lpStoryBook->fillPlaceList(ui->m_lpPlaceList);
+//		m_lpStoryBook->fillObjectList(ui->m_lpObjectList);
+//		m_lpStoryBook->fillRechercheList(ui->m_lpRechercheList);
+
+//		setCurrentFile(szProjectName);
+//		updateWindowTitle();
+	}
+}
+void cMainWindow::onFileNew()
+{
+//	if(m_bSomethingChanged)
+//	{
+//		switch(QMessageBox::question(this, tr("Save"), m_lpStoryBook->title() + tr(" has been changed.\nDo you want to save?"), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel))
+//		{
+//		case QMessageBox::Yes:
+//			if(!onFileSave())
+//				return;
+//			break;
+//		case QMessageBox::No:
+//			break;
+//		case QMessageBox::Cancel:
+//			return;
+//		default:
+//			return;
+//		}
+//	}
+
+//	ui->m_lpMdiArea->closeAllSubWindows();
+
+//	if(m_lpStoryBook)
+//		delete m_lpStoryBook;
+
+//	m_lpStoryBook	= new cStoryBook;
+
+//	m_lpStoryBook->fillOutlineList(ui->m_lpOutlineList);
+//	m_lpStoryBook->fillCharacterList(ui->m_lpCharacterList);
+//	m_lpStoryBook->fillPlaceList(ui->m_lpPlaceList);
+//	m_lpStoryBook->fillObjectList(ui->m_lpObjectList);
+//	m_lpStoryBook->fillRechercheList(ui->m_lpRechercheList);
+
+//	updateWindowTitle();
+}
+
+void cMainWindow::onFileOpen()
+{
+//	if(m_lpStoryBook)
+//	{
+//		if(m_bSomethingChanged)
+//		{
+//			switch(QMessageBox::question(this, tr("Save"), m_lpStoryBook->title() + tr(" has been changed.\nDo you want to save?"), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel))
+//			{
+//			case QMessageBox::Yes:
+//				if(!onFileSave())
+//					return;
+//				break;
+//			case QMessageBox::No:
+//				break;
+//			case QMessageBox::Cancel:
+//				return;
+//			default:
+//				return;
+//			}
+//		}
+//	}
+
+//	QString	szProjectName	= getProjectLoadName();
+//	if(szProjectName.isEmpty())
+//		return;
+
+//	ui->m_lpMdiArea->closeAllSubWindows();
+
+//	if(m_lpStoryBook)
+//		delete m_lpStoryBook;
+
+//	m_lpStoryBook	= new cStoryBook(szProjectName);
+
+//	m_lpStoryBook->fillOutlineList(ui->m_lpOutlineList);
+//	m_lpStoryBook->fillCharacterList(ui->m_lpCharacterList);
+//	m_lpStoryBook->fillPlaceList(ui->m_lpPlaceList);
+//	m_lpStoryBook->fillObjectList(ui->m_lpObjectList);
+//	m_lpStoryBook->fillRechercheList(ui->m_lpRechercheList);
+
+//	setCurrentFile(szProjectName);
+//	updateWindowTitle();
+}
+
+void cMainWindow::onFileImport()
+{
+	cImportDialog	importDialog(this);
+
+	QSettings	settings;
+	qint32		iX		= settings.value("import/x", QVariant::fromValue(-1)).toInt();
+	qint32		iY		= settings.value("import/y", QVariant::fromValue(-1)).toInt();
+	qint32		iWidth	= settings.value("import/width", QVariant::fromValue(-1)).toInt();
+	qint32		iHeight	= settings.value("import/height", QVariant::fromValue(-1)).toInt();
+
+	if(iX != -1 && iY != -1)
+		importDialog.move(iX, iY);
+	if(iWidth != -1 && iHeight != -1)
+		importDialog.resize(iWidth, iHeight);
+
+	if(importDialog.exec() == QDialog::Rejected)
+		return;
+
+	settings.setValue("import/width", QVariant::fromValue(importDialog.size().width()));
+	settings.setValue("import/height", QVariant::fromValue(importDialog.size().height()));
+	settings.setValue("import/x", QVariant::fromValue(importDialog.x()));
+	settings.setValue("import/y", QVariant::fromValue(importDialog.y()));
 }
