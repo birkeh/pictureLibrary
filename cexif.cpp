@@ -61,6 +61,29 @@ bool cEXIF::fromFile(const QString& szFileName)
 		Exiv2::PreviewImage				previewImage			= previewManager.getPreviewImage(*i);
 		QImage							image;
 		image.loadFromData(static_cast<const uchar*>(previewImage.pData()), static_cast<qint32>(previewImage.size()));
+
+		QTransform	rotation;
+		int			angle	= 0;
+
+		switch(imageOrientation())
+		{
+		case 8:
+			angle	= 270;
+			break;
+		case 3:
+			angle	= 180;
+			break;
+		case 6:
+			angle	=  90;
+			break;
+		}
+
+		if(angle != 0)
+		{
+			rotation.rotate(angle);
+			image	= image.transformed(rotation);
+		}
+
 		m_previewList.append(image);
 	}
 
@@ -68,7 +91,31 @@ bool cEXIF::fromFile(const QString& szFileName)
 	{
 		QImage	image;
 		if(image.load(szFileName))
-			m_thumbnail	= image.scaled(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
+		{
+			QTransform	rotation;
+			int			angle	= 0;
+
+			switch(imageOrientation())
+			{
+			case 8:
+				angle	= 270;
+				break;
+			case 3:
+				angle	= 180;
+				break;
+			case 6:
+				angle	=  90;
+				break;
+			}
+
+			if(angle != 0)
+			{
+				rotation.rotate(angle);
+				image	= image.transformed(rotation);
+			}
+
+			m_thumbnail	= image.scaled(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+		}
 	}
 	else
 	{
@@ -109,7 +156,7 @@ bool cEXIF::fromFile(const QString& szFileName)
 		}
 
 		if(index != -1)
-			m_thumbnail	= m_previewList[index].scaled(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
+			m_thumbnail	= m_previewList[index].scaled(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 	}
 
 	return(true);
@@ -130,10 +177,10 @@ qint32 cEXIF::imageHeight()
 
 	return(getTag(0x0101, 1).value<qint32>());
 }
-//0x0112
+
 qint16 cEXIF::imageOrientation()
-{bla
-	return(getTag(0x0112, 1).value<qint32>());
+{
+	return(getTag(0x0112, 1).value<qint16>());
 }
 
 QString cEXIF::cameraMake()

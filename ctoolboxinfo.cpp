@@ -28,5 +28,6 @@ void cToolBoxInfo::setPicture(cPicture* lpPicture)
 	ui->m_lpFileName->setText(lpPicture->fileName());
 	ui->m_lpDate->setText(lpPicture->dateTime().toString());
 	ui->m_lpSize->setText(QString("%1x%2").arg(lpPicture->imageWidth()).arg(lpPicture->imageHeight()));
-	ui->m_lpCamera->setText(QString("%1 %2").arg(lpPicture->cameraMake()).arg(lpPicture->cameraModel()));
+//	ui->m_lpCamera->setText(QString("%1 %2").arg(lpPicture->cameraMake()).arg(lpPicture->cameraModel()));
+	ui->m_lpCamera->setText(QString("%1").arg(lpPicture->imageOrientation()));
 }

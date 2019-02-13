@@ -78,6 +78,19 @@ public:
 	/**
 	 * @brief
 	 *
+	 * @param imageOrientation
+	 */
+	void					setImageOrientation(const qint16& imageOrientation);
+	/**
+	 * @brief
+	 *
+	 * @return qint16
+	 */
+	qint16					imageOrientation();
+
+	/**
+	 * @brief
+	 *
 	 * @param cameraMake
 	 */
 	void					setCameraMake(const QString& cameraMake);
@@ -373,6 +386,7 @@ private:
 	QImage					m_thumbnail;			/**< TODO: describe */
 	qint32					m_imageWidth;			/**< TODO: describe */
 	qint32					m_imageHeight;			/**< TODO: describe */
+	qint16					m_imageOrientation;		/**< TODO: describe */
 	QString					m_cameraMake;			/**< TODO: describe */
 	QString					m_cameraModel;			/**< TODO: describe */
 	QDateTime				m_dateTime;				/**< TODO: describe */
