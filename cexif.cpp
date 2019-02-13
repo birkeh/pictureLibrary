@@ -26,7 +26,7 @@ bool cEXIF::fromFile(const QString& szFileName)
 
 	m_szFileName	= "";
 
-	Exiv2::Image::UniquePtr			image		= Exiv2::ImageFactory::open(szFileName.toStdString());
+	Exiv2::Image::UniquePtr			image		= Exiv2::ImageFactory::open(szFileName.toLocal8Bit().toStdString());
 	if(!image.get())
 		return(false);
 
@@ -59,7 +59,6 @@ bool cEXIF::fromFile(const QString& szFileName)
 	for(Exiv2::PreviewPropertiesList::const_iterator i = previewPropertiesList.begin();i != previewPropertiesList.end();i++)
 	{
 		Exiv2::PreviewImage				previewImage			= previewManager.getPreviewImage(*i);
-
 		QImage							image;
 		image.loadFromData(static_cast<const uchar*>(previewImage.pData()), static_cast<qint32>(previewImage.size()));
 		m_previewList.append(image);
@@ -130,6 +129,11 @@ qint32 cEXIF::imageHeight()
 		return(m_iHeight);
 
 	return(getTag(0x0101, 1).value<qint32>());
+}
+//0x0112
+qint16 cEXIF::imageOrientation()
+{bla
+	return(getTag(0x0112, 1).value<qint32>());
 }
 
 QString cEXIF::cameraMake()

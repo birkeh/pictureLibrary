@@ -318,6 +318,12 @@ public:
 	/**
 	 * @brief
 	 *
+	 * @return qint16
+	 */
+	qint16					imageOrientation();
+	/**
+	 * @brief
+	 *
 	 * @return QString
 	 */
 	QString					cameraMake();
