@@ -13,6 +13,7 @@ cPicture::cPicture(qint32 iID, QObject *parent) :
 	m_iID(iID),
 	m_szFileName(""),
 	m_szFilePath(""),
+	m_iFileSize(0),
 	m_imageWidth(0),
 	m_imageHeight(0),
 	m_cameraMake(""),
@@ -35,14 +36,17 @@ cPicture::cPicture(qint32 iID, QObject *parent) :
 
 bool cPicture::fromFile(const QString& szFileName)
 {
-	cEXIF	exif;
+	cEXIF		exif;
+	QFileInfo	fileInfo(szFileName);
 
 	if(!exif.fromFile(szFileName))
 		return(false);
 
 	m_iID					= -1;
 
-	m_szFileName			= exif.fileName();
+	m_szFileName			= fileInfo.fileName();
+	m_szFilePath			= fileInfo.absolutePath();
+	m_iFileSize				= fileInfo.size();
 	m_thumbnail				= exif.thumbnail();
 	m_imageWidth			= exif.imageWidth();
 	m_imageHeight			= exif.imageHeight();
@@ -67,7 +71,6 @@ bool cPicture::fromFile(const QString& szFileName)
 
 	if(!m_dateTime.isValid())
 	{
-		QFileInfo	fileInfo(m_szFileName);
 		setDateTime(fileInfo.birthTime());
 	}
 
@@ -89,16 +92,18 @@ bool cPicture::toDB()
 		}
 
 		if(!query.next())
-			query.prepare("INSERT INTO picture (fileName, imageWidth, imageHeight, cameraMake, cameraModel, dateTime, fNumber, iso, flashID, focalLength, lensMake, lensModel, exposureTime, exposureBias, exifVersion, dateTimeOriginal, dateTimeDigitized, whiteBalance, focalLength35, gps, thumbnail) VALUES (:fileName, :imageWidth, :imageHeight, :cameraMake, :cameraModel, :dateTime, :fNumber, :iso, :flashID, :focalLength, :lensMake, :lensModel, :exposureTime, :exposureBias, :exifVersion, :dateTimeOriginal, :dateTimeDigitized, :whiteBalance, :focalLength35, :gps, :thumbnail);");
+			query.prepare("INSERT INTO picture (fileName, filePath, fileSize, imageWidth, imageHeight, cameraMake, cameraModel, dateTime, fNumber, iso, flashID, focalLength, lensMake, lensModel, exposureTime, exposureBias, exifVersion, dateTimeOriginal, dateTimeDigitized, whiteBalance, focalLength35, gps, thumbnail) VALUES (:fileName, :filePath, :fileSize, :imageWidth, :imageHeight, :cameraMake, :cameraModel, :dateTime, :fNumber, :iso, :flashID, :focalLength, :lensMake, :lensModel, :exposureTime, :exposureBias, :exifVersion, :dateTimeOriginal, :dateTimeDigitized, :whiteBalance, :focalLength35, :gps, :thumbnail);");
 		else
-			query.prepare("UPDATE picture SET fileName = :fileName, imageWidth = :imageWidth, imageHeight = :imageHeight, cameraMake = :cameraMake, cameraModel = :cameraModel, dateTime = :dateTime, fNumber = :fNumber, iso = :iso, flashID = :flashID, focalLength = :focalLength, lensMake = :lensMake, lensModel = :lensModel, exposureTime = :exposureTime, exposureBias = :exposureBias, exifVersion = :exifVersion, dateTimeOriginal = :dateTimeOriginal, dateTimeDigitized = :dateTimeDigitized, whiteBalance = :whiteBalance, focalLength35 = :focalLength35, gps = :gps, thumbnail = :thumbnail WHERE id = :id;");
+			query.prepare("UPDATE picture SET fileName=:fileName, filePath=:filePath, fileSize=:fileSize, imageWidth=:imageWidth, imageHeight=:imageHeight, cameraMake=:cameraMake, cameraModel=:cameraModel, dateTime=:dateTime, fNumber=:fNumber, iso=:iso, flashID=:flashID, focalLength=:focalLength, lensMake=:lensMake, lensModel=:lensModel, exposureTime=:exposureTime, exposureBias=:exposureBias, exifVersion=:exifVersion, dateTimeOriginal=:dateTimeOriginal, dateTimeDigitized=:dateTimeDigitized, whiteBalance=:whiteBalance, focalLength35=:focalLength35, gps=:gps, thumbnail=:thumbnail WHERE id=:id;");
 	}
 	else
-		query.prepare("INSERT INTO picture (fileName, imageWidth, imageHeight, cameraMake, cameraModel, dateTime, fNumber, iso, flashID, focalLength, lensMake, lensModel, exposureTime, exposureBias, exifVersion, dateTimeOriginal, dateTimeDigitized, whiteBalance, focalLength35, gps, thumbnail) VALUES (:fileName, :imageWidth, :imageHeight, :cameraMake, :cameraModel, :dateTime, :fNumber, :iso, :flashID, :focalLength, :lensMake, :lensModel, :exposureTime, :exposureBias, :exifVersion, :dateTimeOriginal, :dateTimeDigitized, :whiteBalance, :focalLength35, :gps, :thumbnail);");
+		query.prepare("INSERT INTO picture (fileName, filePath, fileSize, imageWidth, imageHeight, cameraMake, cameraModel, dateTime, fNumber, iso, flashID, focalLength, lensMake, lensModel, exposureTime, exposureBias, exifVersion, dateTimeOriginal, dateTimeDigitized, whiteBalance, focalLength35, gps, thumbnail) VALUES (:fileName, :filePath, :fileSize, :imageWidth, :imageHeight, :cameraMake, :cameraModel, :dateTime, :fNumber, :iso, :flashID, :focalLength, :lensMake, :lensModel, :exposureTime, :exposureBias, :exifVersion, :dateTimeOriginal, :dateTimeDigitized, :whiteBalance, :focalLength35, :gps, :thumbnail);");
 
 
 	query.bindValue(":id",					m_iID);
 	query.bindValue(":fileName",			m_szFileName);
+	query.bindValue(":filePath",			m_szFilePath);
+	query.bindValue(":fileSize",			m_iFileSize);
 	query.bindValue(":imageWidth",			m_imageWidth);
 	query.bindValue(":imageHeight",			m_imageHeight);
 	query.bindValue(":cameraMake",			m_cameraMake);
@@ -375,6 +380,16 @@ QString cPicture::filePath()
 	return(m_szFilePath);
 }
 
+void cPicture::setFileSize(const qint64& fileSize)
+{
+	m_iFileSize	= fileSize;
+}
+
+qint64 cPicture::fileSize()
+{
+	return(m_iFileSize);
+}
+
 void cPicture::setThumbnail(const QImage& thumbnail)
 {
 	m_thumbnail	= thumbnail;
@@ -398,6 +413,7 @@ bool cPictureList::load()
 	query.prepare("SELECT   id, "
 				  "         fileName, "
 				  "         filePath, "
+				  "         fileSize, "
 				  "         imageWidth, "
 				  "         imageHeight, "
 				  "         cameraMake, "
@@ -432,6 +448,7 @@ bool cPictureList::load()
 		cPicture*	lpPicture	= add(query.value("id").toInt());
 		lpPicture->setFileName(query.value("fileName").toString());
 		lpPicture->setFilePath(query.value("filePath").toString());
+		lpPicture->setFileSize(query.value("fileSize").toLongLong());
 		lpPicture->setImageWidth(query.value("imageWidth").toInt());
 		lpPicture->setImageHeight(query.value("imageHeight").toInt());
 		lpPicture->setCameraMake(query.value("cameraMake").toString());

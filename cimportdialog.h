@@ -3,7 +3,9 @@
 
 
 #include <QDialog>
+#include <QStandardItemModel>
 #include <QCloseEvent>
+#include <QItemSelection>
 
 
 namespace Ui {
@@ -19,11 +21,45 @@ public:
 	~cImportDialog();
 
 private slots:
-	void on_m_lpPathSelect_clicked();
+	/*!
+	 \brief
+
+	 \fn onPathSelect
+	*/
+	void					onPathSelect();
+	/*!
+	 \brief
+
+	 \fn onRead
+	*/
+	void					onRead();
+	/*!
+	 \brief
+
+	 \fn onImport
+	*/
+	void					onImport();
+	/*!
+	 \brief
+	 \param selection
+	 \param previous
+	 \fn onThumbnailSelected
+	*/
+	void					onThumbnailSelected(const QItemSelection& selection, const QItemSelection& previous);
 
 private:
-	Ui::cImportDialog *ui;
+	Ui::cImportDialog*		ui;
+	QStandardItemModel*		m_lpImportListModel;					/**< TODO: describe */
 
+	void					initUI();
+	void					createActions();
+
+	void					readDirectory(const QString& szPath, bool bRecursive);
+
+	void					accept();
+	void					reject();
+
+	void					savePosition();
 protected:
 	/*!
 	 \brief

@@ -29,32 +29,6 @@ cMainWindow::cMainWindow(cSplashScreen* lpSplashScreen, QWidget *parent) :
 	loadData();
 
 	updateRecentFileActions();
-
-//	cPicture	picture;
-//	picture.fromFile(QDir::homePath() + "\\OneDrive - WINDESIGN\\exif-samples-master\\IMG_1371.CR2");
-//	picture.toDB();
-//	picture.fromFile(QDir::homePath() + "\\OneDrive - WINDESIGN\\exif-samples-master\\20181123_125857.jpg");
-//	picture.toDB();
-//	picture.fromFile(QDir::homePath() + "\\OneDrive - WINDESIGN\\exif-samples-master\\IMG_1371.CR2");
-//	picture.toDB();
-//	picture.fromFile(QDir::homePath() + "\\OneDrive - WINDESIGN\\exif-samples-master\\tiff\\BSG1.tiff");
-//	picture.toDB();
-//	picture.fromFile(QDir::homePath() + "\\OneDrive - WINDESIGN\\exif-samples-master\\IMG_3444.CR2");
-//	picture.toDB();
-//	picture.fromFile(QDir::homePath() + "\\OneDrive - WINDESIGN\\exif-samples-master\\IMG_0248_49_50_easyHDR-dramatic-strong.jpg");
-//	picture.toDB();
-//	picture.fromFile(QDir::homePath() + "\\OneDrive - WINDESIGN\\exif-samples-master\\IMG_3466_7_8_easyHDR-dramatic-dark.tif");
-//	picture.toDB();
-//	picture.fromFile(QDir::homePath() + "\\OneDrive - WINDESIGN\\exif-samples-master\\IMG_0248_49_50_easyHDR-dramatic-strong.jpg");
-//	picture.toDB();
-//	picture.fromFile(QDir::homePath() + "\\OneDrive - WINDESIGN\\exif-samples-master\\DSC_0214.NEF");
-//	picture.toDB();
-//	picture.fromFile(QDir::homePath() + "\\OneDrive - WINDESIGN\\exif-samples-master\\DSC_0215.NEF");
-//	picture.toDB();
-//	picture.fromFile(QDir::homePath() + "\\OneDrive - WINDESIGN\\exif-samples-master\\IMG_1652.JPG");
-//	picture.toDB();
-//	picture.fromFile(QDir::homePath() + "\\OneDrive - WINDESIGN\\exif-samples-master\\IMG_1657.JPG");
-//	picture.toDB();
 }
 
 cMainWindow::~cMainWindow()
@@ -128,6 +102,9 @@ void cMainWindow::createActions()
 
 void cMainWindow::loadData()
 {
+	m_pictureList.clear();
+	m_lpThumbnailViewModel->clear();
+
 	m_pictureList.load();
 
 	for(int x = 0;x < m_pictureList.count();x++)
@@ -419,22 +396,8 @@ void cMainWindow::onFileImport()
 {
 	cImportDialog	importDialog(this);
 
-	QSettings	settings;
-	qint32		iX		= settings.value("import/x", QVariant::fromValue(-1)).toInt();
-	qint32		iY		= settings.value("import/y", QVariant::fromValue(-1)).toInt();
-	qint32		iWidth	= settings.value("import/width", QVariant::fromValue(-1)).toInt();
-	qint32		iHeight	= settings.value("import/height", QVariant::fromValue(-1)).toInt();
-
-	if(iX != -1 && iY != -1)
-		importDialog.move(iX, iY);
-	if(iWidth != -1 && iHeight != -1)
-		importDialog.resize(iWidth, iHeight);
-
 	if(importDialog.exec() == QDialog::Rejected)
 		return;
 
-	settings.setValue("import/width", QVariant::fromValue(importDialog.size().width()));
-	settings.setValue("import/height", QVariant::fromValue(importDialog.size().height()));
-	settings.setValue("import/x", QVariant::fromValue(importDialog.x()));
-	settings.setValue("import/y", QVariant::fromValue(importDialog.y()));
+	loadData();
 }

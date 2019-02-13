@@ -338,6 +338,19 @@ public:
 	/**
 	 * @brief
 	 *
+	 * @param fileSize
+	 */
+	void					setFileSize(const qint64& fileSize);
+	/**
+	 * @brief
+	 *
+	 * @return qint64
+	 */
+	qint64					fileSize();
+
+	/**
+	 * @brief
+	 *
 	 * @param thumbnail
 	 */
 	void					setThumbnail(const QImage& thumbnail);
@@ -356,6 +369,7 @@ private:
 	qint32					m_iID;					/**< TODO: describe */
 	QString					m_szFileName;			/**< TODO: describe */
 	QString					m_szFilePath;			/**< TODO: describe */
+	qint64					m_iFileSize;			/**< TODO: describe */
 	QImage					m_thumbnail;			/**< TODO: describe */
 	qint32					m_imageWidth;			/**< TODO: describe */
 	qint32					m_imageHeight;			/**< TODO: describe */
