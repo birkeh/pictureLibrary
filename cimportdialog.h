@@ -26,7 +26,7 @@ public:
 	 *
 	 * @param parent
 	 */
-	explicit cImportDialog(QWidget *parent = nullptr);
+	explicit cImportDialog(const QString& szRootPath, QWidget *parent = nullptr);
 	/**
 	 * @brief
 	 *
@@ -69,6 +69,7 @@ private slots:
 
 private:
 	Ui::cImportDialog*		ui;										/**< TODO: describe */
+	QString					m_szRootPath;							/**< TODO: describe */
 	QStandardItemModel*		m_lpImportListModel;					/**< TODO: describe */
 	bool					m_bHasImported;							/**< TODO: describe */
 

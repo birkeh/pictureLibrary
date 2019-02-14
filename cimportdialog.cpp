@@ -15,13 +15,16 @@
 #include <QMimeDatabase>
 #include <QMimeType>
 
+#include <QDateTime>
+
 #include <QMessageBox>
 #include <QDebug>
 
 
-cImportDialog::cImportDialog(QWidget *parent) :
+cImportDialog::cImportDialog(const QString& szRootPath, QWidget *parent) :
 	QDialog(parent),
 	ui(new Ui::cImportDialog),
+	m_szRootPath(szRootPath),
 	m_bHasImported(false)
 {
 	initUI();
@@ -37,6 +40,7 @@ void cImportDialog::initUI()
 {
 	ui->setupUi(this);
 	ui->m_lpProgress->setVisible(false);
+	ui->m_lpImport->setEnabled(false);
 
 	m_lpImportListModel	= new QStandardItemModel;
 	ui->m_lpImportList->setModel(m_lpImportListModel);
@@ -90,8 +94,13 @@ void cImportDialog::onPathSelect()
 void cImportDialog::onThumbnailSelected(const QItemSelection& /*selection*/, const QItemSelection& /*previous*/)
 {
 	cToolBoxInfo*	lpToolBoxInfo	= ui->m_lpInfo;
+	qint32			iCount			= ui->m_lpImportList->selectionModel()->selectedRows().count();
+	ui->m_lpCount->setText(QString("count: %1, selected: %2").arg(m_lpImportListModel->rowCount()).arg(iCount));
 
-	ui->m_lpCount->setText(QString("count: %1, selected: %2").arg(m_lpImportListModel->rowCount()).arg(ui->m_lpImportList->selectionModel()->selectedRows().count()));
+	if(iCount)
+		ui->m_lpImport->setEnabled(true);
+	else
+		ui->m_lpImport->setEnabled(false);
 
 	if(ui->m_lpImportList->selectionModel()->selectedIndexes().count() != 1)
 	{
@@ -146,6 +155,42 @@ void cImportDialog::onRead()
 
 void cImportDialog::onImport()
 {
+	QModelIndexList	selected	= ui->m_lpImportList->selectionModel()->selectedRows();
+
+	ui->m_lpProgress->setVisible(true);
+	ui->m_lpProgress->setRange(0, selected.count());
+
+	for(int x = 0;x < selected.count();x++)
+	{
+		QStandardItem*	lpItem	= m_lpImportListModel->itemFromIndex(selected[x]);
+
+		if(lpItem)
+		{
+			cPicture*	lpPicture	= lpItem->data().value<cPicture*>();
+
+			if(lpPicture)
+			{
+				ui->m_lpStatusText->setText(QString("importing %1 ...").arg(lpPicture->fileName()));
+				qApp->processEvents();
+
+				QString	szSource	= lpPicture->filePath() + QDir::separator() + lpPicture->fileName();
+				QString	szDest		= m_szRootPath + QDir::separator();
+
+				if(lpPicture->dateTime().isValid())
+					szDest.append(QString::number(lpPicture->dateTime().date().year()) + QDir::separator() + lpPicture->dateTime().date().toString("yyyy-mm-dd") + QDir::separator());
+
+				if(!lpPicture->cameraModel().isEmpty())
+					szDest.append(lpPicture->cameraModel() + QDir::separator());
+
+				szDest.append(lpPicture->fileName());
+
+				qDebug() << "Source: " << szSource;
+				qDebug() << "Dest: " << szDest;
+			}
+		}
+	}bla
+	ui->m_lpProgress->setVisible(false);
+
 	m_bHasImported	= true;
 }
 

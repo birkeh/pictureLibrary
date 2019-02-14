@@ -394,7 +394,7 @@ void cMainWindow::onFileOpen()
 
 void cMainWindow::onFileImport()
 {
-	cImportDialog	importDialog(this);
+	cImportDialog	importDialog(m_pictureLibrary.rootPath(), this);
 
 	importDialog.exec();
 	if(importDialog.hasImported())
