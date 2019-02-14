@@ -21,7 +21,8 @@
 
 cImportDialog::cImportDialog(QWidget *parent) :
 	QDialog(parent),
-	ui(new Ui::cImportDialog)
+	ui(new Ui::cImportDialog),
+	m_bHasImported(false)
 {
 	initUI();
 	createActions();
@@ -42,18 +43,15 @@ void cImportDialog::initUI()
 
 	QSettings	settings;
 
-	if(settings.value("main/maximized").toBool())
-	{
-		qint32		iX		= settings.value("import/x", QVariant::fromValue(-1)).toInt();
-		qint32		iY		= settings.value("import/y", QVariant::fromValue(-1)).toInt();
-		qint32		iWidth	= settings.value("import/width", QVariant::fromValue(-1)).toInt();
-		qint32		iHeight	= settings.value("import/height", QVariant::fromValue(-1)).toInt();
+	qint32		iX		= settings.value("import/x", QVariant::fromValue(-1)).toInt();
+	qint32		iY		= settings.value("import/y", QVariant::fromValue(-1)).toInt();
+	qint32		iWidth	= settings.value("import/width", QVariant::fromValue(-1)).toInt();
+	qint32		iHeight	= settings.value("import/height", QVariant::fromValue(-1)).toInt();
 
-		if(iWidth != -1 && iHeight != -1)
-			resize(iWidth, iHeight);
-		if(iX != -1 && iY != -1)
-			move(iX, iY);
-	}
+	if(iWidth != -1 && iHeight != -1)
+		resize(iWidth, iHeight);
+	if(iX != -1 && iY != -1)
+		move(iX, iY);
 
 	qint32		iWidth1	= settings.value("import/splitter1", QVariant::fromValue(-1)).toInt();
 	qint32		iWidth2	= settings.value("import/splitter2", QVariant::fromValue(-1)).toInt();
@@ -63,27 +61,17 @@ void cImportDialog::initUI()
 	ui->m_lpPath->setText(settings.value("import/path", QDir::homePath()).toString());
 }
 
+bool cImportDialog::hasImported()
+{
+	return(m_bHasImported);
+}
+
 void cImportDialog::createActions()
 {
 	connect(ui->m_lpPathSelect,						&QPushButton::clicked,					this,	&cImportDialog::onPathSelect);
 	connect(ui->m_lpRead,							&QPushButton::clicked,					this,	&cImportDialog::onRead);
 	connect(ui->m_lpImport,							&QPushButton::clicked,					this,	&cImportDialog::onImport);
 	connect(ui->m_lpImportList->selectionModel(),	&QItemSelectionModel::selectionChanged,	this,	&cImportDialog::onThumbnailSelected);
-}
-
-void cImportDialog::closeEvent(QCloseEvent *event)
-{
-	QSettings	settings;
-	settings.setValue("import/width", QVariant::fromValue(size().width()));
-	settings.setValue("import/height", QVariant::fromValue(size().height()));
-	settings.setValue("import/x", QVariant::fromValue(x()));
-	settings.setValue("import/y", QVariant::fromValue(y()));
-	if(this->isMaximized())
-		settings.setValue("import/maximized", QVariant::fromValue(true));
-	else
-		settings.setValue("import/maximized", QVariant::fromValue(false));
-
-	event->accept();
 }
 
 void cImportDialog::onPathSelect()
@@ -102,6 +90,8 @@ void cImportDialog::onPathSelect()
 void cImportDialog::onThumbnailSelected(const QItemSelection& /*selection*/, const QItemSelection& /*previous*/)
 {
 	cToolBoxInfo*	lpToolBoxInfo	= ui->m_lpInfo;
+
+	ui->m_lpCount->setText(QString("count: %1, selected: %2").arg(m_lpImportListModel->rowCount()).arg(ui->m_lpImportList->selectionModel()->selectedRows().count()));
 
 	if(ui->m_lpImportList->selectionModel()->selectedIndexes().count() != 1)
 	{
@@ -156,6 +146,7 @@ void cImportDialog::onRead()
 
 void cImportDialog::onImport()
 {
+	m_bHasImported	= true;
 }
 
 void cImportDialog::readDirectory(const QString& szPath, bool bRecursive)
@@ -207,6 +198,8 @@ void cImportDialog::readDirectory(const QString& szPath, bool bRecursive)
 				lpItem->setData(QVariant::fromValue(lpPicture));
 				m_lpImportListModel->appendRow(lpItem);
 				qApp->processEvents();
+
+				ui->m_lpCount->setText(QString("count: %1, selected: %2").arg(m_lpImportListModel->rowCount()).arg(ui->m_lpImportList->selectionModel()->selectedRows().count()));
 			}
 		}
 	}

@@ -396,8 +396,7 @@ void cMainWindow::onFileImport()
 {
 	cImportDialog	importDialog(this);
 
-	if(importDialog.exec() == QDialog::Rejected)
-		return;
-
-	loadData();
+	importDialog.exec();
+	if(importDialog.hasImported())
+		loadData();
 }

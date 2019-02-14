@@ -33,6 +33,13 @@ public:
 	 */
 	~cImportDialog();
 
+	/**
+	 * @brief
+	 *
+	 * @return bool
+	 */
+	bool					hasImported();
+
 private slots:
 	/*!
 	 \brief
@@ -63,6 +70,7 @@ private slots:
 private:
 	Ui::cImportDialog*		ui;										/**< TODO: describe */
 	QStandardItemModel*		m_lpImportListModel;					/**< TODO: describe */
+	bool					m_bHasImported;							/**< TODO: describe */
 
 	void					initUI();
 	void					createActions();
@@ -92,13 +100,6 @@ private:
 	 */
 	void					savePosition();
 protected:
-	/*!
-	 \brief
-
-	 \fn closeEvent
-	 \param event
-	*/
-	void					closeEvent(QCloseEvent* event);
 };
 
 #endif // CIMPORTDIALOG_H
