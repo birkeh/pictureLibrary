@@ -17,6 +17,8 @@
 #include <QMenu>
 #include <QToolBar>
 
+#include <QProgressBar>
+
 
 namespace Ui {
 class cMainWindow;
@@ -46,6 +48,7 @@ public:
 
 private:
 	Ui::cMainWindow*		ui;										/**< TODO: describe */
+	QProgressBar*			m_lpProgressBar;						/**< TODO: describe */
 	QStandardItemModel*		m_lpThumbnailViewModel;					/**< TODO: describe */
 	cSplashScreen*			m_lpSplashScreen;						/*!< Splash Screen */
 	cPictureLibrary			m_pictureLibrary;						/**< TODO: describe */
@@ -108,7 +111,7 @@ private:
 
 	 \fn loadData
 	*/
-	void					loadData();
+	void					loadData(bool bProgressBar = false);
 
 protected:
 	/*!

@@ -5,6 +5,8 @@
 
 #include "cpicture.h"
 
+#include "cdatetimepicker.h"
+
 #include <QSettings>
 #include <QDir>
 #include <QFileInfoList>
@@ -61,8 +63,15 @@ void cImportDialog::initUI()
 	qint32		iWidth2	= settings.value("import/splitter2", QVariant::fromValue(-1)).toInt();
 
 	ui->m_lpSplitter->setSizes(QList<int>() << iWidth1 << iWidth2);
-
 	ui->m_lpPath->setText(settings.value("import/path", QDir::homePath()).toString());
+
+	ui->m_lpRecursive->setChecked(settings.value("import/recursive", QVariant::fromValue(true)).toBool());
+	if(settings.value("import/copy", QVariant::fromValue(true)).toBool())
+		ui->m_lpCopy->setChecked(true);
+	else
+		ui->m_lpMove->setChecked(true);
+	ui->m_lpDetectHDR->setChecked(settings.value("import/detectHDR", QVariant::fromValue(true)).toBool());
+	ui->m_lpDetectJPG_RAW->setChecked(settings.value("import/detectJPG_RAW", QVariant::fromValue(true)).toBool());
 }
 
 bool cImportDialog::hasImported()
@@ -138,6 +147,11 @@ void cImportDialog::savePosition()
 
 	for(int x = 0;x < sizes.count();x++)
 		settings.setValue(QString("import/splitter%1").arg(x+1), QVariant::fromValue(sizes[x]));
+
+	settings.setValue("import/recursive", QVariant::fromValue(ui->m_lpRecursive->isChecked()));
+	settings.setValue("import/copy", QVariant::fromValue(ui->m_lpCopy->isChecked()));
+	settings.setValue("import/detectHDR", QVariant::fromValue(ui->m_lpDetectHDR->isChecked()));
+	settings.setValue("import/detectJPG_RAW", QVariant::fromValue(ui->m_lpDetectJPG_RAW->isChecked()));
 }
 
 void cImportDialog::onRead()
@@ -149,6 +163,7 @@ void cImportDialog::onRead()
 	}
 
 	m_lpImportListModel->clear();
+	ui->m_lpImport->setEnabled(false);
 
 	readDirectory(ui->m_lpPath->text(), ui->m_lpRecursive->isChecked());
 }
@@ -156,6 +171,8 @@ void cImportDialog::onRead()
 void cImportDialog::onImport()
 {
 	QModelIndexList	selected	= ui->m_lpImportList->selectionModel()->selectedRows();
+	QDir			dir;
+	QFile			file;
 
 	ui->m_lpProgress->setVisible(true);
 	ui->m_lpProgress->setRange(0, selected.count());
@@ -175,20 +192,40 @@ void cImportDialog::onImport()
 
 				QString	szSource	= lpPicture->filePath() + QDir::separator() + lpPicture->fileName();
 				QString	szDest		= m_szRootPath + QDir::separator();
+				QString	szDestPath	= "";
 
 				if(lpPicture->dateTime().isValid())
-					szDest.append(QString::number(lpPicture->dateTime().date().year()) + QDir::separator() + lpPicture->dateTime().date().toString("yyyy-mm-dd") + QDir::separator());
+					szDestPath.append(QString::number(lpPicture->dateTime().date().year()) + QDir::separator() + lpPicture->dateTime().date().toString("yyyy-MM-dd") + QDir::separator());
 
 				if(!lpPicture->cameraModel().isEmpty())
-					szDest.append(lpPicture->cameraModel() + QDir::separator());
+					szDestPath.append(lpPicture->cameraModel() + QDir::separator());
 
-				szDest.append(lpPicture->fileName());
+				szDest.append(szDestPath);
 
-				qDebug() << "Source: " << szSource;
-				qDebug() << "Dest: " << szDest;
+				if(dir.mkpath(szDest))
+				{
+					szDest.append(lpPicture->fileName());
+
+					if(file.exists(szDest))
+						file.remove(szDest);
+
+					file.copy(szSource, szDest);
+
+					ui->m_lpProgress->setValue(x);
+					qApp->processEvents();
+
+					lpPicture->setFilePath(szDestPath);
+					lpPicture->toDB();
+
+					if(ui->m_lpMove->isChecked())
+					{
+//						file.remove(szSource);
+					}
+				}
 			}
 		}
-	}bla
+	}
+	ui->m_lpStatusText->setText("");
 	ui->m_lpProgress->setVisible(false);
 
 	m_bHasImported	= true;
@@ -200,6 +237,7 @@ void cImportDialog::readDirectory(const QString& szPath, bool bRecursive)
 	QDir			dir(szPath);
 	QStringList		szDirs	= dir.entryList(QDir::Dirs);
 	QFileInfoList	szFiles	= dir.entryInfoList(QDir::Files);
+	QDateTime		oldDateTime;
 
 	if(bRecursive)
 	{
@@ -225,6 +263,24 @@ void cImportDialog::readDirectory(const QString& szPath, bool bRecursive)
 
 			if(lpPicture->fromFile(fileInfo.filePath()))
 			{
+				if(!lpPicture->dateTime().isValid())
+				{
+					cDateTimePicker	dateTimePicker;
+					dateTimePicker.setWindowTitle("Warning");
+					dateTimePicker.setText(QString(tr("\"%1\" has no date.\nTo import, please set a date.").arg(fileInfo.filePath())));
+					dateTimePicker.setImage(lpPicture->thumbnail());
+
+					if(!oldDateTime.isValid())
+						oldDateTime	= fileInfo.birthTime();
+
+					dateTimePicker.setDateTime(oldDateTime);
+					if(dateTimePicker.exec() == QDialog::Rejected)
+						continue;
+
+					oldDateTime	= dateTimePicker.dateTime();
+					lpPicture->setDateTime(oldDateTime);
+				}
+
 				if(lpPicture->thumbnail().width() != THUMBNAIL_WIDTH || lpPicture->thumbnail().height() != THUMBNAIL_HEIGHT)
 				{
 					QImage			thumbnail(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, lpPicture->thumbnail().format());

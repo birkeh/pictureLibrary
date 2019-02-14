@@ -74,6 +74,24 @@
         </layout>
        </item>
        <item>
+        <layout class="QVBoxLayout" name="verticalLayout_4">
+         <item>
+          <widget class="QCheckBox" name="m_lpDetectHDR">
+           <property name="text">
+            <string>detect HDR</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="m_lpDetectJPG_RAW">
+           <property name="text">
+            <string>detect JPG/RAW</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <item>
           <widget class="QPushButton" name="m_lpRead">

@@ -20,6 +20,7 @@
 cMainWindow::cMainWindow(cSplashScreen* lpSplashScreen, QWidget *parent) :
 	QMainWindow(parent),
 	ui(new Ui::cMainWindow),
+	m_lpProgressBar(nullptr),
 	m_lpSplashScreen(lpSplashScreen),
 	m_lpFileMenu(nullptr),
 	m_lpFileToolBar(nullptr)
@@ -42,6 +43,11 @@ void cMainWindow::initUI()
 	ui->setupUi(this);
 	m_lpThumbnailViewModel	= new QStandardItemModel;
 	ui->m_lpThumbnailView->setModel(m_lpThumbnailViewModel);
+
+
+	m_lpProgressBar			= new QProgressBar(this);
+	m_lpProgressBar->setVisible(false);
+	ui->m_lpStatusBar->addPermanentWidget(m_lpProgressBar);
 
 	QIcon::setThemeName("TangoMFK");
 
@@ -100,12 +106,12 @@ void cMainWindow::createActions()
 //	connect(ui->m_lpOutlineList,	&cTreeView::dropped,					this,	&cMainWindow::onOutlineDropped);
 }
 
-void cMainWindow::loadData()
+void cMainWindow::loadData(bool bProgressBar)
 {
 	m_pictureList.clear();
 	m_lpThumbnailViewModel->clear();
 
-	m_pictureList.load();
+	m_pictureList.load(m_lpSplashScreen, bProgressBar ? m_lpProgressBar : nullptr);
 
 	for(int x = 0;x < m_pictureList.count();x++)
 	{
@@ -398,5 +404,9 @@ void cMainWindow::onFileImport()
 
 	importDialog.exec();
 	if(importDialog.hasImported())
-		loadData();
+	{
+		m_lpProgressBar->setVisible(true);
+		loadData(true);
+		m_lpProgressBar->setVisible(false);
+	}
 }

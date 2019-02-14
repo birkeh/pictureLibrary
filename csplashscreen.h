@@ -41,10 +41,16 @@ public:
 	 */
 	void			setMessageRect(QRect rect);
 
+	void			setMax(qint32 max);
+
 private:
 	QTextDocument	m_textDocument;	/**< TODO: describe */
 	QString			m_szMessage;	/**< TODO: describe */
 	QRect			m_rect;			/**< TODO: describe */
+	qint32			m_iMax;			/**< TODO: describe */
+	qint32			m_iProgress;	/**< TODO: describe */
+public slots:
+	void			setProgress(int value);
 };
 
 #endif // CSPLASHSCREEN_H

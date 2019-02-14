@@ -2,10 +2,14 @@
 #define CPICTURE_H
 
 
+#include "csplashscreen.h"
+
 #include <QObject>
 #include <QList>
 #include <QImage>
 #include <QDateTime>
+
+#include <QProgressBar>
 
 #include <QMetaType>
 
@@ -424,7 +428,7 @@ public:
 	 */
 	explicit				cPictureList(QObject *parent = nullptr);
 
-	bool					load();
+	bool					load(cSplashScreen* lpSplashScreen, QProgressBar* lpProgressBar = 0);
 
 	/**
 	 * @brief

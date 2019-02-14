@@ -62,7 +62,8 @@ SOURCES += \
     cpicture.cpp \
     cimage.cpp \
     ctoolboxinfo.cpp \
-    cimportdialog.cpp
+    cimportdialog.cpp \
+    cdatetimepicker.cpp
 
 HEADERS += \
         cmainwindow.h \
@@ -73,12 +74,14 @@ HEADERS += \
     cpicture.h \
     cimage.h \
     ctoolboxinfo.h \
-    cimportdialog.h
+    cimportdialog.h \
+    cdatetimepicker.h
 
 FORMS += \
         cmainwindow.ui \
     ctoolboxinfo.ui \
-    cimportdialog.ui
+    cimportdialog.ui \
+    cdatetimepicker.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

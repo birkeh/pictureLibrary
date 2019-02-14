@@ -7,6 +7,8 @@
 #include <QSqlError>
 #include <QFileInfo>
 
+#include <QApplication>
+
 
 cPicture::cPicture(qint32 iID, QObject *parent) :
 	QObject(parent),
@@ -70,10 +72,10 @@ bool cPicture::fromFile(const QString& szFileName)
 	m_focalLength35			= exif.focalLength35();
 	m_gps					= exif.gps();
 
-	if(!m_dateTime.isValid())
-	{
-		setDateTime(fileInfo.birthTime());
-	}
+//	if(!m_dateTime.isValid())
+//	{
+//		setDateTime(fileInfo.birthTime());
+//	}
 
 	return(true);
 }
@@ -417,10 +419,26 @@ cPictureList::cPictureList(QObject *parent) :
 {
 }
 
-bool cPictureList::load()
+bool cPictureList::load(cSplashScreen *lpSplashScreen, QProgressBar *lpProgressBar)
 {
 	cEXIFFlashList	flashList;
 	QSqlQuery		query;
+
+	query.prepare("SELECT	COUNT(1) cnt FROM picture;");
+
+	if(!query.exec())
+	{
+		myDebug << query.lastError().text();
+		return(false);
+	}
+	query.next();
+
+	qint32	max		= static_cast<qint32>(query.value("cnt").toLongLong());
+
+	if(lpProgressBar)
+		lpProgressBar->setMaximum(max);
+	else if(lpSplashScreen)
+		lpSplashScreen->setMax(max);
 
 	query.prepare("SELECT   id, "
 				  "         fileName, "
@@ -448,13 +466,17 @@ bool cPictureList::load()
 				  "         gps, "
 				  "         thumbnail "
 				  "FROM     picture "
-				  "ORDER BY UPPER(fileName);");
+				  "ORDER BY dateTime, "
+				  "         UPPER(fileName);");
 
 	if(!query.exec())
 	{
 		myDebug << query.lastError().text();
 		return(false);
 	}
+
+	qint32	count	= 0;
+	qint32	step	= max/50;
 
 	while(query.next())
 	{
@@ -484,6 +506,16 @@ bool cPictureList::load()
 		lpPicture->setFocalLength35(query.value("focalLength35").toDouble());
 		lpPicture->setGPS(query.value("gps").toString());
 		lpPicture->setThumbnail(blob2Image(query.value("thumbnail").toByteArray()));
+
+		count++;
+		if(count % step)
+		{
+			if(lpProgressBar)
+				lpProgressBar->setValue(count);
+			else if(lpSplashScreen)
+				lpSplashScreen->setProgress(count);
+			qApp->processEvents();
+		}
 	}
 
 	return(true);
