@@ -436,7 +436,7 @@ public:
 	 * @param iID
 	 * @return cPicture
 	 */
-	cPicture*				add(qint32 iID = -1);
+	cPicture*				add(qint32 iID = -1, bool bNoCheck = false);
 	/**
 	 * @brief
 	 *

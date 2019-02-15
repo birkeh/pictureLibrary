@@ -39,6 +39,12 @@
          <height>0</height>
         </size>
        </property>
+       <property name="wordWrap">
+        <bool>true</bool>
+       </property>
+       <property name="headerHidden">
+        <bool>true</bool>
+       </property>
       </widget>
       <widget class="QListView" name="m_lpThumbnailView">
        <property name="sizePolicy">

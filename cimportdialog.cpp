@@ -214,7 +214,7 @@ void cImportDialog::onImport()
 					ui->m_lpProgress->setValue(x);
 					qApp->processEvents();
 
-					lpPicture->setFilePath(szDestPath);
+					lpPicture->setFilePath(szDestPath.left(szDestPath.length()-1));
 					lpPicture->toDB();
 
 					if(ui->m_lpMove->isChecked())

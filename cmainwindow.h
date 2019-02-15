@@ -6,6 +6,8 @@
 #include "csplashscreen.h"
 #include "cpicture.h"
 
+#include "cthumbnailfilterproxymodel.h"
+
 #include "ctoolboxinfo.h"
 
 #include <QMainWindow>
@@ -23,6 +25,8 @@
 namespace Ui {
 class cMainWindow;
 }
+
+Q_DECLARE_METATYPE(QList<QStandardItem*>*)
 
 /**
  * @brief
@@ -49,7 +53,13 @@ public:
 private:
 	Ui::cMainWindow*		ui;										/**< TODO: describe */
 	QProgressBar*			m_lpProgressBar;						/**< TODO: describe */
+	QStandardItemModel*		m_lpFolderViewModel;					/**< TODO: describe */
 	QStandardItemModel*		m_lpThumbnailViewModel;					/**< TODO: describe */
+	cThumbnailFilterProxyModel*	m_lpThumbnailFilterProxyModel;		/**< TODO: describe */
+	QStandardItem*			m_lpRootItem;							/**< TODO: describe */
+
+	bool					m_bLoading;								/**< TODO: describe */
+
 	cSplashScreen*			m_lpSplashScreen;						/*!< Splash Screen */
 	cPictureLibrary			m_pictureLibrary;						/**< TODO: describe */
 	cPictureList			m_pictureList;							/**< TODO: describe */
@@ -113,6 +123,15 @@ private:
 	*/
 	void					loadData(bool bProgressBar = false);
 
+	/*!
+	 \brief
+
+	 \param szPath
+	 \param lpItem
+	 \fn insertPath
+	*/
+	void					insertPath(QString szPath);
+
 protected:
 	/*!
 	 \brief
@@ -130,6 +149,13 @@ private slots:
 	 \fn onThumbnailSelected
 	*/
 	void					onThumbnailSelected(const QItemSelection& selection, const QItemSelection& previous);
+	/*!
+	 \brief
+	 \param selection
+	 \param previous
+	 \fn onThumbnailSelected
+	*/
+	void					onFolderSelected(const QItemSelection& selection, const QItemSelection& previous);
 	/*!
 	 \brief
 

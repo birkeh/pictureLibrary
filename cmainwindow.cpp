@@ -7,6 +7,7 @@
 
 #include <QDebug>
 #include <QDir>
+#include <QString>
 #include <QStringList>
 #include <QFile>
 #include <QTextStream>
@@ -21,12 +22,18 @@ cMainWindow::cMainWindow(cSplashScreen* lpSplashScreen, QWidget *parent) :
 	QMainWindow(parent),
 	ui(new Ui::cMainWindow),
 	m_lpProgressBar(nullptr),
+	m_lpFolderViewModel(nullptr),
+	m_lpThumbnailViewModel(nullptr),
+	m_lpThumbnailFilterProxyModel(nullptr),
+	m_lpRootItem(nullptr),
+	m_bLoading(false),
 	m_lpSplashScreen(lpSplashScreen),
 	m_lpFileMenu(nullptr),
 	m_lpFileToolBar(nullptr)
 {
 	initUI();
 	createActions();
+
 	loadData();
 
 	updateRecentFileActions();
@@ -41,9 +48,15 @@ cMainWindow::~cMainWindow()
 void cMainWindow::initUI()
 {
 	ui->setupUi(this);
-	m_lpThumbnailViewModel	= new QStandardItemModel;
-	ui->m_lpThumbnailView->setModel(m_lpThumbnailViewModel);
 
+	m_lpFolderViewModel	= new QStandardItemModel;
+	ui->m_lpFolderView->setModel(m_lpFolderViewModel);
+
+	m_lpThumbnailViewModel	= new QStandardItemModel;
+//	ui->m_lpThumbnailView->setModel(m_lpThumbnailViewModel);
+	m_lpThumbnailFilterProxyModel	= new cThumbnailFilterProxyModel(this);
+	ui->m_lpThumbnailView->setModel(m_lpThumbnailFilterProxyModel);
+	m_lpThumbnailFilterProxyModel->setSourceModel(m_lpThumbnailViewModel);
 
 	m_lpProgressBar			= new QProgressBar(this);
 	m_lpProgressBar->setVisible(false);
@@ -78,38 +91,21 @@ void cMainWindow::createActions()
 	setToolButtonStyle(Qt::ToolButtonFollowStyle);
 
 	createFileActions();
-//	createEditActions();
-//	createTextActions();
-//	createToolsActions();
-//	createWindowActions();
-//	createHelpActions();
-
-//	createContextActions();
 
 	connect(ui->m_lpThumbnailView->selectionModel(),	&QItemSelectionModel::selectionChanged,				this,	&cMainWindow::onThumbnailSelected);
-//	connect(ui->m_lpMainTab,		&QTabWidget::currentChanged,			this,	&cMainWindow::onMainTabCurrentChanged);
-//	connect(ui->m_lpMainTab,		&QTabWidget::tabCloseRequested,			this,	&cMainWindow::onMainTabTabCloseRequested);
-//	connect(ui->m_lpMdiArea,		&QMdiArea::subWindowActivated,			this,	&cMainWindow::onMdiAreaSubWindowActivated);
-
-//	connect(ui->m_lpOutlineList,	&QTreeView::doubleClicked,				this,	&cMainWindow::onOutlineDoubleClicked);
-//	connect(ui->m_lpCharacterList,	&QTreeView::doubleClicked,				this,	&cMainWindow::onCharacterDoubleClicked);
-//	connect(ui->m_lpPlaceList,		&QTreeView::doubleClicked,				this,	&cMainWindow::onPlaceDoubleClicked);
-//	connect(ui->m_lpObjectList,		&QTreeView::doubleClicked,				this,	&cMainWindow::onObjectDoubleClicked);
-//	connect(ui->m_lpRechercheList,	&QTreeView::doubleClicked,				this,	&cMainWindow::onRechercheDoubleClicked);
-
-//	connect(ui->m_lpOutlineList,	&QTreeView::customContextMenuRequested,	this,	&cMainWindow::onOutlineContextMenu);
-//	connect(ui->m_lpCharacterList,	&QTreeView::customContextMenuRequested,	this,	&cMainWindow::onCharacterContextMenu);
-//	connect(ui->m_lpPlaceList,		&QTreeView::customContextMenuRequested,	this,	&cMainWindow::onPlaceContextMenu);
-//	connect(ui->m_lpObjectList,		&QTreeView::customContextMenuRequested,	this,	&cMainWindow::onObjectContextMenu);
-//	connect(ui->m_lpRechercheList,	&QTreeView::customContextMenuRequested,	this,	&cMainWindow::onRechercheContextMenu);
-
-//	connect(ui->m_lpOutlineList,	&cTreeView::dropped,					this,	&cMainWindow::onOutlineDropped);
+	connect(ui->m_lpFolderView->selectionModel(),		&QItemSelectionModel::selectionChanged,				this,	&cMainWindow::onFolderSelected);
 }
 
 void cMainWindow::loadData(bool bProgressBar)
 {
+	m_bLoading	= true;
+
 	m_pictureList.clear();
 	m_lpThumbnailViewModel->clear();
+	m_lpFolderViewModel->clear();
+
+	m_lpRootItem	= new QStandardItem("library");
+	m_lpFolderViewModel->appendRow(m_lpRootItem);
 
 	m_pictureList.load(m_lpSplashScreen, bProgressBar ? m_lpProgressBar : nullptr);
 
@@ -133,7 +129,59 @@ void cMainWindow::loadData(bool bProgressBar)
 		QStandardItem*	lpItem		= new QStandardItem(icon, m_pictureList[x]->fileName());
 		lpItem->setTextAlignment(Qt::AlignCenter);
 		lpItem->setData(QVariant::fromValue(m_pictureList[x]));
+		lpItem->setData(QVariant::fromValue(m_pictureList[x]->filePath()), Qt::UserRole+2);
 		m_lpThumbnailViewModel->appendRow(lpItem);
+
+		insertPath(m_pictureList[x]->filePath());
+	}
+
+	ui->m_lpFolderView->expandAll();
+
+	m_bLoading	= false;
+}
+
+void cMainWindow::insertPath(QString szPath)
+{
+	if(!m_lpRootItem)
+		return;
+
+	QString			szPath1		= szPath.replace("\\", "/");
+	QStringList		szPathList	= szPath1.split("/");
+	QStandardItem*	lpCurRoot	= m_lpRootItem;
+	int				path;
+	bool			bFound;
+
+	szPath1	= "";
+
+	for(path = 0;path < szPathList.count();path++)
+	{
+		bFound	= false;
+		for(int x = 0;x < lpCurRoot->rowCount();x++)
+		{
+			QStandardItem*	lpCurItem	= lpCurRoot->child(x, 0);
+
+			if(!lpCurItem->text().compare(szPathList[path], Qt::CaseInsensitive))
+			{
+				lpCurRoot	= lpCurItem;
+				bFound		= true;
+				break;
+			}
+		}
+
+		if(!bFound)
+			break;
+
+		szPath1.append(szPathList[path]+QDir::separator());
+	}
+
+	for(;path < szPathList.count();path++)
+	{
+		szPath1.append(szPathList[path]);
+		QStandardItem*	lpNewItem	= new QStandardItem(szPathList[path]);
+		lpCurRoot->appendRow(lpNewItem);
+		lpNewItem->setData(QVariant::fromValue(szPath1), Qt::UserRole+2);
+		szPath1.append(QDir::separator());
+		lpCurRoot	= lpNewItem;
 	}
 }
 
@@ -180,39 +228,6 @@ void cMainWindow::createFileActions()
 
 	m_lpFileMenu->addSeparator();
 
-//	const QIcon	saveIcon		= QIcon::fromTheme("document-save");
-//	m_lpFileSaveAction			= m_lpFileMenu->addAction(saveIcon, tr("&Save"), this, &cMainWindow::onFileSave);
-//	m_lpFileSaveAction->setShortcut(QKeySequence::Save);
-//	m_lpFileSaveAction->setEnabled(false);
-//	m_lpFileToolBar->addAction(m_lpFileSaveAction);
-
-//	m_lpFileSaveAsAction		= m_lpFileMenu->addAction(tr("Save &As..."), this, &cMainWindow::onFileSaveAs);
-//	m_lpFileSaveAsAction->setPriority(QAction::LowPriority);
-//	m_lpFileMenu->addSeparator();
-
-//#ifndef QT_NO_PRINTER
-//	const QIcon	printIcon		= QIcon::fromTheme("document-print");
-//	m_lpFilePrintAction			= m_lpFileMenu->addAction(printIcon, tr("&Print..."), this, &cMainWindow::onFilePrint);
-//	m_lpFilePrintAction->setPriority(QAction::LowPriority);
-//	m_lpFilePrintAction->setShortcut(QKeySequence::Print);
-//	m_lpFileToolBar->addAction(m_lpFilePrintAction);
-
-//	const QIcon	filePrintIcon	= QIcon::fromTheme("document-print");
-//	m_lpFilePrintPreviewAction	= m_lpFileMenu->addAction(filePrintIcon, tr("Print Preview..."), this, &cMainWindow::onFilePrintPreview);
-
-//	const QIcon	exportPdfIcon	= QIcon::fromTheme("document-pdf");
-//	m_lpFileExportPDFAction		= m_lpFileMenu->addAction(exportPdfIcon, tr("&Export PDF..."), this, &cMainWindow::onFilePrintPdf);
-//	m_lpFileExportPDFAction->setPriority(QAction::LowPriority);
-//	m_lpFileExportPDFAction->setShortcut(Qt::CTRL + Qt::Key_D);
-//	m_lpFileToolBar->addAction(m_lpFileExportPDFAction);
-
-//	m_lpFileMenu->addSeparator();
-//#endif
-
-//	m_lpFilePropertiesAction	= m_lpFileMenu->addAction(tr("P&roperties..."), this, &cMainWindow::onFileProperties);
-//	m_lpFilePropertiesAction->setPriority(QAction::LowPriority);
-//	m_lpFileMenu->addSeparator();
-
 	for(int i = 0; i < MaxRecentFiles;i++)
 	{
 		m_lpRecentFileAction[i]	= new QAction(this);
@@ -242,6 +257,18 @@ void cMainWindow::onThumbnailSelected(const QItemSelection& /*selection*/, const
 	lpToolBoxInfo->setPicture(lpPicture);
 }
 
+void cMainWindow::onFolderSelected(const QItemSelection& /*selection*/, const QItemSelection& /*previous*/)
+{
+	if(m_bLoading)
+		return;
+
+	QStandardItem*			lpItem		= m_lpFolderViewModel->itemFromIndex(ui->m_lpFolderView->currentIndex());
+	if(!lpItem)
+		return;
+
+	m_lpThumbnailFilterProxyModel->setFilterPath(lpItem->data(Qt::UserRole+2).toString());
+}
+
 void cMainWindow::setCurrentFile(const QString& fileName)
 {
 	QSettings	settings;
@@ -261,7 +288,7 @@ void cMainWindow::updateRecentFileActions()
 	QSettings	settings;
 	QStringList	files			= settings.value("file/recentFiles").toStringList();
 
-	int			numRecentFiles	= qMin(files.size(), (int)MaxRecentFiles);
+	int			numRecentFiles	= qMin(files.size(), static_cast<int>(MaxRecentFiles));
 
 	for(int i = 0; i < numRecentFiles; i++)
 	{
@@ -320,6 +347,7 @@ void cMainWindow::openRecentFile()
 //		updateWindowTitle();
 	}
 }
+
 void cMainWindow::onFileNew()
 {
 //	if(m_bSomethingChanged)

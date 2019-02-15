@@ -72,11 +72,6 @@ bool cPicture::fromFile(const QString& szFileName)
 	m_focalLength35			= exif.focalLength35();
 	m_gps					= exif.gps();
 
-//	if(!m_dateTime.isValid())
-//	{
-//		setDateTime(fileInfo.birthTime());
-//	}
-
 	return(true);
 }
 
@@ -466,7 +461,7 @@ bool cPictureList::load(cSplashScreen *lpSplashScreen, QProgressBar *lpProgressB
 				  "         gps, "
 				  "         thumbnail "
 				  "FROM     picture "
-				  "ORDER BY dateTime, "
+				  "ORDER BY filePath, "
 				  "         UPPER(fileName);");
 
 	if(!query.exec())
@@ -480,7 +475,7 @@ bool cPictureList::load(cSplashScreen *lpSplashScreen, QProgressBar *lpProgressB
 
 	while(query.next())
 	{
-		cPicture*	lpPicture	= add(query.value("id").toInt());
+		cPicture*	lpPicture	= add(query.value("id").toInt(), true);
 		lpPicture->setFileName(query.value("fileName").toString());
 		lpPicture->setFilePath(query.value("filePath").toString());
 		lpPicture->setFileSize(query.value("fileSize").toLongLong());
@@ -521,9 +516,9 @@ bool cPictureList::load(cSplashScreen *lpSplashScreen, QProgressBar *lpProgressB
 	return(true);
 }
 
-cPicture* cPictureList::add(qint32 iID)
+cPicture* cPictureList::add(qint32 iID, bool bNoCheck)
 {
-	if(iID != -1)
+	if(iID != -1 && !bNoCheck)
 	{
 		if(find(iID))
 			return(nullptr);
