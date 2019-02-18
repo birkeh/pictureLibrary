@@ -42,6 +42,9 @@ cMainWindow::cMainWindow(cSplashScreen* lpSplashScreen, QWidget *parent) :
 cMainWindow::~cMainWindow()
 {
 	delete m_lpThumbnailViewModel;
+	delete m_lpFolderViewModel;
+	delete m_lpThumbnailFilterProxyModel;
+
 	delete ui;
 }
 
@@ -53,7 +56,6 @@ void cMainWindow::initUI()
 	ui->m_lpFolderView->setModel(m_lpFolderViewModel);
 
 	m_lpThumbnailViewModel	= new QStandardItemModel;
-//	ui->m_lpThumbnailView->setModel(m_lpThumbnailViewModel);
 	m_lpThumbnailFilterProxyModel	= new cThumbnailFilterProxyModel(this);
 	ui->m_lpThumbnailView->setModel(m_lpThumbnailFilterProxyModel);
 	m_lpThumbnailFilterProxyModel->setSourceModel(m_lpThumbnailViewModel);
@@ -132,57 +134,12 @@ void cMainWindow::loadData(bool bProgressBar)
 		lpItem->setData(QVariant::fromValue(m_pictureList[x]->filePath()), Qt::UserRole+2);
 		m_lpThumbnailViewModel->appendRow(lpItem);
 
-		insertPath(m_pictureList[x]->filePath());
+		insertPath(m_pictureList[x]->filePath(), m_lpRootItem);
 	}
 
 	ui->m_lpFolderView->expandAll();
 
 	m_bLoading	= false;
-}
-
-void cMainWindow::insertPath(QString szPath)
-{
-	if(!m_lpRootItem)
-		return;
-
-	QString			szPath1		= szPath.replace("\\", "/");
-	QStringList		szPathList	= szPath1.split("/");
-	QStandardItem*	lpCurRoot	= m_lpRootItem;
-	int				path;
-	bool			bFound;
-
-	szPath1	= "";
-
-	for(path = 0;path < szPathList.count();path++)
-	{
-		bFound	= false;
-		for(int x = 0;x < lpCurRoot->rowCount();x++)
-		{
-			QStandardItem*	lpCurItem	= lpCurRoot->child(x, 0);
-
-			if(!lpCurItem->text().compare(szPathList[path], Qt::CaseInsensitive))
-			{
-				lpCurRoot	= lpCurItem;
-				bFound		= true;
-				break;
-			}
-		}
-
-		if(!bFound)
-			break;
-
-		szPath1.append(szPathList[path]+QDir::separator());
-	}
-
-	for(;path < szPathList.count();path++)
-	{
-		szPath1.append(szPathList[path]);
-		QStandardItem*	lpNewItem	= new QStandardItem(szPathList[path]);
-		lpCurRoot->appendRow(lpNewItem);
-		lpNewItem->setData(QVariant::fromValue(szPath1), Qt::UserRole+2);
-		szPath1.append(QDir::separator());
-		lpCurRoot	= lpNewItem;
-	}
 }
 
 void cMainWindow::closeEvent(QCloseEvent *event)
@@ -252,9 +209,15 @@ void cMainWindow::onThumbnailSelected(const QItemSelection& /*selection*/, const
 		return;
 	}
 
-	QStandardItem*	lpItem			= m_lpThumbnailViewModel->itemFromIndex(ui->m_lpThumbnailView->currentIndex());
-	cPicture*		lpPicture		= lpItem->data().value<cPicture*>();
-	lpToolBoxInfo->setPicture(lpPicture);
+	for(int x = 0;x < ui->m_lpThumbnailView->selectionModel()->selectedIndexes().count();x++)
+	{
+		QModelIndex		index	= ui->m_lpThumbnailView->selectionModel()->selectedIndexes()[x];
+		if(!index.isValid())
+			return;
+
+		cPicture*		lpPicture	= m_lpThumbnailFilterProxyModel->data(index, Qt::UserRole+1).value<cPicture*>();
+		lpToolBoxInfo->setPicture(lpPicture);
+	}
 }
 
 void cMainWindow::onFolderSelected(const QItemSelection& /*selection*/, const QItemSelection& /*previous*/)

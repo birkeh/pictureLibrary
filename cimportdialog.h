@@ -7,6 +7,8 @@
 #include <QCloseEvent>
 #include <QItemSelection>
 
+#include "cthumbnailfilterproxymodel.h"
+
 
 namespace Ui {
 class cImportDialog;
@@ -38,7 +40,7 @@ public:
 	 *
 	 * @return bool
 	 */
-	bool					hasImported();
+	bool						hasImported();
 
 private slots:
 	/*!
@@ -46,35 +48,56 @@ private slots:
 
 	 \fn onPathSelect
 	*/
-	void					onPathSelect();
+	void						onPathSelect();
 	/*!
 	 \brief
 
 	 \fn onRead
 	*/
-	void					onRead();
+	void						onRead();
 	/*!
 	 \brief
 
 	 \fn onImport
 	*/
-	void					onImport();
+	void						onImport();
 	/*!
 	 \brief
 	 \param selection
 	 \param previous
 	 \fn onThumbnailSelected
 	*/
-	void					onThumbnailSelected(const QItemSelection& selection, const QItemSelection& previous);
+	void						onThumbnailSelected(const QItemSelection& selection, const QItemSelection& previous);
+	/*!
+	 \brief
+	 \param selection
+	 \param previous
+	 \fn onThumbnailSelected
+	*/
+	void						onFolderSelected(const QItemSelection& selection, const QItemSelection& previous);
 
 private:
-	Ui::cImportDialog*		ui;										/**< TODO: describe */
-	QString					m_szRootPath;							/**< TODO: describe */
-	QStandardItemModel*		m_lpImportListModel;					/**< TODO: describe */
-	bool					m_bHasImported;							/**< TODO: describe */
+	Ui::cImportDialog*			ui;										/**< TODO: describe */
+	QString						m_szRootPath;							/**< TODO: describe */
+	QStandardItemModel*			m_lpFolderViewModel;					/**< TODO: describe */
+	QStandardItemModel*			m_lpThumbnailViewModel;					/**< TODO: describe */
+	cThumbnailFilterProxyModel*	m_lpThumbnailFilterProxyModel;			/**< TODO: describe */
+	bool						m_bLoading;								/**< TODO: describe */
+	bool						m_bHasImported;							/**< TODO: describe */
+	QStandardItem*				m_lpRootItem;							/**< TODO: describe */
 
-	void					initUI();
-	void					createActions();
+	/*!
+	 \brief
+
+	 \fn initUI
+	*/
+	void						initUI();
+	/*!
+	 \brief
+
+	 \fn createActions
+	*/
+	void						createActions();
 
 	/**
 	 * @brief
@@ -82,18 +105,18 @@ private:
 	 * @param szPath
 	 * @param bRecursive
 	 */
-	void					readDirectory(const QString& szPath, bool bRecursive);
+	void						readDirectory(const QString& szPath, bool bRecursive);
 
 	/**
 	 * @brief
 	 *
 	 */
-	void					accept();
+	void						accept();
 	/**
 	 * @brief
 	 *
 	 */
-	void					reject();
+	void						reject();
 
 	/**
 	 * @brief

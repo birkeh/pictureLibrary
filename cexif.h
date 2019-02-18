@@ -186,6 +186,10 @@ Q_DECLARE_METATYPE(cEXIFTag*)
 class cEXIFTagList : public QList<cEXIFTag*>
 {
 public:
+	/**
+	 * @brief
+	 *
+	 */
 	cEXIFTagList();
 
 	/**
@@ -216,6 +220,11 @@ public:
 class cEXIFValue
 {
 public:
+	/**
+	 * @brief
+	 *
+	 * @param lpEXIFTag
+	 */
 	cEXIFValue(cEXIFTag* lpEXIFTag);
 
 	/**

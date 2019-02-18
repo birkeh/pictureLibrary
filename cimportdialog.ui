@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>449</width>
-    <height>328</height>
+    <width>697</width>
+    <height>510</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -147,7 +147,12 @@
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <widget class="QListView" name="m_lpImportList">
+       <widget class="QTreeView" name="m_lpFolderView">
+        <attribute name="headerVisible">
+         <bool>false</bool>
+        </attribute>
+       </widget>
+       <widget class="QListView" name="m_lpThumbnailView">
         <property name="selectionMode">
          <enum>QAbstractItemView::ExtendedSelection</enum>
         </property>
@@ -183,7 +188,7 @@
            <x>0</x>
            <y>0</y>
            <width>69</width>
-           <height>134</height>
+           <height>316</height>
           </rect>
          </property>
          <layout class="QGridLayout" name="gridLayout">
@@ -200,7 +205,7 @@
        <item>
         <widget class="QLabel" name="m_lpCount">
          <property name="text">
-          <string>TextLabel</string>
+          <string/>
          </property>
         </widget>
        </item>

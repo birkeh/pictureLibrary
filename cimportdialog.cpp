@@ -27,7 +27,12 @@ cImportDialog::cImportDialog(const QString& szRootPath, QWidget *parent) :
 	QDialog(parent),
 	ui(new Ui::cImportDialog),
 	m_szRootPath(szRootPath),
-	m_bHasImported(false)
+	m_lpFolderViewModel(nullptr),
+	m_lpThumbnailViewModel(nullptr),
+	m_lpThumbnailFilterProxyModel(nullptr),
+	m_bLoading(false),
+	m_bHasImported(false),
+	m_lpRootItem(nullptr)
 {
 	initUI();
 	createActions();
@@ -35,6 +40,10 @@ cImportDialog::cImportDialog(const QString& szRootPath, QWidget *parent) :
 
 cImportDialog::~cImportDialog()
 {
+	delete m_lpThumbnailViewModel;
+	delete m_lpFolderViewModel;
+	delete m_lpThumbnailFilterProxyModel;
+
 	delete ui;
 }
 
@@ -44,8 +53,13 @@ void cImportDialog::initUI()
 	ui->m_lpProgress->setVisible(false);
 	ui->m_lpImport->setEnabled(false);
 
-	m_lpImportListModel	= new QStandardItemModel;
-	ui->m_lpImportList->setModel(m_lpImportListModel);
+	m_lpFolderViewModel	= new QStandardItemModel;
+	ui->m_lpFolderView->setModel(m_lpFolderViewModel);
+
+	m_lpThumbnailViewModel	= new QStandardItemModel;
+	m_lpThumbnailFilterProxyModel	= new cThumbnailFilterProxyModel(this);
+	ui->m_lpThumbnailView->setModel(m_lpThumbnailFilterProxyModel);
+	m_lpThumbnailFilterProxyModel->setSourceModel(m_lpThumbnailViewModel);
 
 	QSettings	settings;
 
@@ -59,10 +73,12 @@ void cImportDialog::initUI()
 	if(iX != -1 && iY != -1)
 		move(iX, iY);
 
-	qint32		iWidth1	= settings.value("import/splitter1", QVariant::fromValue(-1)).toInt();
-	qint32		iWidth2	= settings.value("import/splitter2", QVariant::fromValue(-1)).toInt();
+	qint32		iWidth1	= settings.value("main/splitter1", QVariant::fromValue(-1)).toInt();
+	qint32		iWidth2	= settings.value("main/splitter2", QVariant::fromValue(-1)).toInt();
+	qint32		iWidth3	= settings.value("main/splitter3", QVariant::fromValue(-1)).toInt();
 
-	ui->m_lpSplitter->setSizes(QList<int>() << iWidth1 << iWidth2);
+	ui->m_lpSplitter->setSizes(QList<int>() << iWidth1 << iWidth2 << iWidth3);
+
 	ui->m_lpPath->setText(settings.value("import/path", QDir::homePath()).toString());
 
 	ui->m_lpRecursive->setChecked(settings.value("import/recursive", QVariant::fromValue(true)).toBool());
@@ -81,10 +97,11 @@ bool cImportDialog::hasImported()
 
 void cImportDialog::createActions()
 {
-	connect(ui->m_lpPathSelect,						&QPushButton::clicked,					this,	&cImportDialog::onPathSelect);
-	connect(ui->m_lpRead,							&QPushButton::clicked,					this,	&cImportDialog::onRead);
-	connect(ui->m_lpImport,							&QPushButton::clicked,					this,	&cImportDialog::onImport);
-	connect(ui->m_lpImportList->selectionModel(),	&QItemSelectionModel::selectionChanged,	this,	&cImportDialog::onThumbnailSelected);
+	connect(ui->m_lpPathSelect,							&QPushButton::clicked,					this,	&cImportDialog::onPathSelect);
+	connect(ui->m_lpRead,								&QPushButton::clicked,					this,	&cImportDialog::onRead);
+	connect(ui->m_lpImport,								&QPushButton::clicked,					this,	&cImportDialog::onImport);
+	connect(ui->m_lpThumbnailView->selectionModel(),	&QItemSelectionModel::selectionChanged,	this,	&cImportDialog::onThumbnailSelected);
+	connect(ui->m_lpFolderView->selectionModel(),		&QItemSelectionModel::selectionChanged,	this,	&cImportDialog::onFolderSelected);
 }
 
 void cImportDialog::onPathSelect()
@@ -103,23 +120,38 @@ void cImportDialog::onPathSelect()
 void cImportDialog::onThumbnailSelected(const QItemSelection& /*selection*/, const QItemSelection& /*previous*/)
 {
 	cToolBoxInfo*	lpToolBoxInfo	= ui->m_lpInfo;
-	qint32			iCount			= ui->m_lpImportList->selectionModel()->selectedRows().count();
-	ui->m_lpCount->setText(QString("count: %1, selected: %2").arg(m_lpImportListModel->rowCount()).arg(iCount));
+	qint32			iCount			= ui->m_lpThumbnailView->selectionModel()->selectedRows().count();
+	ui->m_lpCount->setText(QString("count: %1, selected: %2").arg(m_lpThumbnailViewModel->rowCount()).arg(iCount));
 
 	if(iCount)
 		ui->m_lpImport->setEnabled(true);
 	else
 		ui->m_lpImport->setEnabled(false);
 
-	if(ui->m_lpImportList->selectionModel()->selectedIndexes().count() != 1)
+	if(ui->m_lpThumbnailView->selectionModel()->selectedIndexes().count() != 1)
 	{
 		lpToolBoxInfo->setPicture(nullptr);
 		return;
 	}
 
-	QStandardItem*	lpItem			= m_lpImportListModel->itemFromIndex(ui->m_lpImportList->currentIndex());
-	cPicture*		lpPicture		= lpItem->data().value<cPicture*>();
+	QModelIndex		index	= ui->m_lpThumbnailView->selectionModel()->selectedIndexes()[0];
+	if(!index.isValid())
+		return;
+
+	cPicture*		lpPicture		= m_lpThumbnailFilterProxyModel->data(index, Qt::UserRole+1).value<cPicture*>();
 	lpToolBoxInfo->setPicture(lpPicture);
+}
+
+void cImportDialog::onFolderSelected(const QItemSelection& /*selection*/, const QItemSelection& /*previous*/)
+{
+	if(m_bLoading)
+		return;
+
+	QStandardItem*			lpItem		= m_lpFolderViewModel->itemFromIndex(ui->m_lpFolderView->currentIndex());
+	if(!lpItem)
+		return;
+
+	m_lpThumbnailFilterProxyModel->setFilterPath(lpItem->data(Qt::UserRole+2).toString());
 }
 
 void cImportDialog::accept()
@@ -146,7 +178,7 @@ void cImportDialog::savePosition()
 	QList<qint32>	sizes	= ui->m_lpSplitter->sizes();
 
 	for(int x = 0;x < sizes.count();x++)
-		settings.setValue(QString("import/splitter%1").arg(x+1), QVariant::fromValue(sizes[x]));
+		settings.setValue(QString("main/splitter%1").arg(x+1), QVariant::fromValue(sizes[x]));
 
 	settings.setValue("import/recursive", QVariant::fromValue(ui->m_lpRecursive->isChecked()));
 	settings.setValue("import/copy", QVariant::fromValue(ui->m_lpCopy->isChecked()));
@@ -156,21 +188,34 @@ void cImportDialog::savePosition()
 
 void cImportDialog::onRead()
 {
+	if(m_bLoading)
+		return;
+
 	if(ui->m_lpPath->text().isEmpty())
 	{
 		QMessageBox::critical(this, tr("Error"), tr("no path given!"));
 		return;
 	}
 
-	m_lpImportListModel->clear();
+	m_bLoading	= true;
+
+	m_lpFolderViewModel->clear();
+	m_lpThumbnailViewModel->clear();
 	ui->m_lpImport->setEnabled(false);
 
+	m_lpRootItem	= new QStandardItem("library");
+	m_lpFolderViewModel->appendRow(m_lpRootItem);
+
 	readDirectory(ui->m_lpPath->text(), ui->m_lpRecursive->isChecked());
+
+	ui->m_lpFolderView->expandAll();
+
+	m_bLoading	= false;
 }
 
 void cImportDialog::onImport()
 {
-	QModelIndexList	selected	= ui->m_lpImportList->selectionModel()->selectedRows();
+	QModelIndexList	selected	= ui->m_lpThumbnailView->selectionModel()->selectedRows();
 	QDir			dir;
 	QFile			file;
 
@@ -179,7 +224,7 @@ void cImportDialog::onImport()
 
 	for(int x = 0;x < selected.count();x++)
 	{
-		QStandardItem*	lpItem	= m_lpImportListModel->itemFromIndex(selected[x]);
+		QStandardItem*	lpItem	= m_lpThumbnailViewModel->itemFromIndex(selected[x]);
 
 		if(lpItem)
 		{
@@ -214,7 +259,7 @@ void cImportDialog::onImport()
 					ui->m_lpProgress->setValue(x);
 					qApp->processEvents();
 
-					lpPicture->setFilePath(szDestPath.left(szDestPath.length()-1));
+					lpPicture->setFilePath(szDestPath.left(szDestPath.length()-1).replace("\\", "/"));
 					lpPicture->toDB();
 
 					if(ui->m_lpMove->isChecked())
@@ -297,10 +342,14 @@ void cImportDialog::readDirectory(const QString& szPath, bool bRecursive)
 				QStandardItem*	lpItem		= new QStandardItem(icon, lpPicture->fileName());
 				lpItem->setTextAlignment(Qt::AlignCenter);
 				lpItem->setData(QVariant::fromValue(lpPicture));
-				m_lpImportListModel->appendRow(lpItem);
+				lpItem->setData(QVariant::fromValue(lpPicture->filePath()), Qt::UserRole+2);
+				m_lpThumbnailViewModel->appendRow(lpItem);
+
+				insertPath(lpPicture->filePath(), m_lpRootItem);
+
 				qApp->processEvents();
 
-				ui->m_lpCount->setText(QString("count: %1, selected: %2").arg(m_lpImportListModel->rowCount()).arg(ui->m_lpImportList->selectionModel()->selectedRows().count()));
+				ui->m_lpCount->setText(QString("count: %1, selected: %2").arg(m_lpThumbnailViewModel->rowCount()).arg(ui->m_lpThumbnailView->selectionModel()->selectedRows().count()));
 			}
 		}
 	}

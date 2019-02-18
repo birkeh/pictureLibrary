@@ -51,50 +51,50 @@ public:
 	~cMainWindow();
 
 private:
-	Ui::cMainWindow*		ui;										/**< TODO: describe */
-	QProgressBar*			m_lpProgressBar;						/**< TODO: describe */
-	QStandardItemModel*		m_lpFolderViewModel;					/**< TODO: describe */
-	QStandardItemModel*		m_lpThumbnailViewModel;					/**< TODO: describe */
-	cThumbnailFilterProxyModel*	m_lpThumbnailFilterProxyModel;		/**< TODO: describe */
-	QStandardItem*			m_lpRootItem;							/**< TODO: describe */
+	Ui::cMainWindow*			ui;										/**< TODO: describe */
+	QProgressBar*				m_lpProgressBar;						/**< TODO: describe */
+	QStandardItemModel*			m_lpFolderViewModel;					/**< TODO: describe */
+	QStandardItemModel*			m_lpThumbnailViewModel;					/**< TODO: describe */
+	cThumbnailFilterProxyModel*	m_lpThumbnailFilterProxyModel;			/**< TODO: describe */
+	QStandardItem*				m_lpRootItem;							/**< TODO: describe */
 
-	bool					m_bLoading;								/**< TODO: describe */
+	bool						m_bLoading;								/**< TODO: describe */
 
-	cSplashScreen*			m_lpSplashScreen;						/*!< Splash Screen */
-	cPictureLibrary			m_pictureLibrary;						/**< TODO: describe */
-	cPictureList			m_pictureList;							/**< TODO: describe */
+	cSplashScreen*				m_lpSplashScreen;						/*!< Splash Screen */
+	cPictureLibrary				m_pictureLibrary;						/**< TODO: describe */
+	cPictureList				m_pictureList;							/**< TODO: describe */
 
-	QMenu*					m_lpFileMenu;							/*!< Pointer to the file menu */
+	QMenu*						m_lpFileMenu;							/*!< Pointer to the file menu */
 
-	QToolBar*				m_lpFileToolBar;						/*!< Pointer to the file toolbar */
+	QToolBar*					m_lpFileToolBar;						/*!< Pointer to the file toolbar */
 
-	QAction*				m_lpFileNewAction;						/*!< TODO: describe */
-	QAction*				m_lpFileOpenAction;						/*!< TODO: describe */
-	QAction*				m_lpFileImportAction;					/*!< TODO: describe */
-	QAction*				m_lpFileQuitAction;						/*!< TODO: describe */
+	QAction*					m_lpFileNewAction;						/*!< TODO: describe */
+	QAction*					m_lpFileOpenAction;						/*!< TODO: describe */
+	QAction*					m_lpFileImportAction;					/*!< TODO: describe */
+	QAction*					m_lpFileQuitAction;						/*!< TODO: describe */
 
-	QAction*				m_lpSeparatorRecent;					/*!< TODO: describe */
-	enum { MaxRecentFiles = 5 };									/*!< TODO: describe */
-	QAction*				m_lpRecentFileAction[MaxRecentFiles];	/*!< TODO: describe */
+	QAction*					m_lpSeparatorRecent;					/*!< TODO: describe */
+	enum { MaxRecentFiles = 5 };										/*!< TODO: describe */
+	QAction*					m_lpRecentFileAction[MaxRecentFiles];	/*!< TODO: describe */
 
 	/*!
 	 \brief
 
 	 \fn initUI
 	*/
-	void					initUI();
+	void						initUI();
 	/*!
 	 \brief
 
 	 \fn createActions
 	*/
-	void					createActions();
+	void						createActions();
 	/*!
 	 \brief
 
 	 \fn createFileActions
 	*/
-	void					createFileActions();
+	void						createFileActions();
 
 	/*!
 	 \brief
@@ -102,35 +102,26 @@ private:
 	 \fn setCurrentFile
 	 \param szFileName
 	*/
-	void					setCurrentFile(const QString& szFileName);
+	void						setCurrentFile(const QString& szFileName);
 	/*!
 	 \brief
 
 	 \fn updateRecentFileActions
 	*/
-	void					updateRecentFileActions();
+	void						updateRecentFileActions();
 	/*!
 	 \brief
 
 	 \fn openRecentFile
 	*/
-	void					openRecentFile();
+	void						openRecentFile();
 
 	/*!
 	 \brief
 
 	 \fn loadData
 	*/
-	void					loadData(bool bProgressBar = false);
-
-	/*!
-	 \brief
-
-	 \param szPath
-	 \param lpItem
-	 \fn insertPath
-	*/
-	void					insertPath(QString szPath);
+	void						loadData(bool bProgressBar = false);
 
 protected:
 	/*!
@@ -139,7 +130,7 @@ protected:
 	 \fn closeEvent
 	 \param event
 	*/
-	void					closeEvent(QCloseEvent* event);
+	void						closeEvent(QCloseEvent* event);
 
 private slots:
 	/*!
@@ -148,32 +139,32 @@ private slots:
 	 \param previous
 	 \fn onThumbnailSelected
 	*/
-	void					onThumbnailSelected(const QItemSelection& selection, const QItemSelection& previous);
+	void						onThumbnailSelected(const QItemSelection& selection, const QItemSelection& previous);
 	/*!
 	 \brief
 	 \param selection
 	 \param previous
 	 \fn onThumbnailSelected
 	*/
-	void					onFolderSelected(const QItemSelection& selection, const QItemSelection& previous);
+	void						onFolderSelected(const QItemSelection& selection, const QItemSelection& previous);
 	/*!
 	 \brief
 
 	 \fn onFileNew
 	*/
-	void					onFileNew();
+	void						onFileNew();
 	/*!
 	 \brief
 
 	 \fn onFileOpen
 	*/
-	void					onFileOpen();
+	void						onFileOpen();
 	/*!
 	 \brief
 
 	 \fn onFileImport
 	*/
-	void					onFileImport();
+	void						onFileImport();
 };
 
 #endif // CMAINWINDOW_H

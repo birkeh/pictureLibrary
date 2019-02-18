@@ -41,6 +41,11 @@ public:
 	 */
 	void			setMessageRect(QRect rect);
 
+	/**
+	 * @brief
+	 *
+	 * @param max
+	 */
 	void			setMax(qint32 max);
 
 private:

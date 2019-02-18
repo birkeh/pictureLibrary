@@ -9,6 +9,7 @@
 
 #include <QImage>
 #include <QByteArray>
+#include <QStandardItem>
 
 #include <QDebug>
 
@@ -25,22 +26,22 @@
 	#define myDebug qDebug() << __FILE__ << "(" << __LINE__ << ") - " << __FUNCTION__ << ":"
 #endif
 
-/*!
- \brief
-
- \fn blob2Image
- \param ba
- \return QPixmap
-*/
+/**
+ * @brief
+ *
+ * @param ba
+ * @return QImage
+ */
 QImage			blob2Image(const QByteArray& ba);
-/*!
- \brief
-
- \fn image2Blob
- \param image
- \return QByteArray
-*/
+/**
+ * @brief
+ *
+ * @param image
+ * @return QByteArray
+ */
 QByteArray		image2Blob(const QImage& image);
+
+void			insertPath(QString szPath, QStandardItem* lpRootItem);
 
 
 #endif // COMMON_H

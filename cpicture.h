@@ -39,12 +39,15 @@ public:
 	/**
 	 * @brief
 	 *
-	 * @param db
-	 * @param iID
 	 * @return bool
 	 */
 	bool					toDB();
 
+	/**
+	 * @brief
+	 *
+	 * @param id
+	 */
 	void					setID(const qint32& id);
 	/**
 	 * @brief
@@ -428,6 +431,13 @@ public:
 	 */
 	explicit				cPictureList(QObject *parent = nullptr);
 
+	/**
+	 * @brief
+	 *
+	 * @param lpSplashScreen
+	 * @param lpProgressBar
+	 * @return bool
+	 */
 	bool					load(cSplashScreen* lpSplashScreen, QProgressBar* lpProgressBar = 0);
 
 	/**

@@ -471,7 +471,7 @@ bool cPictureList::load(cSplashScreen *lpSplashScreen, QProgressBar *lpProgressB
 	}
 
 	qint32	count	= 0;
-	qint32	step	= max/50;
+	qint32	step	= max/200;
 
 	while(query.next())
 	{
@@ -503,7 +503,7 @@ bool cPictureList::load(cSplashScreen *lpSplashScreen, QProgressBar *lpProgressB
 		lpPicture->setThumbnail(blob2Image(query.value("thumbnail").toByteArray()));
 
 		count++;
-		if(count % step)
+		if(!(count % step))
 		{
 			if(lpProgressBar)
 				lpProgressBar->setValue(count);
