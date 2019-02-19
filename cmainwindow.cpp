@@ -3,6 +3,8 @@
 #include "cmainwindow.h"
 #include "cimportdialog.h"
 
+#include "cdatetimepicker.h"
+
 #include "ui_cmainwindow.h"
 
 #include <QDebug>
@@ -93,9 +95,19 @@ void cMainWindow::createActions()
 	setToolButtonStyle(Qt::ToolButtonFollowStyle);
 
 	createFileActions();
+	createContextActions();
 
-	connect(ui->m_lpThumbnailView->selectionModel(),	&QItemSelectionModel::selectionChanged,				this,	&cMainWindow::onThumbnailSelected);
-	connect(ui->m_lpFolderView->selectionModel(),		&QItemSelectionModel::selectionChanged,				this,	&cMainWindow::onFolderSelected);
+	connect(ui->m_lpThumbnailView->selectionModel(),	&QItemSelectionModel::selectionChanged,	this,	&cMainWindow::onThumbnailSelected);
+	connect(ui->m_lpFolderView->selectionModel(),		&QItemSelectionModel::selectionChanged,	this,	&cMainWindow::onFolderSelected);
+
+	connect(ui->m_lpThumbnailView,						&QListView::customContextMenuRequested,	this,	&cMainWindow::onThumbnailViewContextMenu);
+}
+
+void cMainWindow::createContextActions()
+{
+	m_lpChangeDateAction	= new QAction(tr("change date"), this);
+	m_lpChangeDateAction->setStatusTip(tr("change the date of this picture"));
+	connect(m_lpChangeDateAction,	&QAction::triggered,	this,	&cMainWindow::onChangeDate);
 }
 
 void cMainWindow::loadData(bool bProgressBar)
@@ -399,5 +411,44 @@ void cMainWindow::onFileImport()
 		m_lpProgressBar->setVisible(true);
 		loadData(true);
 		m_lpProgressBar->setVisible(false);
+	}
+}
+
+void cMainWindow::onThumbnailViewContextMenu(const QPoint& pos)
+{
+	QMenu			menu(this);
+
+	if(ui->m_lpThumbnailView->selectionModel()->selectedIndexes().count() != 1)
+		return;
+
+	menu.addAction(m_lpChangeDateAction);
+	menu.exec(ui->m_lpThumbnailView->mapToGlobal(pos));
+}
+
+void cMainWindow::onChangeDate()
+{
+	if(ui->m_lpThumbnailView->selectionModel()->selectedIndexes().count() != 1)
+		return;
+
+	QModelIndex			index				= ui->m_lpThumbnailView->selectionModel()->selectedIndexes()[0];
+	if(!index.isValid())
+		return;
+
+	cPicture*			lpPicture			= m_lpThumbnailFilterProxyModel->data(index, Qt::UserRole+1).value<cPicture*>();
+
+	if(lpPicture->dateTime().isValid())
+	{
+		cDateTimePicker	dateTimePicker;
+		dateTimePicker.setWindowTitle("Date");
+		dateTimePicker.setText(QString(tr("Please set a new date for \"%1\".").arg(lpPicture->filePath() + QDir::separator() + lpPicture->fileName())));
+		dateTimePicker.setImage(lpPicture->thumbnail());
+
+		dateTimePicker.setDateTime(lpPicture->dateTime());
+		if(dateTimePicker.exec() == QDialog::Rejected)
+			return;
+
+		lpPicture->setDateTime(dateTimePicker.dateTime());
+
+		m_lpThumbnailFilterProxyModel->submit();
 	}
 }

@@ -77,6 +77,8 @@ private:
 	enum { MaxRecentFiles = 5 };										/*!< TODO: describe */
 	QAction*					m_lpRecentFileAction[MaxRecentFiles];	/*!< TODO: describe */
 
+	QAction*					m_lpChangeDateAction;					/*!< TODO: describe */
+
 	/*!
 	 \brief
 
@@ -95,6 +97,12 @@ private:
 	 \fn createFileActions
 	*/
 	void						createFileActions();
+	/*!
+	 \brief
+
+	 \fn createContextActions
+	*/
+	void						createContextActions();
 
 	/*!
 	 \brief
@@ -165,6 +173,21 @@ private slots:
 	 \fn onFileImport
 	*/
 	void						onFileImport();
+
+	/*!
+	 \brief
+
+	 \fn onThumbnailViewContextMenu
+	 \param pos
+	*/
+	void						onThumbnailViewContextMenu(const QPoint& pos);
+
+	/*!
+	 \brief
+
+	 \fn onChangeDate
+	*/
+	void						onChangeDate();
 };
 
 #endif // CMAINWINDOW_H

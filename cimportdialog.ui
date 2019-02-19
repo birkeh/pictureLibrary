@@ -148,11 +148,17 @@
         <enum>Qt::Horizontal</enum>
        </property>
        <widget class="QTreeView" name="m_lpFolderView">
+        <property name="contextMenuPolicy">
+         <enum>Qt::CustomContextMenu</enum>
+        </property>
         <attribute name="headerVisible">
          <bool>false</bool>
         </attribute>
        </widget>
        <widget class="QListView" name="m_lpThumbnailView">
+        <property name="contextMenuPolicy">
+         <enum>Qt::CustomContextMenu</enum>
+        </property>
         <property name="selectionMode">
          <enum>QAbstractItemView::ExtendedSelection</enum>
         </property>
