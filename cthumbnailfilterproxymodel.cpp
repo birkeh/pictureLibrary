@@ -1,3 +1,8 @@
+/*!
+ \file cthumbnailfilterproxymodel.cpp
+
+*/
+
 #include "cthumbnailfilterproxymodel.h"
 
 

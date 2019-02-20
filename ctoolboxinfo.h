@@ -1,3 +1,8 @@
+/*!
+ \file ctoolboxinfo.h
+
+*/
+
 #ifndef CTOOLBOXINFO_H
 #define CTOOLBOXINFO_H
 
@@ -11,35 +16,39 @@ namespace Ui {
 class cToolBoxInfo;
 }
 
-/**
- * @brief
- *
- */
+/*!
+ \brief
+
+ \class cToolBoxInfo ctoolboxinfo.h "ctoolboxinfo.h"
+*/
 class cToolBoxInfo : public QWidget
 {
 	Q_OBJECT
 
 public:
-	/**
-	 * @brief
-	 *
-	 * @param parent
-	 */
+	/*!
+	 \brief
+
+	 \fn cToolBoxInfo
+	 \param parent
+	*/
 	explicit cToolBoxInfo(QWidget *parent = nullptr);
-	/**
-	 * @brief
-	 *
-	 */
+	/*!
+	 \brief
+
+	 \fn ~cToolBoxInfo
+	*/
 	~cToolBoxInfo();
 
-	/**
-	 * @brief
-	 *
-	 * @param lpPicture
-	 */
+	/*!
+	 \brief
+
+	 \fn setPicture
+	 \param lpPicture
+	*/
 	void				setPicture(cPicture* lpPicture);
 private:
-	Ui::cToolBoxInfo*	ui; /**< TODO: describe */
+	Ui::cToolBoxInfo*	ui;					/*!< TODO: describe */
 };
 
 #endif // CTOOLBOXINFO_H

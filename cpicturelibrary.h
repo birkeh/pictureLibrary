@@ -1,3 +1,8 @@
+/*!
+ \file cpicturelibrary.h
+
+*/
+
 #ifndef CPICTURELIBRARY_H
 #define CPICTURELIBRARY_H
 
@@ -7,19 +12,21 @@
 #include <QSqlDatabase>
 
 
-/**
- * @brief
- *
- */
+/*!
+ \brief
+
+ \class cPictureLibrary cpicturelibrary.h "cpicturelibrary.h"
+*/
 class cPictureLibrary : public QObject
 {
 	Q_OBJECT
 public:
-	/**
-	 * @brief
-	 *
-	 * @param parent
-	 */
+	/*!
+	 \brief
+
+	 \fn cPictureLibrary
+	 \param parent
+	*/
 	explicit cPictureLibrary(QObject *parent = nullptr);
 
 	/*!
@@ -40,7 +47,7 @@ public:
 	/*!
 	 \brief
 
-	 \fn isValie
+	 \fn isValid
 	 \return bool
 	*/
 	bool						isValid();
@@ -58,8 +65,8 @@ signals:
 public slots:
 
 private:
-	QSqlDatabase				m_db;						/*!< TODO: describe */
-	QString						m_szRootPath;				/*!< TODO: describe */
+	QSqlDatabase				m_db;					/*!< TODO: describe */
+	QString						m_szRootPath;			/*!< TODO: describe */
 	/*!
 	 \brief
 
@@ -79,6 +86,7 @@ private:
 	 \brief
 
 	 \fn updateDatabase2
+	 \param version
 	 \return bool
 	*/
 	bool						updateDatabase2(qint32 version);
@@ -86,6 +94,7 @@ private:
 	 \brief
 
 	 \fn updateDatabase3
+	 \param version
 	 \return bool
 	*/
 	bool						updateDatabase3(qint32 version);
@@ -93,6 +102,7 @@ private:
 	 \brief
 
 	 \fn updateDatabase4
+	 \param version
 	 \return bool
 	*/
 	bool						updateDatabase4(qint32 version);

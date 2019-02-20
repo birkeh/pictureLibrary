@@ -1,3 +1,8 @@
+/*!
+ \file ctoolboxinfo.cpp
+
+*/
+
 #include "ctoolboxinfo.h"
 #include "ui_ctoolboxinfo.h"
 

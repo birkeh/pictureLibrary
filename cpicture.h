@@ -1,3 +1,8 @@
+/*!
+ \file cpicture.h
+
+*/
+
 #ifndef CPICTURE_H
 #define CPICTURE_H
 
@@ -14,371 +19,428 @@
 #include <QMetaType>
 
 
-/**
- * @brief
- *
- */
+/*!
+ \brief
+
+ \class cPicture cpicture.h "cpicture.h"
+*/
 class cPicture : public QObject
 {
 	Q_OBJECT
 public:
-	/**
-	 * @brief
-	 *
-	 * @param parent
-	 */
+	/*!
+	 \brief
+
+	 \fn cPicture
+	 \param iID
+	 \param parent
+	*/
 	explicit cPicture(qint32 iID = -1, QObject *parent = nullptr);
 
-	/**
-	 * @brief
-	 *
-	 * @param szFileName
-	 * @return bool
-	 */
+	/*!
+	 \brief
+
+	 \fn fromFile
+	 \param szFileName
+	 \return bool
+	*/
 	bool					fromFile(const QString& szFileName);
-	/**
-	 * @brief
-	 *
-	 * @return bool
-	 */
+	/*!
+	 \brief
+
+	 \fn toDB
+	 \return bool
+	*/
 	bool					toDB();
 
-	/**
-	 * @brief
-	 *
-	 * @param id
-	 */
+	/*!
+	 \brief
+
+	 \fn setID
+	 \param id
+	*/
 	void					setID(const qint32& id);
-	/**
-	 * @brief
-	 *
-	 * @return qint32
-	 */
+	/*!
+	 \brief
+
+	 \fn id
+	 \return qint32
+	*/
 	qint32					id();
 
-	/**
-	 * @brief
-	 *
-	 * @param imageWidth
-	 */
+	/*!
+	 \brief
+
+	 \fn setImageWidth
+	 \param imageWidth
+	*/
 	void					setImageWidth(const qint32& imageWidth);
-	/**
-	 * @brief
-	 *
-	 * @return qint32
-	 */
+	/*!
+	 \brief
+
+	 \fn imageWidth
+	 \return qint32
+	*/
 	qint32					imageWidth();
 
-	/**
-	 * @brief
-	 *
-	 * @param imageHeight
-	 */
+	/*!
+	 \brief
+
+	 \fn setImageHeight
+	 \param imageHeight
+	*/
 	void					setImageHeight(const qint32& imageHeight);
-	/**
-	 * @brief
-	 *
-	 * @return qint32
-	 */
+	/*!
+	 \brief
+
+	 \fn imageHeight
+	 \return qint32
+	*/
 	qint32					imageHeight();
 
-	/**
-	 * @brief
-	 *
-	 * @param imageOrientation
-	 */
+	/*!
+	 \brief
+
+	 \fn setImageOrientation
+	 \param imageOrientation
+	*/
 	void					setImageOrientation(const qint16& imageOrientation);
-	/**
-	 * @brief
-	 *
-	 * @return qint16
-	 */
+	/*!
+	 \brief
+
+	 \fn imageOrientation
+	 \return qint16
+	*/
 	qint16					imageOrientation();
 
-	/**
-	 * @brief
-	 *
-	 * @param cameraMake
-	 */
+	/*!
+	 \brief
+
+	 \fn setCameraMake
+	 \param cameraMake
+	*/
 	void					setCameraMake(const QString& cameraMake);
-	/**
-	 * @brief
-	 *
-	 * @return QString
-	 */
+	/*!
+	 \brief
+
+	 \fn cameraMake
+	 \return QString
+	*/
 	QString					cameraMake();
 
-	/**
-	 * @brief
-	 *
-	 * @param cameraModel
-	 */
+	/*!
+	 \brief
+
+	 \fn setCameraModel
+	 \param cameraModel
+	*/
 	void					setCameraModel(const QString& cameraModel);
-	/**
-	 * @brief
-	 *
-	 * @return QString
-	 */
+	/*!
+	 \brief
+
+	 \fn cameraModel
+	 \return QString
+	*/
 	QString					cameraModel();
 
-	/**
-	 * @brief
-	 *
-	 * @param dateTime
-	 */
+	/*!
+	 \brief
+
+	 \fn setDateTime
+	 \param dateTime
+	*/
 	void					setDateTime(const QDateTime& dateTime);
-	/**
-	 * @brief
-	 *
-	 * @return QDateTime
-	 */
+	/*!
+	 \brief
+
+	 \fn dateTime
+	 \return QDateTime
+	*/
 	QDateTime				dateTime();
 
-	/**
-	 * @brief
-	 *
-	 * @param fNumber
-	 */
+	/*!
+	 \brief
+
+	 \fn setFNumber
+	 \param fNumber
+	*/
 	void					setFNumber(const QString& fNumber);
-	/**
-	 * @brief
-	 *
-	 * @return QString
-	 */
+	/*!
+	 \brief
+
+	 \fn fNumber
+	 \return QString
+	*/
 	QString					fNumber();
 
-	/**
-	 * @brief
-	 *
-	 * @param iso
-	 */
+	/*!
+	 \brief
+
+	 \fn setISO
+	 \param iso
+	*/
 	void					setISO(const qint32& iso);
-	/**
-	 * @brief
-	 *
-	 * @return qint32
-	 */
+	/*!
+	 \brief
+
+	 \fn iso
+	 \return qint32
+	*/
 	qint32					iso();
 
-	/**
-	 * @brief
-	 *
-	 * @param flash
-	 */
+	/*!
+	 \brief
+
+	 \fn setFlash
+	 \param flash
+	*/
 	void					setFlash(const QString& flash);
-	/**
-	 * @brief
-	 *
-	 * @return QString
-	 */
+	/*!
+	 \brief
+
+	 \fn flash
+	 \return QString
+	*/
 	QString					flash();
 
-	/**
-	 * @brief
-	 *
-	 * @param flashID
-	 */
+	/*!
+	 \brief
+
+	 \fn setFlashID
+	 \param flashID
+	*/
 	void					setFlashID(const qint32& flashID);
-	/**
-	 * @brief
-	 *
-	 * @return qint32
-	 */
+	/*!
+	 \brief
+
+	 \fn flashID
+	 \return qint32
+	*/
 	qint32					flashID();
 
-	/**
-	 * @brief
-	 *
-	 * @param focalLength
-	 */
+	/*!
+	 \brief
+
+	 \fn setFocalLength
+	 \param focalLength
+	*/
 	void					setFocalLength(const qreal& focalLength);
-	/**
-	 * @brief
-	 *
-	 * @return qreal
-	 */
+	/*!
+	 \brief
+
+	 \fn focalLength
+	 \return qreal
+	*/
 	qreal					focalLength();
 
-	/**
-	 * @brief
-	 *
-	 * @param lensMake
-	 */
+	/*!
+	 \brief
+
+	 \fn setLensMake
+	 \param lensMake
+	*/
 	void					setLensMake(const QString& lensMake);
-	/**
-	 * @brief
-	 *
-	 * @return QString
-	 */
+	/*!
+	 \brief
+
+	 \fn lensMake
+	 \return QString
+	*/
 	QString					lensMake();
 
-	/**
-	 * @brief
-	 *
-	 * @param lensModel
-	 */
+	/*!
+	 \brief
+
+	 \fn setLensModel
+	 \param lensModel
+	*/
 	void					setLensModel(const QString& lensModel);
-	/**
-	 * @brief
-	 *
-	 * @return QString
-	 */
+	/*!
+	 \brief
+
+	 \fn lensModel
+	 \return QString
+	*/
 	QString					lensModel();
 
-	/**
-	 * @brief
-	 *
-	 * @param exposureTime
-	 */
+	/*!
+	 \brief
+
+	 \fn setExposureTime
+	 \param exposureTime
+	*/
 	void					setExposureTime(const QString& exposureTime);
-	/**
-	 * @brief
-	 *
-	 * @return QString
-	 */
+	/*!
+	 \brief
+
+	 \fn exposureTime
+	 \return QString
+	*/
 	QString					exposureTime();
 
-	/**
-	 * @brief
-	 *
-	 * @param exposureBias
-	 */
+	/*!
+	 \brief
+
+	 \fn setExposureBias
+	 \param exposureBias
+	*/
 	void					setExposureBias(const qint32& exposureBias);
-	/**
-	 * @brief
-	 *
-	 * @return qint32
-	 */
+	/*!
+	 \brief
+
+	 \fn exposureBias
+	 \return qint32
+	*/
 	qint32					exposureBias();
 
-	/**
-	 * @brief
-	 *
-	 * @param exifVersion
-	 */
+	/*!
+	 \brief
+
+	 \fn setExifVersion
+	 \param exifVersion
+	*/
 	void					setExifVersion(const QString& exifVersion);
-	/**
-	 * @brief
-	 *
-	 * @return QString
-	 */
+	/*!
+	 \brief
+
+	 \fn exifVersion
+	 \return QString
+	*/
 	QString					exifVersion();
 
-	/**
-	 * @brief
-	 *
-	 * @param dateTimeOriginal
-	 */
+	/*!
+	 \brief
+
+	 \fn setDateTimeOriginal
+	 \param dateTimeOriginal
+	*/
 	void					setDateTimeOriginal(const QDateTime& dateTimeOriginal);
-	/**
-	 * @brief
-	 *
-	 * @return QDateTime
-	 */
+	/*!
+	 \brief
+
+	 \fn dateTimeOriginal
+	 \return QDateTime
+	*/
 	QDateTime				dateTimeOriginal();
 
-	/**
-	 * @brief
-	 *
-	 * @param dateTimeDigitized
-	 */
+	/*!
+	 \brief
+
+	 \fn setDateTimeDigitized
+	 \param dateTimeDigitized
+	*/
 	void					setDateTimeDigitized(const QDateTime& dateTimeDigitized);
-	/**
-	 * @brief
-	 *
-	 * @return QDateTime
-	 */
+	/*!
+	 \brief
+
+	 \fn dateTimeDigitized
+	 \return QDateTime
+	*/
 	QDateTime				dateTimeDigitized();
 
-	/**
-	 * @brief
-	 *
-	 * @param whiteBalance
-	 */
+	/*!
+	 \brief
+
+	 \fn setWhiteBalance
+	 \param whiteBalance
+	*/
 	void					setWhiteBalance(const qint32& whiteBalance);
-	/**
-	 * @brief
-	 *
-	 * @return qint32
-	 */
+	/*!
+	 \brief
+
+	 \fn whiteBalance
+	 \return qint32
+	*/
 	qint32					whiteBalance();
 
-	/**
-	 * @brief
-	 *
-	 * @param focalLength35
-	 */
+	/*!
+	 \brief
+
+	 \fn setFocalLength35
+	 \param focalLength35
+	*/
 	void					setFocalLength35(const qreal& focalLength35);
-	/**
-	 * @brief
-	 *
-	 * @return qreal
-	 */
+	/*!
+	 \brief
+
+	 \fn focalLength35
+	 \return qreal
+	*/
 	qreal					focalLength35();
 
-	/**
-	 * @brief
-	 *
-	 * @param gps
-	 */
+	/*!
+	 \brief
+
+	 \fn setGPS
+	 \param gps
+	*/
 	void					setGPS(const QString& gps);
-	/**
-	 * @brief
-	 *
-	 * @return QString
-	 */
+	/*!
+	 \brief
+
+	 \fn gps
+	 \return QString
+	*/
 	QString					gps();
 
-	/**
-	 * @brief
-	 *
-	 * @param fileName
-	 */
+	/*!
+	 \brief
+
+	 \fn setFileName
+	 \param fileName
+	*/
 	void					setFileName(const QString& fileName);
-	/**
-	 * @brief
-	 *
-	 * @return QString
-	 */
+	/*!
+	 \brief
+
+	 \fn fileName
+	 \return QString
+	*/
 	QString					fileName();
 
-	/**
-	 * @brief
-	 *
-	 * @param filePath
-	 */
+	/*!
+	 \brief
+
+	 \fn setFilePath
+	 \param filePath
+	*/
 	void					setFilePath(const QString& filePath);
-	/**
-	 * @brief
-	 *
-	 * @return QString
-	 */
+	/*!
+	 \brief
+
+	 \fn filePath
+	 \return QString
+	*/
 	QString					filePath();
 
-	/**
-	 * @brief
-	 *
-	 * @param fileSize
-	 */
+	/*!
+	 \brief
+
+	 \fn setFileSize
+	 \param fileSize
+	*/
 	void					setFileSize(const qint64& fileSize);
-	/**
-	 * @brief
-	 *
-	 * @return qint64
-	 */
+	/*!
+	 \brief
+
+	 \fn fileSize
+	 \return qint64
+	*/
 	qint64					fileSize();
 
-	/**
-	 * @brief
-	 *
-	 * @param thumbnail
-	 */
+	/*!
+	 \brief
+
+	 \fn setThumbnail
+	 \param thumbnail
+	*/
 	void					setThumbnail(const QImage& thumbnail);
-	/**
-	 * @brief
-	 *
-	 * @return QImage
-	 */
+	/*!
+	 \brief
+
+	 \fn thumbnail
+	 \return QImage
+	*/
 	QImage					thumbnail();
 
 signals:
@@ -386,73 +448,79 @@ signals:
 public slots:
 
 private:
-	qint32					m_iID;					/**< TODO: describe */
-	QString					m_szFileName;			/**< TODO: describe */
-	QString					m_szFilePath;			/**< TODO: describe */
-	qint64					m_iFileSize;			/**< TODO: describe */
-	QImage					m_thumbnail;			/**< TODO: describe */
-	qint32					m_imageWidth;			/**< TODO: describe */
-	qint32					m_imageHeight;			/**< TODO: describe */
-	qint16					m_imageOrientation;		/**< TODO: describe */
-	QString					m_cameraMake;			/**< TODO: describe */
-	QString					m_cameraModel;			/**< TODO: describe */
-	QDateTime				m_dateTime;				/**< TODO: describe */
-	QString					m_fNumber;				/**< TODO: describe */
-	qint32					m_iso;					/**< TODO: describe */
-	QString					m_flash;				/**< TODO: describe */
-	qint32					m_flashID;				/**< TODO: describe */
-	qreal					m_focalLength;			/**< TODO: describe */
-	QString					m_lensMake;				/**< TODO: describe */
-	QString					m_lensModel;			/**< TODO: describe */
-	QString					m_exposureTime;			/**< TODO: describe */
-	qint32					m_exposureBias;			/**< TODO: describe */
-	QString					m_exifVersion;			/**< TODO: describe */
-	QDateTime				m_dateTimeOriginal;		/**< TODO: describe */
-	QDateTime				m_dateTimeDigitized;	/**< TODO: describe */
-	qint32					m_whiteBalance;			/**< TODO: describe */
-	qreal					m_focalLength35;		/**< TODO: describe */
-	QString					m_gps;					/**< TODO: describe */
+	qint32					m_iID;					/*!< TODO: describe */
+	QString					m_szFileName;			/*!< TODO: describe */
+	QString					m_szFilePath;			/*!< TODO: describe */
+	qint64					m_iFileSize;			/*!< TODO: describe */
+	QImage					m_thumbnail;			/*!< TODO: describe */
+	qint32					m_imageWidth;			/*!< TODO: describe */
+	qint32					m_imageHeight;			/*!< TODO: describe */
+	qint16					m_imageOrientation;		/*!< TODO: describe */
+	QString					m_cameraMake;			/*!< TODO: describe */
+	QString					m_cameraModel;			/*!< TODO: describe */
+	QDateTime				m_dateTime;				/*!< TODO: describe */
+	QString					m_fNumber;				/*!< TODO: describe */
+	qint32					m_iso;					/*!< TODO: describe */
+	QString					m_flash;				/*!< TODO: describe */
+	qint32					m_flashID;				/*!< TODO: describe */
+	qreal					m_focalLength;			/*!< TODO: describe */
+	QString					m_lensMake;				/*!< TODO: describe */
+	QString					m_lensModel;			/*!< TODO: describe */
+	QString					m_exposureTime;			/*!< TODO: describe */
+	qint32					m_exposureBias;			/*!< TODO: describe */
+	QString					m_exifVersion;			/*!< TODO: describe */
+	QDateTime				m_dateTimeOriginal;		/*!< TODO: describe */
+	QDateTime				m_dateTimeDigitized;	/*!< TODO: describe */
+	qint32					m_whiteBalance;			/*!< TODO: describe */
+	qreal					m_focalLength35;		/*!< TODO: describe */
+	QString					m_gps;					/*!< TODO: describe */
 };
 
 Q_DECLARE_METATYPE(cPicture*)
 
-/**
- * @brief
- *
- */
+/*!
+ \brief
+
+ \class cPictureList cpicture.h "cpicture.h"
+*/
 class cPictureList : public QObject, public QList<cPicture*>
 {
 	Q_OBJECT
 public:
-	/**
-	 * @brief
-	 *
-	 * @param parent
-	 */
+	/*!
+	 \brief
+
+	 \fn cPictureList
+	 \param parent
+	*/
 	explicit				cPictureList(QObject *parent = nullptr);
 
-	/**
-	 * @brief
-	 *
-	 * @param lpSplashScreen
-	 * @param lpProgressBar
-	 * @return bool
-	 */
-	bool					load(cSplashScreen* lpSplashScreen, QProgressBar* lpProgressBar = 0);
+	/*!
+	 \brief
 
-	/**
-	 * @brief
-	 *
-	 * @param iID
-	 * @return cPicture
-	 */
+	 \fn load
+	 \param lpSplashScreen
+	 \param lpProgressBar
+	 \return bool
+	*/
+	bool					load(cSplashScreen* lpSplashScreen, QProgressBar* lpProgressBar = nullptr);
+
+	/*!
+	 \brief
+
+	 \fn add
+	 \param iID
+	 \param bNoCheck
+	 \return cPicture
+	*/
 	cPicture*				add(qint32 iID = -1, bool bNoCheck = false);
-	/**
-	 * @brief
-	 *
-	 * @param iID
-	 * @return cPicture
-	 */
+	/*!
+	 \brief
+
+	 \fn find
+	 \param iID
+	 \return cPicture
+	*/
 	cPicture*				find(qint32 iID);
 
 signals:

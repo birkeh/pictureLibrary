@@ -1,3 +1,8 @@
+/*!
+ \file cdatetimepicker.h
+
+*/
+
 #ifndef CDATETIMEPICKER_H
 #define CDATETIMEPICKER_H
 
@@ -10,53 +15,60 @@ namespace Ui {
 class cDateTimePicker;
 }
 
-/**
- * @brief
- *
- */
+/*!
+ \brief
+
+ \class cDateTimePicker cdatetimepicker.h "cdatetimepicker.h"
+*/
 class cDateTimePicker : public QDialog
 {
 	Q_OBJECT
 
 public:
-	/**
-	 * @brief
-	 *
-	 * @param parent
-	 */
+	/*!
+	 \brief
+
+	 \fn cDateTimePicker
+	 \param parent
+	*/
 	explicit cDateTimePicker(QWidget *parent = nullptr);
-	/**
-	 * @brief
-	 *
-	 */
+	/*!
+	 \brief
+
+	 \fn ~cDateTimePicker
+	*/
 	~cDateTimePicker();
 
-	/**
-	 * @brief
-	 *
-	 * @param szText
-	 */
+	/*!
+	 \brief
+
+	 \fn setText
+	 \param szText
+	*/
 	void					setText(const QString& szText);
-	/**
-	 * @brief
-	 *
-	 * @param image
-	 */
+	/*!
+	 \brief
+
+	 \fn setImage
+	 \param image
+	*/
 	void					setImage(const QImage& image);
-	/**
-	 * @brief
-	 *
-	 * @param dateTime
-	 */
+	/*!
+	 \brief
+
+	 \fn setDateTime
+	 \param dateTime
+	*/
 	void					setDateTime(const QDateTime dateTime);
-	/**
-	 * @brief
-	 *
-	 * @return QDateTime
-	 */
+	/*!
+	 \brief
+
+	 \fn dateTime
+	 \return QDateTime
+	*/
 	QDateTime				dateTime();
 private:
-	Ui::cDateTimePicker*	ui; /**< TODO: describe */
+	Ui::cDateTimePicker*	ui;					/*!< TODO: describe */
 };
 
 #endif // CDATETIMEPICKER_H

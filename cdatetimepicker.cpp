@@ -1,3 +1,8 @@
+/*!
+ \file cdatetimepicker.cpp
+
+*/
+
 #include "cdatetimepicker.h"
 #include "ui_cdatetimepicker.h"
 

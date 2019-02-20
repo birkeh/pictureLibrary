@@ -26,21 +26,30 @@
 	#define myDebug qDebug() << __FILE__ << "(" << __LINE__ << ") - " << __FUNCTION__ << ":"
 #endif
 
-/**
- * @brief
- *
- * @param ba
- * @return QImage
- */
+/*!
+ \brief
+
+ \fn blob2Image
+ \param ba
+ \return QImage
+*/
 QImage			blob2Image(const QByteArray& ba);
-/**
- * @brief
- *
- * @param image
- * @return QByteArray
- */
+/*!
+ \brief
+
+ \fn image2Blob
+ \param image
+ \return QByteArray
+*/
 QByteArray		image2Blob(const QImage& image);
 
+/*!
+ \brief
+
+ \fn insertPath
+ \param szPath
+ \param lpRootItem
+*/
 void			insertPath(QString szPath, QStandardItem* lpRootItem);
 
 

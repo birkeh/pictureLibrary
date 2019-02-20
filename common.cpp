@@ -3,6 +3,11 @@
 
 */
 
+/*!
+ \file common.cpp
+
+*/
+
 #include "common.h"
 
 #include <QBuffer>

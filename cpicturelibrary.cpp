@@ -1,3 +1,8 @@
+/*!
+ \file cpicturelibrary.cpp
+
+*/
+
 #include "cpicturelibrary.h"
 #include "common.h"
 

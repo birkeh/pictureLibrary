@@ -1,3 +1,8 @@
+/*!
+ \file cexif.h
+
+*/
+
 #ifndef CEXIF_H
 #define CEXIF_H
 
@@ -12,152 +17,167 @@
 #include <QSqlDatabase>
 
 
-/**
- * @brief
- *
- */
+/*!
+ \brief
+
+ \class cEXIFCompression cexif.h "cexif.h"
+*/
 class cEXIFCompression
 {
 public:
 	cEXIFCompression(const qint32& iID, const QString& szCompression);
 
-	qint32		m_iID;				/**< TODO: describe */
-	QString		m_szCompression;	/**< TODO: describe */
+	qint32		m_iID;								/*!< TODO: describe */
+	QString		m_szCompression;					/*!< TODO: describe */
 };
 
 Q_DECLARE_METATYPE(cEXIFCompression*)
 
-/**
- * @brief
- *
- */
+/*!
+ \brief
+
+ \class cEXIFCompressionList cexif.h "cexif.h"
+*/
 class cEXIFCompressionList : public QList<cEXIFCompression*>
 {
 public:
 	cEXIFCompressionList();
 
-	/**
-	 * @brief
-	 *
-	 * @param iID
-	 * @param szCompression
-	 * @return cEXIFCompression
-	 */
+	/*!
+	 \brief
+
+	 \fn add
+	 \param iID
+	 \param szCompression
+	 \return cEXIFCompression
+	*/
 	cEXIFCompression*	add(const qint32& iID, const QString& szCompression);
-	/**
-	 * @brief
-	 *
-	 * @param iID
-	 * @return cEXIFCompression
-	 */
+	/*!
+	 \brief
+
+	 \fn find
+	 \param iID
+	 \return cEXIFCompression
+	*/
 	cEXIFCompression*	find(const qint32& iID);
 
-	/**
-	 * @brief
-	 *
-	 * @param iID
-	 * @return QString
-	 */
+	/*!
+	 \brief
+
+	 \fn compression
+	 \param iID
+	 \return QString
+	*/
 	QString				compression(const qint32& iID);
 };
 
 Q_DECLARE_METATYPE(cEXIFCompressionList)
 
-/**
- * @brief
- *
- */
+/*!
+ \brief
+
+ \class cEXIFLightSource cexif.h "cexif.h"
+*/
 class cEXIFLightSource
 {
 public:
 	cEXIFLightSource(const qint32& iID, const QString& szLightSource);
 
-	qint32		m_iID;				/**< TODO: describe */
-	QString		m_szLightSource;	/**< TODO: describe */
+	qint32		m_iID;					/*!< TODO: describe */
+	QString		m_szLightSource;		/*!< TODO: describe */
 };
 
 Q_DECLARE_METATYPE(cEXIFLightSource*)
 
-/**
- * @brief
- *
- */
+/*!
+ \brief
+
+ \class cEXIFLightSourceList cexif.h "cexif.h"
+*/
 class cEXIFLightSourceList : public QList<cEXIFLightSource*>
 {
 public:
 	cEXIFLightSourceList();
 
-	/**
-	 * @brief
-	 *
-	 * @param iID
-	 * @param szLightSource
-	 * @return cEXIFLightSource
-	 */
+	/*!
+	 \brief
+
+	 \fn add
+	 \param iID
+	 \param szLightSource
+	 \return cEXIFLightSource
+	*/
 	cEXIFLightSource*	add(const qint32& iID, const QString& szLightSource);
-	/**
-	 * @brief
-	 *
-	 * @param iID
-	 * @return cEXIFLightSource
-	 */
+	/*!
+	 \brief
+
+	 \fn find
+	 \param iID
+	 \return cEXIFLightSource
+	*/
 	cEXIFLightSource*	find(const qint32& iID);
 
-	/**
-	 * @brief
-	 *
-	 * @param iID
-	 * @return QString
-	 */
+	/*!
+	 \brief
+
+	 \fn lightSource
+	 \param iID
+	 \return QString
+	*/
 	QString			lightSource(const qint32& iID);
 };
 
-/**
- * @brief
- *
- */
+/*!
+ \brief
+
+ \class cEXIFFlash cexif.h "cexif.h"
+*/
 class cEXIFFlash
 {
 public:
 	cEXIFFlash(const qint32& iID, const QString& szFlash);
 
-	qint32		m_iID;		/**< TODO: describe */
-	QString		m_szFlash;	/**< TODO: describe */
+	qint32		m_iID;					/*!< TODO: describe */
+	QString		m_szFlash;				/*!< TODO: describe */
 };
 
 Q_DECLARE_METATYPE(cEXIFFlash*)
 
-/**
- * @brief
- *
- */
+/*!
+ \brief
+
+ \class cEXIFFlashList cexif.h "cexif.h"
+*/
 class cEXIFFlashList : public QList<cEXIFFlash*>
 {
 public:
 	cEXIFFlashList();
 
-	/**
-	 * @brief
-	 *
-	 * @param iID
-	 * @param szFlash
-	 * @return cEXIFFlash
-	 */
+	/*!
+	 \brief
+
+	 \fn add
+	 \param iID
+	 \param szFlash
+	 \return cEXIFFlash
+	*/
 	cEXIFFlash*		add(const qint32& iID, const QString& szFlash);
-	/**
-	 * @brief
-	 *
-	 * @param iID
-	 * @return cEXIFFlash
-	 */
+	/*!
+	 \brief
+
+	 \fn find
+	 \param iID
+	 \return cEXIFFlash
+	*/
 	cEXIFFlash*		find(const qint32& iID);
 
-	/**
-	 * @brief
-	 *
-	 * @param iID
-	 * @return QString
-	 */
+	/*!
+	 \brief
+
+	 \fn flash
+	 \param iID
+	 \return QString
+	*/
 	QString			flash(const qint32& iID);
 };
 
@@ -170,321 +190,351 @@ class cEXIFTag
 public:
 	cEXIFTag(const qint32& iTAGID, const QString& szTAGName, const qint32& iIFDID, const qint32& iTypeID, const QString& szDescription);
 
-	qint32		m_iTAGID;			/**< TODO: describe */
-	QString		m_szTAGName;		/**< TODO: describe */
-	qint32		m_iIFDID;			/**< TODO: describe */
-	qint32		m_iTypeID;			/**< TODO: describe */
-	QString		m_szDescription;	/**< TODO: describe */
+	qint32		m_iTAGID;					/*!< TODO: describe */
+	QString		m_szTAGName;				/*!< TODO: describe */
+	qint32		m_iIFDID;					/*!< TODO: describe */
+	qint32		m_iTypeID;					/*!< TODO: describe */
+	QString		m_szDescription;			/*!< TODO: describe */
 };
 
 Q_DECLARE_METATYPE(cEXIFTag*)
 
-/**
- * @brief
- *
- */
+/*!
+ \brief
+
+ \class cEXIFTagList cexif.h "cexif.h"
+*/
 class cEXIFTagList : public QList<cEXIFTag*>
 {
 public:
-	/**
-	 * @brief
-	 *
-	 */
 	cEXIFTagList();
 
-	/**
-	 * @brief
-	 *
-	 * @param iTAGID
-	 * @param szTAGName
-	 * @param iIFDID
-	 * @param iTypeID
-	 * @param szDescription
-	 * @return cEXIFTag
-	 */
+	/*!
+	 \brief
+
+	 \fn add
+	 \param iTAGID
+	 \param szTAGName
+	 \param iIFDID
+	 \param iTypeID
+	 \param szDescription
+	 \return cEXIFTag
+	*/
 	cEXIFTag*		add(const qint32& iTAGID, const QString& szTAGName, const qint32& iIFDID, const qint32& iTypeID, const QString& szDescription);
-	/**
-	 * @brief
-	 *
-	 * @param iTAGID
-	 * @param iIFDID
-	 * @return cEXIFTag
-	 */
+	/*!
+	 \brief
+
+	 \fn find
+	 \param iTAGID
+	 \param iIFDID
+	 \return cEXIFTag
+	*/
 	cEXIFTag*		find(const qint32& iTAGID, const qint32& iIFDID);
 };
 
-/**
- * @brief
- *
- */
+/*!
+ \brief
+
+*/
 class cEXIFValue
 {
 public:
-	/**
-	 * @brief
-	 *
-	 * @param lpEXIFTag
-	 */
 	cEXIFValue(cEXIFTag* lpEXIFTag);
 
-	/**
-	 * @brief
-	 *
-	 * @return cEXIFTag
-	 */
+	/*!
+	 \brief
+
+	 \fn exifTag
+	 \return cEXIFTag
+	*/
 	cEXIFTag*		exifTag();
-	/**
-	 * @brief
-	 *
-	 * @param szValue
-	 * @param iTypeId
-	 * @param iCount
-	 */
+	/*!
+	 \brief
+
+	 \fn setValue
+	 \param szValue
+	 \param iTypeId
+	 \param iCount
+	*/
 	void			setValue(const QString& szValue, qint32 iTypeId, qint32 iCount = 1);
-	/**
-	 * @brief
-	 *
-	 * @return QVariant
-	 */
+	/*!
+	 \brief
+
+	 \fn value
+	 \return QVariant
+	*/
 	QVariant		value();
-	/**
-	 * @brief
-	 *
-	 * @return QList<QVariant>
-	 */
+	/*!
+	 \brief
+
+	 \fn valueList
+	 \return QList<QVariant>
+	*/
 	QList<QVariant>	valueList();
 
 private:
-	cEXIFTag*		m_lpEXIFTag;	/**< TODO: describe */
-	QList<QVariant>	m_valueList;	/**< TODO: describe */
+	cEXIFTag*		m_lpEXIFTag;				/*!< TODO: describe */
+	QList<QVariant>	m_valueList;				/*!< TODO: describe */
 
-	/**
-	 * @brief
-	 *
-	 * @param szValue
-	 * @param iTypeId
-	 * @return QVariant
-	 */
+	/*!
+	 \brief
+
+	 \fn convertValue
+	 \param szValue
+	 \param iTypeId
+	 \return QVariant
+	*/
 	QVariant		convertValue(const QString& szValue, qint32 iTypeId);
 };
 
 Q_DECLARE_METATYPE(cEXIFValue*)
 
-/**
- * @brief
- *
- */
+/*!
+ \brief
+
+ \class cEXIFValueList cexif.h "cexif.h"
+*/
 class cEXIFValueList : public QList<cEXIFValue*>
 {
 public:
 	cEXIFValueList();
 
-	/**
-	 * @brief
-	 *
-	 * @param lpEXIFTag
-	 * @return cEXIFValue
-	 */
+	/*!
+	 \brief
+
+	 \fn add
+	 \param lpEXIFTag
+	 \return cEXIFValue
+	*/
 	cEXIFValue*		add(cEXIFTag* lpEXIFTag);
-	/**
-	 * @brief
-	 *
-	 * @param lpEXIFTag
-	 * @return cEXIFValue
-	 */
+	/*!
+	 \brief
+
+	 \fn find
+	 \param lpEXIFTag
+	 \return cEXIFValue
+	*/
 	cEXIFValue*		find(cEXIFTag* lpEXIFTag);
 };
 
-/**
- * @brief
- *
- */
+/*!
+ \brief
+
+ \class cEXIF cexif.h "cexif.h"
+*/
 class cEXIF
 {
 public:
 	cEXIF();
 
-	/**
-	 * @brief
-	 *
-	 * @param szFileName
-	 * @return bool
-	 */
+	/*!
+	 \brief
+
+	 \fn fromFile
+	 \param szFileName
+	 \return bool
+	*/
 	bool					fromFile(const QString& szFileName);
 
-	/**
-	 * @brief
-	 *
-	 * @return qint32
-	 */
+	/*!
+	 \brief
+
+	 \fn imageWidth
+	 \return qint32
+	*/
 	qint32					imageWidth();
-	/**
-	 * @brief
-	 *
-	 * @return qint32
-	 */
+	/*!
+	 \brief
+
+	 \fn imageHeight
+	 \return qint32
+	*/
 	qint32					imageHeight();
-	/**
-	 * @brief
-	 *
-	 * @return qint16
-	 */
+	/*!
+	 \brief
+
+	 \fn imageOrientation
+	 \return qint16
+	*/
 	qint16					imageOrientation();
-	/**
-	 * @brief
-	 *
-	 * @return QString
-	 */
+	/*!
+	 \brief
+
+	 \fn cameraMake
+	 \return QString
+	*/
 	QString					cameraMake();
-	/**
-	 * @brief
-	 *
-	 * @return QString
-	 */
+	/*!
+	 \brief
+
+	 \fn cameraModel
+	 \return QString
+	*/
 	QString					cameraModel();
-	/**
-	 * @brief
-	 *
-	 * @return QDateTime
-	 */
+	/*!
+	 \brief
+
+	 \fn dateTime
+	 \return QDateTime
+	*/
 	QDateTime				dateTime();
-	/**
-	 * @brief
-	 *
-	 * @return QString
-	 */
+	/*!
+	 \brief
+
+	 \fn fNumber
+	 \return QString
+	*/
 	QString					fNumber();
-	/**
-	 * @brief
-	 *
-	 * @return qint32
-	 */
+	/*!
+	 \brief
+
+	 \fn iso
+	 \return qint32
+	*/
 	qint32					iso();
-	/**
-	 * @brief
-	 *
-	 * @return QString
-	 */
+	/*!
+	 \brief
+
+	 \fn flash
+	 \return QString
+	*/
 	QString					flash();
-	/**
-	 * @brief
-	 *
-	 * @return qint32
-	 */
+	/*!
+	 \brief
+
+	 \fn flashID
+	 \return qint32
+	*/
 	qint32					flashID();
-	/**
-	 * @brief
-	 *
-	 * @return qreal
-	 */
+	/*!
+	 \brief
+
+	 \fn focalLength
+	 \return qreal
+	*/
 	qreal					focalLength();
-	/**
-	 * @brief
-	 *
-	 * @return QString
-	 */
+	/*!
+	 \brief
+
+	 \fn lensMake
+	 \return QString
+	*/
 	QString					lensMake();
-	/**
-	 * @brief
-	 *
-	 * @return QString
-	 */
+	/*!
+	 \brief
+
+	 \fn lensModel
+	 \return QString
+	*/
 	QString					lensModel();
-	/**
-	 * @brief
-	 *
-	 * @return QString
-	 */
+	/*!
+	 \brief
+
+	 \fn exposureTime
+	 \return QString
+	*/
 	QString					exposureTime();
-	/**
-	 * @brief
-	 *
-	 * @return qint32
-	 */
+	/*!
+	 \brief
+
+	 \fn exposureBias
+	 \return qint32
+	*/
 	qint32					exposureBias();
-	/**
-	 * @brief
-	 *
-	 * @return QString
-	 */
+	/*!
+	 \brief
+
+	 \fn exifVersion
+	 \return QString
+	*/
 	QString					exifVersion();
-	/**
-	 * @brief
-	 *
-	 * @return QDateTime
-	 */
+	/*!
+	 \brief
+
+	 \fn dateTimeOriginal
+	 \return QDateTime
+	*/
 	QDateTime				dateTimeOriginal();
-	/**
-	 * @brief
-	 *
-	 * @return QDateTime
-	 */
+	/*!
+	 \brief
+
+	 \fn dateTimeDigitized
+	 \return QDateTime
+	*/
 	QDateTime				dateTimeDigitized();
-	/**
-	 * @brief
-	 *
-	 * @return qint32
-	 */
+	/*!
+	 \brief
+
+	 \fn whiteBalance
+	 \return qint32
+	*/
 	qint32					whiteBalance();
-	/**
-	 * @brief
-	 *
-	 * @return qreal
-	 */
+	/*!
+	 \brief
+
+	 \fn focalLength35
+	 \return qreal
+	*/
 	qreal					focalLength35();
-	/**
-	 * @brief
-	 *
-	 * @return QString
-	 */
+	/*!
+	 \brief
+
+	 \fn gps
+	 \return QString
+	*/
 	QString					gps();
-	/**
-	 * @brief
-	 *
-	 * @return QString
-	 */
+	/*!
+	 \brief
+
+	 \fn fileName
+	 \return QString
+	*/
 	QString					fileName();
-	/**
-	 * @brief
-	 *
-	 * @return QList<QImage>
-	 */
+	/*!
+	 \brief
+
+	 \fn previewList
+	 \return QList<QImage>
+	*/
 	QList<QImage>			previewList();
-	/**
-	 * @brief
-	 *
-	 * @return QImage
-	 */
+	/*!
+	 \brief
+
+	 \fn thumbnail
+	 \return QImage
+	*/
 	QImage					thumbnail();
 
 private:
-	cEXIFValueList			m_exifValueList;						/**< TODO: describe */
-	qint32					m_iWidth;								/**< TODO: describe */
-	qint32					m_iHeight;								/**< TODO: describe */
-	QString					m_szFileName;							/**< TODO: describe */
-	QList<QImage>			m_previewList;							/**< TODO: describe */
-	QImage					m_thumbnail;							/**< TODO: describe */
+	cEXIFValueList			m_exifValueList;				/*!< TODO: describe */
+	qint32					m_iWidth;						/*!< TODO: describe */
+	qint32					m_iHeight;						/*!< TODO: describe */
+	QString					m_szFileName;					/*!< TODO: describe */
+	QList<QImage>			m_previewList;					/*!< TODO: describe */
+	QImage					m_thumbnail;					/*!< TODO: describe */
 
-	cEXIFCompressionList	m_exifCompressionList;					/**< TODO: describe */
-	cEXIFLightSourceList	m_exifLightSourceList;					/**< TODO: describe */
-	cEXIFFlashList			m_exifFlashList;						/**< TODO: describe */
-	cEXIFTagList			m_exifTagList;							/**< TODO: describe */
+	cEXIFCompressionList	m_exifCompressionList;			/*!< TODO: describe */
+	cEXIFLightSourceList	m_exifLightSourceList;			/*!< TODO: describe */
+	cEXIFFlashList			m_exifFlashList;				/*!< TODO: describe */
+	cEXIFTagList			m_exifTagList;					/*!< TODO: describe */
 
-	/**
-	 * @brief
-	 *
-	 * @param iTAGID
-	 * @param iIFDID
-	 * @return QVariant
-	 */
+	/*!
+	 \brief
+
+	 \fn getTag
+	 \param iTAGID
+	 \param iIFDID
+	 \return QVariant
+	*/
 	QVariant				getTag(qint32 iTAGID, qint32 iIFDID);
-	/**
-	 * @brief
-	 *
-	 * @param iTAGID
-	 * @param iIFDID
-	 * @return QList<QVariant>
-	 */
+	/*!
+	 \brief
+
+	 \fn getTagList
+	 \param iTAGID
+	 \param iIFDID
+	 \return QList<QVariant>
+	*/
 	QList<QVariant>			getTagList(qint32 iTAGID, qint32 iIFDID);
 };
 

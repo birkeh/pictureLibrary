@@ -1,3 +1,8 @@
+/*!
+ \file cmainwindow.h
+
+*/
+
 #ifndef CMAINWINDOW_H
 #define CMAINWINDOW_H
 
@@ -28,45 +33,48 @@ class cMainWindow;
 
 Q_DECLARE_METATYPE(QList<QStandardItem*>*)
 
-/**
- * @brief
- *
- */
+/*!
+ \brief
+
+ \class cMainWindow cmainwindow.h "cmainwindow.h"
+*/
 class cMainWindow : public QMainWindow
 {
 	Q_OBJECT
 
 public:
-	/**
-	 * @brief
-	 *
-	 * @param lpSplashScreen
-	 * @param parent
-	 */
+	/*!
+	 \brief
+
+	 \fn cMainWindow
+	 \param lpSplashScreen
+	 \param parent
+	*/
 	explicit cMainWindow(cSplashScreen* lpSplashScreen, QWidget *parent = nullptr);
-	/**
-	 * @brief
-	 *
-	 */
+	/*!
+	 \brief
+
+	 \fn ~cMainWindow
+	*/
 	~cMainWindow();
 
 private:
-	Ui::cMainWindow*			ui;										/**< TODO: describe */
-	QProgressBar*				m_lpProgressBar;						/**< TODO: describe */
-	QStandardItemModel*			m_lpFolderViewModel;					/**< TODO: describe */
-	QStandardItemModel*			m_lpThumbnailViewModel;					/**< TODO: describe */
-	cThumbnailFilterProxyModel*	m_lpThumbnailFilterProxyModel;			/**< TODO: describe */
-	QStandardItem*				m_lpRootItem;							/**< TODO: describe */
+	Ui::cMainWindow*			ui;										/*!< TODO: describe */
+	QProgressBar*				m_lpProgressBar;						/*!< TODO: describe */
+	QStandardItemModel*			m_lpFolderViewModel;					/*!< TODO: describe */
+	QStandardItemModel*			m_lpThumbnailViewModel;					/*!< TODO: describe */
+	cThumbnailFilterProxyModel*	m_lpThumbnailFilterProxyModel;			/*!< TODO: describe */
+	QStandardItem*				m_lpRootItem;							/*!< TODO: describe */
 
-	bool						m_bLoading;								/**< TODO: describe */
+	bool						m_bLoading;								/*!< TODO: describe */
 
-	cSplashScreen*				m_lpSplashScreen;						/*!< Splash Screen */
-	cPictureLibrary				m_pictureLibrary;						/**< TODO: describe */
-	cPictureList				m_pictureList;							/**< TODO: describe */
+	cSplashScreen*				m_lpSplashScreen;						/*!< TODO: describe */
+	cPictureLibrary				m_pictureLibrary;						/*!< TODO: describe */
+	cPictureList				m_pictureList;							/*!< TODO: describe */
 
-	QMenu*						m_lpFileMenu;							/*!< Pointer to the file menu */
+	QMenu*						m_lpFileMenu;							/*!< TODO: describe */
 
-	QToolBar*					m_lpFileToolBar;						/*!< Pointer to the file toolbar */
+	QToolBar*					m_lpFileToolBar;						/*!< TODO: describe */
 
 	QAction*					m_lpFileNewAction;						/*!< TODO: describe */
 	QAction*					m_lpFileOpenAction;						/*!< TODO: describe */
@@ -74,10 +82,10 @@ private:
 	QAction*					m_lpFileQuitAction;						/*!< TODO: describe */
 
 	QAction*					m_lpSeparatorRecent;					/*!< TODO: describe */
-	enum { MaxRecentFiles = 5 };										/*!< TODO: describe */
+	enum						{ MaxRecentFiles = 5 };					/*!< TODO: describe */
 	QAction*					m_lpRecentFileAction[MaxRecentFiles];	/*!< TODO: describe */
 
-	QAction*					m_lpChangeDateAction;					/*!< TODO: describe */
+	QAction*					m_lpChangeDateAction; /*!< TODO: describe */
 
 	/*!
 	 \brief
@@ -85,23 +93,8 @@ private:
 	 \fn initUI
 	*/
 	void						initUI();
-	/*!
-	 \brief
-
-	 \fn createActions
-	*/
-	void						createActions();
-	/*!
-	 \brief
-
-	 \fn createFileActions
-	*/
+	void						createActions(); /*!< TODO: describe */
 	void						createFileActions();
-	/*!
-	 \brief
-
-	 \fn createContextActions
-	*/
 	void						createContextActions();
 
 	/*!
@@ -128,6 +121,7 @@ private:
 	 \brief
 
 	 \fn loadData
+	 \param bProgressBar
 	*/
 	void						loadData(bool bProgressBar = false);
 
@@ -143,16 +137,18 @@ protected:
 private slots:
 	/*!
 	 \brief
+
+	 \fn onThumbnailSelected
 	 \param selection
 	 \param previous
-	 \fn onThumbnailSelected
 	*/
 	void						onThumbnailSelected(const QItemSelection& selection, const QItemSelection& previous);
 	/*!
 	 \brief
+
+	 \fn onFolderSelected
 	 \param selection
 	 \param previous
-	 \fn onThumbnailSelected
 	*/
 	void						onFolderSelected(const QItemSelection& selection, const QItemSelection& previous);
 	/*!

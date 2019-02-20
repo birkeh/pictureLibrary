@@ -1,3 +1,8 @@
+/*!
+ \file cimage.cpp
+
+*/
+
 #include "cimage.h"
 
 #include "libraw/libraw.h"

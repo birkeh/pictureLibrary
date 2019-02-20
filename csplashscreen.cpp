@@ -1,3 +1,8 @@
+/*!
+ \file csplashscreen.cpp
+
+*/
+
 #include "csplashscreen.h"
 #include "common.h"
 

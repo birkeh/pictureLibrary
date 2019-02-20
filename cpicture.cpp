@@ -1,3 +1,8 @@
+/*!
+ \file cpicture.cpp
+
+*/
+
 #include "common.h"
 
 #include "cexif.h"

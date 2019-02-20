@@ -1,3 +1,8 @@
+/*!
+ \file cimportdialog.cpp
+
+*/
+
 #include "cimportdialog.h"
 #include "ui_cimportdialog.h"
 
