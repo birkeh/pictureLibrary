@@ -10,6 +10,7 @@
 #include <QImage>
 #include <QByteArray>
 #include <QStandardItem>
+#include <QTreeView>
 
 #include <QDebug>
 
@@ -49,8 +50,9 @@ QByteArray		image2Blob(const QImage& image);
  \fn insertPath
  \param szPath
  \param lpRootItem
+ \return QStandardItem
 */
-void			insertPath(QString szPath, QStandardItem* lpRootItem);
+QStandardItem* insertPath(QString szPath, QStandardItem* lpRootItem);
 
 
 #endif // COMMON_H

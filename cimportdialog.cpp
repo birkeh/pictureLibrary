@@ -62,7 +62,7 @@ void cImportDialog::initUI()
 	ui->m_lpFolderView->setModel(m_lpFolderViewModel);
 
 	m_lpThumbnailViewModel	= new QStandardItemModel;
-	m_lpThumbnailFilterProxyModel	= new cThumbnailFilterProxyModel(this);
+	m_lpThumbnailFilterProxyModel	= new cThumbnailSortFilterProxyModel(this);
 	ui->m_lpThumbnailView->setModel(m_lpThumbnailFilterProxyModel);
 	m_lpThumbnailFilterProxyModel->setSourceModel(m_lpThumbnailViewModel);
 

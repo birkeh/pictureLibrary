@@ -12,7 +12,7 @@
 #include <QCloseEvent>
 #include <QItemSelection>
 
-#include "cthumbnailfilterproxymodel.h"
+#include "cthumbnailsortfilterproxymodel.h"
 
 
 namespace Ui {
@@ -93,7 +93,7 @@ private:
 	QString						m_szRootPath;					/*!< TODO: describe */
 	QStandardItemModel*			m_lpFolderViewModel;			/*!< TODO: describe */
 	QStandardItemModel*			m_lpThumbnailViewModel;			/*!< TODO: describe */
-	cThumbnailFilterProxyModel*	m_lpThumbnailFilterProxyModel;	/*!< TODO: describe */
+	cThumbnailSortFilterProxyModel*	m_lpThumbnailFilterProxyModel;	/*!< TODO: describe */
 	bool						m_bLoading;						/*!< TODO: describe */
 	bool						m_bHasImported;					/*!< TODO: describe */
 	QStandardItem*				m_lpRootItem;					/*!< TODO: describe */

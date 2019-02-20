@@ -38,16 +38,16 @@ QByteArray image2Blob(const QImage &image)
 	return(ba);
 }
 
-void insertPath(QString szPath, QStandardItem* lpRootItem)
+QStandardItem* insertPath(QString szPath, QStandardItem* lpRootItem)
 {
 	if(!lpRootItem)
-		return;
+		return(0);
 
-	QString			szPath1		= szPath.replace("\\", "/");
-	QStringList		szPathList	= szPath1.split("/");
-	QStandardItem*	lpCurRoot	= lpRootItem;
-	int				path;
-	bool			bFound;
+	QString				szPath1		= szPath.replace("\\", "/");
+	QStringList			szPathList	= szPath1.split("/");
+	QStandardItem*		lpCurRoot	= lpRootItem;
+	int					path;
+	bool				bFound;
 
 	szPath1	= "";
 
@@ -79,6 +79,9 @@ void insertPath(QString szPath, QStandardItem* lpRootItem)
 		lpCurRoot->appendRow(lpNewItem);
 		lpNewItem->setData(QVariant::fromValue(szPath1), Qt::UserRole+2);
 		szPath1.append(QDir::separator());
+
 		lpCurRoot	= lpNewItem;
 	}
+
+	return(lpCurRoot);
 }

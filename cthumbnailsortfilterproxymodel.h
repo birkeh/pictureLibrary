@@ -15,12 +15,12 @@
 
  \class cThumbnailFilterProxyModel cthumbnailfilterproxymodel.h "cthumbnailfilterproxymodel.h"
 */
-class cThumbnailFilterProxyModel : public QSortFilterProxyModel
+class cThumbnailSortFilterProxyModel : public QSortFilterProxyModel
 {
 	Q_OBJECT
 
 public:
-	cThumbnailFilterProxyModel(QObject* parent = nullptr);
+	cThumbnailSortFilterProxyModel(QObject* parent = nullptr);
 
 	/*!
 	 \brief

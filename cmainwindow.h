@@ -11,7 +11,8 @@
 #include "csplashscreen.h"
 #include "cpicture.h"
 
-#include "cthumbnailfilterproxymodel.h"
+#include "cfoldersortfilterproxymodel.h"
+#include "cthumbnailsortfilterproxymodel.h"
 
 #include "ctoolboxinfo.h"
 
@@ -59,43 +60,44 @@ public:
 	~cMainWindow();
 
 private:
-	Ui::cMainWindow*			ui;										/*!< TODO: describe */
-	QProgressBar*				m_lpProgressBar;						/*!< TODO: describe */
-	QStandardItemModel*			m_lpFolderViewModel;					/*!< TODO: describe */
-	QStandardItemModel*			m_lpThumbnailViewModel;					/*!< TODO: describe */
-	cThumbnailFilterProxyModel*	m_lpThumbnailFilterProxyModel;			/*!< TODO: describe */
-	QStandardItem*				m_lpRootItem;							/*!< TODO: describe */
+	Ui::cMainWindow*				ui;										/*!< TODO: describe */
+	QProgressBar*					m_lpProgressBar;						/*!< TODO: describe */
+	QStandardItemModel*				m_lpFolderViewModel;					/*!< TODO: describe */
+	cFolderSortFilterProxyModel*	m_lpFolderSortFilterProxyModel;			/*!< TODO: describe */
+	QStandardItemModel*				m_lpThumbnailViewModel;					/*!< TODO: describe */
+	cThumbnailSortFilterProxyModel*	m_lpThumbnailSortFilterProxyModel;		/*!< TODO: describe */
+	QStandardItem*					m_lpRootItem;							/*!< TODO: describe */
 
-	bool						m_bLoading;								/*!< TODO: describe */
+	bool							m_bLoading;								/*!< TODO: describe */
 
-	cSplashScreen*				m_lpSplashScreen;						/*!< TODO: describe */
-	cPictureLibrary				m_pictureLibrary;						/*!< TODO: describe */
-	cPictureList				m_pictureList;							/*!< TODO: describe */
+	cSplashScreen*					m_lpSplashScreen;						/*!< TODO: describe */
+	cPictureLibrary					m_pictureLibrary;						/*!< TODO: describe */
+	cPictureList					m_pictureList;							/*!< TODO: describe */
 
-	QMenu*						m_lpFileMenu;							/*!< TODO: describe */
+	QMenu*							m_lpFileMenu;							/*!< TODO: describe */
 
-	QToolBar*					m_lpFileToolBar;						/*!< TODO: describe */
+	QToolBar*						m_lpFileToolBar;						/*!< TODO: describe */
 
-	QAction*					m_lpFileNewAction;						/*!< TODO: describe */
-	QAction*					m_lpFileOpenAction;						/*!< TODO: describe */
-	QAction*					m_lpFileImportAction;					/*!< TODO: describe */
-	QAction*					m_lpFileQuitAction;						/*!< TODO: describe */
+	QAction*						m_lpFileNewAction;						/*!< TODO: describe */
+	QAction*						m_lpFileOpenAction;						/*!< TODO: describe */
+	QAction*						m_lpFileImportAction;					/*!< TODO: describe */
+	QAction*						m_lpFileQuitAction;						/*!< TODO: describe */
 
-	QAction*					m_lpSeparatorRecent;					/*!< TODO: describe */
-	enum						{ MaxRecentFiles = 5 };					/*!< TODO: describe */
-	QAction*					m_lpRecentFileAction[MaxRecentFiles];	/*!< TODO: describe */
+	QAction*						m_lpSeparatorRecent;					/*!< TODO: describe */
+	enum							{ MaxRecentFiles = 5 };					/*!< TODO: describe */
+	QAction*						m_lpRecentFileAction[MaxRecentFiles];	/*!< TODO: describe */
 
-	QAction*					m_lpChangeDateAction; /*!< TODO: describe */
+	QAction*						m_lpChangeDateAction; /*!< TODO: describe */
 
 	/*!
 	 \brief
 
 	 \fn initUI
 	*/
-	void						initUI();
-	void						createActions(); /*!< TODO: describe */
-	void						createFileActions();
-	void						createContextActions();
+	void							initUI();
+	void							createActions(); /*!< TODO: describe */
+	void							createFileActions();
+	void							createContextActions();
 
 	/*!
 	 \brief
@@ -103,19 +105,19 @@ private:
 	 \fn setCurrentFile
 	 \param szFileName
 	*/
-	void						setCurrentFile(const QString& szFileName);
+	void							setCurrentFile(const QString& szFileName);
 	/*!
 	 \brief
 
 	 \fn updateRecentFileActions
 	*/
-	void						updateRecentFileActions();
+	void							updateRecentFileActions();
 	/*!
 	 \brief
 
 	 \fn openRecentFile
 	*/
-	void						openRecentFile();
+	void							openRecentFile();
 
 	/*!
 	 \brief
@@ -123,7 +125,7 @@ private:
 	 \fn loadData
 	 \param bProgressBar
 	*/
-	void						loadData(bool bProgressBar = false);
+	void							loadData(bool bProgressBar = false);
 
 protected:
 	/*!
@@ -132,7 +134,7 @@ protected:
 	 \fn closeEvent
 	 \param event
 	*/
-	void						closeEvent(QCloseEvent* event);
+	void							closeEvent(QCloseEvent* event);
 
 private slots:
 	/*!
@@ -142,7 +144,7 @@ private slots:
 	 \param selection
 	 \param previous
 	*/
-	void						onThumbnailSelected(const QItemSelection& selection, const QItemSelection& previous);
+	void							onThumbnailSelected(const QItemSelection& selection, const QItemSelection& previous);
 	/*!
 	 \brief
 
@@ -150,25 +152,25 @@ private slots:
 	 \param selection
 	 \param previous
 	*/
-	void						onFolderSelected(const QItemSelection& selection, const QItemSelection& previous);
+	void							onFolderSelected(const QItemSelection& selection, const QItemSelection& previous);
 	/*!
 	 \brief
 
 	 \fn onFileNew
 	*/
-	void						onFileNew();
+	void							onFileNew();
 	/*!
 	 \brief
 
 	 \fn onFileOpen
 	*/
-	void						onFileOpen();
+	void							onFileOpen();
 	/*!
 	 \brief
 
 	 \fn onFileImport
 	*/
-	void						onFileImport();
+	void							onFileImport();
 
 	/*!
 	 \brief
@@ -176,14 +178,14 @@ private slots:
 	 \fn onThumbnailViewContextMenu
 	 \param pos
 	*/
-	void						onThumbnailViewContextMenu(const QPoint& pos);
+	void							onThumbnailViewContextMenu(const QPoint& pos);
 
 	/*!
 	 \brief
 
 	 \fn onChangeDate
 	*/
-	void						onChangeDate();
+	void							onChangeDate();
 };
 
 #endif // CMAINWINDOW_H

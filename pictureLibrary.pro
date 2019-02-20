@@ -64,7 +64,8 @@ SOURCES += \
     ctoolboxinfo.cpp \
     cimportdialog.cpp \
     cdatetimepicker.cpp \
-    cthumbnailfilterproxymodel.cpp
+    cthumbnailsortfilterproxymodel.cpp \
+    cfoldersortfilterproxymodel.cpp
 
 HEADERS += \
         cmainwindow.h \
@@ -77,7 +78,8 @@ HEADERS += \
     ctoolboxinfo.h \
     cimportdialog.h \
     cdatetimepicker.h \
-    cthumbnailfilterproxymodel.h
+    cthumbnailsortfilterproxymodel.h \
+    cfoldersortfilterproxymodel.h
 
 FORMS += \
         cmainwindow.ui \

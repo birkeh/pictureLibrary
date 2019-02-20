@@ -30,8 +30,9 @@ cMainWindow::cMainWindow(cSplashScreen* lpSplashScreen, QWidget *parent) :
 	ui(new Ui::cMainWindow),
 	m_lpProgressBar(nullptr),
 	m_lpFolderViewModel(nullptr),
+	m_lpFolderSortFilterProxyModel(nullptr),
 	m_lpThumbnailViewModel(nullptr),
-	m_lpThumbnailFilterProxyModel(nullptr),
+	m_lpThumbnailSortFilterProxyModel(nullptr),
 	m_lpRootItem(nullptr),
 	m_bLoading(false),
 	m_lpSplashScreen(lpSplashScreen),
@@ -50,7 +51,8 @@ cMainWindow::~cMainWindow()
 {
 	delete m_lpThumbnailViewModel;
 	delete m_lpFolderViewModel;
-	delete m_lpThumbnailFilterProxyModel;
+	delete m_lpThumbnailSortFilterProxyModel;
+	delete m_lpFolderSortFilterProxyModel;
 
 	delete ui;
 }
@@ -60,12 +62,14 @@ void cMainWindow::initUI()
 	ui->setupUi(this);
 
 	m_lpFolderViewModel	= new QStandardItemModel;
-	ui->m_lpFolderView->setModel(m_lpFolderViewModel);
+	m_lpFolderSortFilterProxyModel	= new cFolderSortFilterProxyModel(this);
+	ui->m_lpFolderView->setModel(m_lpFolderSortFilterProxyModel);
+	m_lpFolderSortFilterProxyModel->setSourceModel(m_lpFolderViewModel);
 
 	m_lpThumbnailViewModel	= new QStandardItemModel;
-	m_lpThumbnailFilterProxyModel	= new cThumbnailFilterProxyModel(this);
-	ui->m_lpThumbnailView->setModel(m_lpThumbnailFilterProxyModel);
-	m_lpThumbnailFilterProxyModel->setSourceModel(m_lpThumbnailViewModel);
+	m_lpThumbnailSortFilterProxyModel	= new cThumbnailSortFilterProxyModel(this);
+	ui->m_lpThumbnailView->setModel(m_lpThumbnailSortFilterProxyModel);
+	m_lpThumbnailSortFilterProxyModel->setSourceModel(m_lpThumbnailViewModel);
 
 	m_lpProgressBar			= new QProgressBar(this);
 	m_lpProgressBar->setVisible(false);
@@ -232,7 +236,7 @@ void cMainWindow::onThumbnailSelected(const QItemSelection& /*selection*/, const
 		if(!index.isValid())
 			return;
 
-		cPicture*		lpPicture	= m_lpThumbnailFilterProxyModel->data(index, Qt::UserRole+1).value<cPicture*>();
+		cPicture*		lpPicture	= m_lpThumbnailSortFilterProxyModel->data(index, Qt::UserRole+1).value<cPicture*>();
 		lpToolBoxInfo->setPicture(lpPicture);
 	}
 }
@@ -242,11 +246,11 @@ void cMainWindow::onFolderSelected(const QItemSelection& /*selection*/, const QI
 	if(m_bLoading)
 		return;
 
-	QStandardItem*			lpItem		= m_lpFolderViewModel->itemFromIndex(ui->m_lpFolderView->currentIndex());
-	if(!lpItem)
+	QModelIndex		index	= ui->m_lpFolderView->selectionModel()->selectedIndexes()[0];
+	if(!index.isValid())
 		return;
 
-	m_lpThumbnailFilterProxyModel->setFilterPath(lpItem->data(Qt::UserRole+2).toString());
+	m_lpThumbnailSortFilterProxyModel->setFilterPath(m_lpFolderSortFilterProxyModel->data(index, Qt::UserRole+2).toString());
 }
 
 void cMainWindow::setCurrentFile(const QString& fileName)
@@ -439,7 +443,7 @@ void cMainWindow::onChangeDate()
 	if(!index.isValid())
 		return;
 
-	cPicture*			lpPicture			= m_lpThumbnailFilterProxyModel->data(index, Qt::UserRole+1).value<cPicture*>();
+	cPicture*			lpPicture			= m_lpThumbnailSortFilterProxyModel->data(index, Qt::UserRole+1).value<cPicture*>();
 
 	if(lpPicture->dateTime().isValid())
 	{
@@ -453,7 +457,13 @@ void cMainWindow::onChangeDate()
 			return;
 
 		lpPicture->setDateTime(dateTimePicker.dateTime());
+		QString			szPath	= QString::number(lpPicture->dateTime().date().year()) + "/" + lpPicture->dateTime().date().toString("yyyy-MM-dd");
+		lpPicture->setFilePath(szPath);
+		m_lpThumbnailSortFilterProxyModel->setData(index, QVariant::fromValue(szPath), Qt::UserRole+2);
 
-		m_lpThumbnailFilterProxyModel->submit();
+		insertPath(szPath, m_lpRootItem);
+		m_lpFolderSortFilterProxyModel->sort(0);
+
+		m_lpThumbnailSortFilterProxyModel->invalidate();
 	}
 }

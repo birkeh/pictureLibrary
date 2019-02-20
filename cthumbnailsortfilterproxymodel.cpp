@@ -3,15 +3,15 @@
 
 */
 
-#include "cthumbnailfilterproxymodel.h"
+#include "cthumbnailsortfilterproxymodel.h"
 
 
-cThumbnailFilterProxyModel::cThumbnailFilterProxyModel(QObject* parent) :
+cThumbnailSortFilterProxyModel::cThumbnailSortFilterProxyModel(QObject* parent) :
 	QSortFilterProxyModel (parent)
 {
 }
 
-void cThumbnailFilterProxyModel::setFilterPath(const QString &szPath)
+void cThumbnailSortFilterProxyModel::setFilterPath(const QString &szPath)
 {
 	m_szPath	= szPath;
 	m_szPath.replace("\\", "/");
@@ -19,12 +19,12 @@ void cThumbnailFilterProxyModel::setFilterPath(const QString &szPath)
 	invalidateFilter();
 }
 
-QString cThumbnailFilterProxyModel::filterPath()
+QString cThumbnailSortFilterProxyModel::filterPath()
 {
 	return(m_szPath);
 }
 
-bool cThumbnailFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
+bool cThumbnailSortFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
 {
 	QModelIndex	index0	= sourceModel()->index(sourceRow, 0, sourceParent);
 	QString		tmp		= sourceModel()->data(index0, Qt::UserRole+2).toString();
