@@ -86,7 +86,7 @@ bool cPicture::toDB()
 
 	if(m_iID != -1)
 	{
-		query.prepare("SELECT id FROM file WHERE id=:id;");
+		query.prepare("SELECT id FROM picture WHERE id=:id;");
 		query.bindValue(":id", m_iID);
 		if(!query.exec())
 		{
@@ -532,6 +532,21 @@ cPicture* cPictureList::add(qint32 iID, bool bNoCheck)
 	cPicture*	lpNew	= new cPicture(iID);
 	append(lpNew);
 	return(lpNew);
+}
+
+bool cPictureList::add(cPicture* lpPicture, bool bNoCheck)
+{
+	if(bNoCheck)
+	{
+		append(lpPicture);
+		return(true);
+	}
+
+	if(contains(lpPicture))
+		return(false);
+
+	append(lpPicture);
+	return(true);
 }
 
 cPicture* cPictureList::find(qint32 iID)

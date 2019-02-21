@@ -517,6 +517,15 @@ public:
 	/*!
 	 \brief
 
+	 \fn add
+	 \param cPicture
+	 \param bNoCheck
+	 \return bool
+	*/
+	bool					add(cPicture* lpPicture, bool bNoCheck = false);
+	/*!
+	 \brief
+
 	 \fn find
 	 \param iID
 	 \return cPicture

@@ -54,5 +54,15 @@ QByteArray		image2Blob(const QImage& image);
 */
 QStandardItem* insertPath(QString szPath, QStandardItem* lpRootItem);
 
+/*!
+ \brief
+
+ \fn copyFile
+ \param szSource
+ \param szDest
+ \param bDelete
+ \return bool
+*/
+bool copyFile(const QString& szSource, const QString& szDest, bool bDelete = false);
 
 #endif // COMMON_H

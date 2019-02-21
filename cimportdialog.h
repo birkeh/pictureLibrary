@@ -12,6 +12,7 @@
 #include <QCloseEvent>
 #include <QItemSelection>
 
+#include "cpicture.h"
 #include "cthumbnailsortfilterproxymodel.h"
 
 
@@ -36,7 +37,7 @@ public:
 	 \param szRootPath
 	 \param parent
 	*/
-	explicit cImportDialog(const QString& szRootPath, QWidget *parent = nullptr);
+	explicit cImportDialog(const QString& szRootPath, cPictureList& pictureList, QWidget *parent = nullptr);
 	/*!
 	 \brief
 
@@ -50,7 +51,7 @@ public:
 	 \fn hasImported
 	 \return bool
 	*/
-	bool						hasImported();
+	bool							hasImported();
 
 private slots:
 	/*!
@@ -58,19 +59,19 @@ private slots:
 
 	 \fn onPathSelect
 	*/
-	void						onPathSelect();
+	void							onPathSelect();
 	/*!
 	 \brief
 
 	 \fn onRead
 	*/
-	void						onRead();
+	void							onRead();
 	/*!
 	 \brief
 
 	 \fn onImport
 	*/
-	void						onImport();
+	void							onImport();
 	/*!
 	 \brief
 
@@ -78,7 +79,7 @@ private slots:
 	 \param selection
 	 \param previous
 	*/
-	void						onThumbnailSelected(const QItemSelection& selection, const QItemSelection& previous);
+	void							onThumbnailSelected(const QItemSelection& selection, const QItemSelection& previous);
 	/*!
 	 \brief
 
@@ -86,30 +87,31 @@ private slots:
 	 \param selection
 	 \param previous
 	*/
-	void						onFolderSelected(const QItemSelection& selection, const QItemSelection& previous);
+	void							onFolderSelected(const QItemSelection& selection, const QItemSelection& previous);
 
 private:
-	Ui::cImportDialog*			ui;								/*!< TODO: describe */
-	QString						m_szRootPath;					/*!< TODO: describe */
-	QStandardItemModel*			m_lpFolderViewModel;			/*!< TODO: describe */
-	QStandardItemModel*			m_lpThumbnailViewModel;			/*!< TODO: describe */
-	cThumbnailSortFilterProxyModel*	m_lpThumbnailFilterProxyModel;	/*!< TODO: describe */
-	bool						m_bLoading;						/*!< TODO: describe */
-	bool						m_bHasImported;					/*!< TODO: describe */
-	QStandardItem*				m_lpRootItem;					/*!< TODO: describe */
+	Ui::cImportDialog*				ui;									/*!< TODO: describe */
+	QString							m_szRootPath;						/*!< TODO: describe */
+	cPictureList&					m_pictureList;						/*!< TODO: describe */
+	QStandardItemModel*				m_lpFolderViewModel;				/*!< TODO: describe */
+	QStandardItemModel*				m_lpThumbnailViewModel;				/*!< TODO: describe */
+	cThumbnailSortFilterProxyModel*	m_lpThumbnailSortFilterProxyModel;	/*!< TODO: describe */
+	bool							m_bLoading;							/*!< TODO: describe */
+	bool							m_bHasImported;						/*!< TODO: describe */
+	QStandardItem*					m_lpRootItem;						/*!< TODO: describe */
 
 	/*!
 	 \brief
 
 	 \fn initUI
 	*/
-	void						initUI();
+	void							initUI();
 	/*!
 	 \brief
 
 	 \fn createActions
 	*/
-	void						createActions();
+	void							createActions();
 
 	/*!
 	 \brief
@@ -118,27 +120,27 @@ private:
 	 \param szPath
 	 \param bRecursive
 	*/
-	void						readDirectory(const QString& szPath, bool bRecursive);
+	void							readDirectory(const QString& szPath, bool bRecursive);
 
 	/*!
 	 \brief
 
 	 \fn accept
 	*/
-	void						accept();
+	void							accept();
 	/*!
 	 \brief
 
 	 \fn reject
 	*/
-	void						reject();
+	void							reject();
 
 	/*!
 	 \brief
 
 	 \fn savePosition
 	*/
-	void					savePosition();
+	void						savePosition();
 protected:
 };
 

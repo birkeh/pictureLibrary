@@ -124,13 +124,22 @@ void cMainWindow::loadData(bool bProgressBar)
 	m_bLoading	= true;
 
 	m_pictureList.clear();
+	m_pictureList.load(m_lpSplashScreen, bProgressBar ? m_lpProgressBar : nullptr);
+
+	displayData();
+
+	m_bLoading	= false;
+}
+
+void cMainWindow::displayData()
+{
 	m_lpThumbnailViewModel->clear();
 	m_lpFolderViewModel->clear();
+	ui->m_lpStatusBar->showMessage(tr("refreshing..."));
+	qApp->processEvents();
 
 	m_lpRootItem	= new QStandardItem("library");
 	m_lpFolderViewModel->appendRow(m_lpRootItem);
-
-	m_pictureList.load(m_lpSplashScreen, bProgressBar ? m_lpProgressBar : nullptr);
 
 	for(int x = 0;x < m_pictureList.count();x++)
 	{
@@ -159,8 +168,7 @@ void cMainWindow::loadData(bool bProgressBar)
 	}
 
 	ui->m_lpFolderView->expandAll();
-
-	m_bLoading	= false;
+	ui->m_lpStatusBar->showMessage(tr("done."), 3);
 }
 
 void cMainWindow::closeEvent(QCloseEvent *event)
@@ -412,15 +420,11 @@ void cMainWindow::onFileOpen()
 
 void cMainWindow::onFileImport()
 {
-	cImportDialog	importDialog(m_pictureLibrary.rootPath(), this);
+	cImportDialog	importDialog(m_pictureLibrary.rootPath(), m_pictureList, this);
 
 	importDialog.exec();
 	if(importDialog.hasImported())
-	{
-		m_lpProgressBar->setVisible(true);
-		loadData(true);
-		m_lpProgressBar->setVisible(false);
-	}
+		displayData();
 }
 
 void cMainWindow::onThumbnailViewContextMenu(const QPoint& pos)
@@ -458,12 +462,17 @@ void cMainWindow::onChangeDate()
 
 		lpPicture->setDateTime(dateTimePicker.dateTime());
 		QString			szPath	= QString::number(lpPicture->dateTime().date().year()) + "/" + lpPicture->dateTime().date().toString("yyyy-MM-dd");
-		lpPicture->setFilePath(szPath);
 		m_lpThumbnailSortFilterProxyModel->setData(index, QVariant::fromValue(szPath), Qt::UserRole+2);
 
-		insertPath(szPath, m_lpRootItem);
-		m_lpFolderSortFilterProxyModel->sort(0);
+		if(copyFile(m_pictureLibrary.rootPath() + QDir::separator() +  lpPicture->filePath() + QDir::separator() + lpPicture->fileName(),
+					m_pictureLibrary.rootPath() + QDir::separator() +  szPath + QDir::separator() + lpPicture->fileName(), true))
+		{
+			lpPicture->setFilePath(szPath);
+			lpPicture->toDB();
+			insertPath(szPath, m_lpRootItem);
+			m_lpFolderSortFilterProxyModel->sort(0);
 
-		m_lpThumbnailSortFilterProxyModel->invalidate();
+			m_lpThumbnailSortFilterProxyModel->invalidate();
+		}
 	}
 }

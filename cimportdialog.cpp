@@ -8,8 +8,6 @@
 
 #include "common.h"
 
-#include "cpicture.h"
-
 #include "cdatetimepicker.h"
 
 #include <QSettings>
@@ -28,13 +26,14 @@
 #include <QDebug>
 
 
-cImportDialog::cImportDialog(const QString& szRootPath, QWidget *parent) :
+cImportDialog::cImportDialog(const QString& szRootPath, cPictureList& pictureList, QWidget *parent) :
 	QDialog(parent),
 	ui(new Ui::cImportDialog),
 	m_szRootPath(szRootPath),
+	m_pictureList(pictureList),
 	m_lpFolderViewModel(nullptr),
 	m_lpThumbnailViewModel(nullptr),
-	m_lpThumbnailFilterProxyModel(nullptr),
+	m_lpThumbnailSortFilterProxyModel(nullptr),
 	m_bLoading(false),
 	m_bHasImported(false),
 	m_lpRootItem(nullptr)
@@ -47,7 +46,7 @@ cImportDialog::~cImportDialog()
 {
 	delete m_lpThumbnailViewModel;
 	delete m_lpFolderViewModel;
-	delete m_lpThumbnailFilterProxyModel;
+	delete m_lpThumbnailSortFilterProxyModel;
 
 	delete ui;
 }
@@ -62,9 +61,9 @@ void cImportDialog::initUI()
 	ui->m_lpFolderView->setModel(m_lpFolderViewModel);
 
 	m_lpThumbnailViewModel	= new QStandardItemModel;
-	m_lpThumbnailFilterProxyModel	= new cThumbnailSortFilterProxyModel(this);
-	ui->m_lpThumbnailView->setModel(m_lpThumbnailFilterProxyModel);
-	m_lpThumbnailFilterProxyModel->setSourceModel(m_lpThumbnailViewModel);
+	m_lpThumbnailSortFilterProxyModel	= new cThumbnailSortFilterProxyModel(this);
+	ui->m_lpThumbnailView->setModel(m_lpThumbnailSortFilterProxyModel);
+	m_lpThumbnailSortFilterProxyModel->setSourceModel(m_lpThumbnailViewModel);
 
 	QSettings	settings;
 
@@ -143,7 +142,7 @@ void cImportDialog::onThumbnailSelected(const QItemSelection& /*selection*/, con
 	if(!index.isValid())
 		return;
 
-	cPicture*		lpPicture		= m_lpThumbnailFilterProxyModel->data(index, Qt::UserRole+1).value<cPicture*>();
+	cPicture*		lpPicture		= m_lpThumbnailSortFilterProxyModel->data(index, Qt::UserRole+1).value<cPicture*>();
 	lpToolBoxInfo->setPicture(lpPicture);
 }
 
@@ -156,7 +155,7 @@ void cImportDialog::onFolderSelected(const QItemSelection& /*selection*/, const 
 	if(!lpItem)
 		return;
 
-	m_lpThumbnailFilterProxyModel->setFilterPath(lpItem->data(Qt::UserRole+2).toString());
+	m_lpThumbnailSortFilterProxyModel->setFilterPath(lpItem->data(Qt::UserRole+2).toString());
 }
 
 void cImportDialog::accept()
@@ -220,20 +219,18 @@ void cImportDialog::onRead()
 
 void cImportDialog::onImport()
 {
-	QModelIndexList	selected	= ui->m_lpThumbnailView->selectionModel()->selectedRows();
 	QDir			dir;
 	QFile			file;
 
 	ui->m_lpProgress->setVisible(true);
-	ui->m_lpProgress->setRange(0, selected.count());
+	ui->m_lpProgress->setRange(0, ui->m_lpThumbnailView->selectionModel()->selectedIndexes().count());
 
-	for(int x = 0;x < selected.count();x++)
+	for(int x = 0;x < ui->m_lpThumbnailView->selectionModel()->selectedIndexes().count();x++)
 	{
-		QStandardItem*	lpItem	= m_lpThumbnailViewModel->itemFromIndex(selected[x]);
-
-		if(lpItem)
+		QModelIndex		index	= ui->m_lpThumbnailView->selectionModel()->selectedIndexes()[x];
+		if(index.isValid())
 		{
-			cPicture*	lpPicture	= lpItem->data().value<cPicture*>();
+			cPicture*		lpPicture	= m_lpThumbnailSortFilterProxyModel->data(index, Qt::UserRole+1).value<cPicture*>();
 
 			if(lpPicture)
 			{
@@ -251,26 +248,18 @@ void cImportDialog::onImport()
 					szDestPath.append(lpPicture->cameraModel() + QDir::separator());
 
 				szDest.append(szDestPath);
+				szDest.append(lpPicture->fileName());
 
-				if(dir.mkpath(szDest))
+//				if(copyFile(szSource, szDest, ui->m_lpMove->isChecked()))
+				if(copyFile(szSource, szDest, false))
 				{
-					szDest.append(lpPicture->fileName());
-
-					if(file.exists(szDest))
-						file.remove(szDest);
-
-					file.copy(szSource, szDest);
 
 					ui->m_lpProgress->setValue(x);
 					qApp->processEvents();
 
 					lpPicture->setFilePath(szDestPath.left(szDestPath.length()-1).replace("\\", "/"));
 					lpPicture->toDB();
-
-					if(ui->m_lpMove->isChecked())
-					{
-//						file.remove(szSource);
-					}
+					m_pictureList.add(lpPicture);
 				}
 			}
 		}

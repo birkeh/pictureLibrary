@@ -126,6 +126,12 @@ private:
 	 \param bProgressBar
 	*/
 	void							loadData(bool bProgressBar = false);
+	/*!
+	 \brief
+
+	 \fn displayData
+	*/
+	void							displayData();
 
 protected:
 	/*!

@@ -41,7 +41,7 @@ QByteArray image2Blob(const QImage &image)
 QStandardItem* insertPath(QString szPath, QStandardItem* lpRootItem)
 {
 	if(!lpRootItem)
-		return(0);
+		return(nullptr);
 
 	QString				szPath1		= szPath.replace("\\", "/");
 	QStringList			szPathList	= szPath1.split("/");
@@ -84,4 +84,28 @@ QStandardItem* insertPath(QString szPath, QStandardItem* lpRootItem)
 	}
 
 	return(lpCurRoot);
+}
+
+bool copyFile(const QString& szSource, const QString& szDest, bool bDelete)
+{
+	QString	szDestPath;
+	QString	szDestFilePath	= szDest;
+	QDir	dir;
+	QFile	file;
+
+	szDestFilePath.replace("\\", "/");
+
+	szDestPath	= szDestFilePath.left(szDestFilePath.lastIndexOf("/"));
+
+	dir.mkpath(szDestPath);
+
+	if(file.exists(szDestFilePath))
+		file.remove(szDestFilePath);
+
+	file.copy(szSource, szDestFilePath);
+
+	if(bDelete)
+		file.remove(szSource);
+
+	return(true);
 }
