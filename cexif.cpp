@@ -16,6 +16,7 @@
 
 
 cEXIF::cEXIF() :
+	m_szMimeType(""),
 	m_iWidth(0),
 	m_iHeight(0),
 	m_szFileName("")
@@ -44,6 +45,7 @@ bool cEXIF::fromFile(const QString& szFileName)
 		Exiv2::IptcData&		iptcData	= image->iptcData();
 		Exiv2::XmpData&			xmpData		= image->xmpData();
 
+		m_szMimeType	= QString::fromStdString(image->mimeType());
 		m_iWidth		= image->pixelWidth();
 		m_iHeight		= image->pixelHeight();
 
@@ -280,6 +282,11 @@ bool cEXIF::fromFile(const QString& szFileName)
 	}
 
 	return(true);
+}
+
+QString cEXIF::mimeType()
+{
+	return(m_szMimeType);
 }
 
 qint32 cEXIF::imageWidth()

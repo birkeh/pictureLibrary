@@ -71,6 +71,21 @@ public:
 	/*!
 	 \brief
 
+	 \fn setMimeType
+	 \param mimeType
+	*/
+	void					setMimeType(const QString& mimeType);
+	/*!
+	 \brief
+
+	 \fn mimeType
+	 \return QString
+	*/
+	QString					mimeType();
+
+	/*!
+	 \brief
+
 	 \fn setImageWidth
 	 \param imageWidth
 	*/
@@ -489,6 +504,7 @@ private:
 	QString					m_szFilePath;			/*!< TODO: describe */
 	qint64					m_iFileSize;			/*!< TODO: describe */
 	QImage					m_thumbnail;			/*!< TODO: describe */
+	QString					m_mimeType;				/*!< TODO: describe */
 	qint32					m_imageWidth;			/*!< TODO: describe */
 	qint32					m_imageHeight;			/*!< TODO: describe */
 	qint16					m_imageOrientation;		/*!< TODO: describe */

@@ -116,6 +116,7 @@ bool cPictureLibrary::createDatabase()
 					"    fileName                 TEXT, "
 					"    filePath                 TEXT, "
 					"    fileSize                 BIGINT, "
+					"    mimeType                 TEXT, "
 					"    imageWidth               INTEGER, "
 					"    imageHeight              INTEGER, "
 					"    imageOrientation         INTEGER, "

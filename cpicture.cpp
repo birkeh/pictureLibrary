@@ -21,6 +21,7 @@ cPicture::cPicture(qint32 iID, QObject *parent) :
 	m_szFileName(""),
 	m_szFilePath(""),
 	m_iFileSize(0),
+	m_mimeType(""),
 	m_imageWidth(0),
 	m_imageHeight(0),
 	m_cameraMake(""),
@@ -55,6 +56,7 @@ bool cPicture::fromFile(const QString& szFileName)
 	m_szFilePath			= fileInfo.absolutePath();
 	m_iFileSize				= fileInfo.size();
 	m_thumbnail				= exif.thumbnail();
+	m_mimeType				= exif.mimeType();
 	m_imageWidth			= exif.imageWidth();
 	m_imageHeight			= exif.imageHeight();
 	m_imageOrientation		= exif.imageOrientation();
@@ -95,18 +97,19 @@ bool cPicture::toDB()
 		}
 
 		if(!query.next())
-			query.prepare("INSERT INTO picture (fileName, filePath, fileSize, imageWidth, imageHeight, imageOrientation, cameraMake, cameraModel, dateTime, fNumber, iso, flashID, focalLength, lensMake, lensModel, exposureTime, exposureBias, exifVersion, dateTimeOriginal, dateTimeDigitized, whiteBalance, focalLength35, gps, thumbnail) VALUES (:fileName, :filePath, :fileSize, :imageWidth, :imageHeight, :imageOrientation, :cameraMake, :cameraModel, :dateTime, :fNumber, :iso, :flashID, :focalLength, :lensMake, :lensModel, :exposureTime, :exposureBias, :exifVersion, :dateTimeOriginal, :dateTimeDigitized, :whiteBalance, :focalLength35, :gps, :thumbnail);");
+			query.prepare("INSERT INTO picture (fileName, filePath, fileSize, mimeType, imageWidth, imageHeight, imageOrientation, cameraMake, cameraModel, dateTime, fNumber, iso, flashID, focalLength, lensMake, lensModel, exposureTime, exposureBias, exifVersion, dateTimeOriginal, dateTimeDigitized, whiteBalance, focalLength35, gps, thumbnail) VALUES (:fileName, :filePath, :fileSize, :mimeType, :imageWidth, :imageHeight, :imageOrientation, :cameraMake, :cameraModel, :dateTime, :fNumber, :iso, :flashID, :focalLength, :lensMake, :lensModel, :exposureTime, :exposureBias, :exifVersion, :dateTimeOriginal, :dateTimeDigitized, :whiteBalance, :focalLength35, :gps, :thumbnail);");
 		else
-			query.prepare("UPDATE picture SET fileName=:fileName, filePath=:filePath, fileSize=:fileSize, imageWidth=:imageWidth, imageHeight=:imageHeight, imageOrientation=:imageOrientation, cameraMake=:cameraMake, cameraModel=:cameraModel, dateTime=:dateTime, fNumber=:fNumber, iso=:iso, flashID=:flashID, focalLength=:focalLength, lensMake=:lensMake, lensModel=:lensModel, exposureTime=:exposureTime, exposureBias=:exposureBias, exifVersion=:exifVersion, dateTimeOriginal=:dateTimeOriginal, dateTimeDigitized=:dateTimeDigitized, whiteBalance=:whiteBalance, focalLength35=:focalLength35, gps=:gps, thumbnail=:thumbnail WHERE id=:id;");
+			query.prepare("UPDATE picture SET fileName=:fileName, filePath=:filePath, fileSize=:fileSize, mimeType=:mimeType, imageWidth=:imageWidth, imageHeight=:imageHeight, imageOrientation=:imageOrientation, cameraMake=:cameraMake, cameraModel=:cameraModel, dateTime=:dateTime, fNumber=:fNumber, iso=:iso, flashID=:flashID, focalLength=:focalLength, lensMake=:lensMake, lensModel=:lensModel, exposureTime=:exposureTime, exposureBias=:exposureBias, exifVersion=:exifVersion, dateTimeOriginal=:dateTimeOriginal, dateTimeDigitized=:dateTimeDigitized, whiteBalance=:whiteBalance, focalLength35=:focalLength35, gps=:gps, thumbnail=:thumbnail WHERE id=:id;");
 	}
 	else
-		query.prepare("INSERT INTO picture (fileName, filePath, fileSize, imageWidth, imageHeight, imageOrientation, cameraMake, cameraModel, dateTime, fNumber, iso, flashID, focalLength, lensMake, lensModel, exposureTime, exposureBias, exifVersion, dateTimeOriginal, dateTimeDigitized, whiteBalance, focalLength35, gps, thumbnail) VALUES (:fileName, :filePath, :fileSize, :imageWidth, :imageHeight, :imageOrientation, :cameraMake, :cameraModel, :dateTime, :fNumber, :iso, :flashID, :focalLength, :lensMake, :lensModel, :exposureTime, :exposureBias, :exifVersion, :dateTimeOriginal, :dateTimeDigitized, :whiteBalance, :focalLength35, :gps, :thumbnail);");
+		query.prepare("INSERT INTO picture (fileName, filePath, fileSize, mimeType, imageWidth, imageHeight, imageOrientation, cameraMake, cameraModel, dateTime, fNumber, iso, flashID, focalLength, lensMake, lensModel, exposureTime, exposureBias, exifVersion, dateTimeOriginal, dateTimeDigitized, whiteBalance, focalLength35, gps, thumbnail) VALUES (:fileName, :filePath, :fileSize, :mimeType, :imageWidth, :imageHeight, :imageOrientation, :cameraMake, :cameraModel, :dateTime, :fNumber, :iso, :flashID, :focalLength, :lensMake, :lensModel, :exposureTime, :exposureBias, :exifVersion, :dateTimeOriginal, :dateTimeDigitized, :whiteBalance, :focalLength35, :gps, :thumbnail);");
 
 
 	query.bindValue(":id",					m_iID);
 	query.bindValue(":fileName",			m_szFileName);
 	query.bindValue(":filePath",			m_szFilePath);
 	query.bindValue(":fileSize",			m_iFileSize);
+	query.bindValue(":mimeType",			m_mimeType);
 	query.bindValue(":imageWidth",			m_imageWidth);
 	query.bindValue(":imageHeight",			m_imageHeight);
 	query.bindValue(":imageOrientation",	m_imageOrientation);
@@ -162,6 +165,16 @@ void cPicture::setID(const qint32& id)
 qint32 cPicture::id()
 {
 	return(m_iID);
+}
+
+void cPicture::setMimeType(const QString &mimeType)
+{
+	m_mimeType	= mimeType;
+}
+
+QString cPicture::mimeType()
+{
+	return(m_mimeType);
 }
 
 void cPicture::setImageWidth(const qint32& imageWidth)
@@ -420,6 +433,8 @@ bool cPicture::operator==(const cPicture& other) const
 		return(false);
 	if(this->m_iFileSize != other.m_iFileSize)
 		return(false);
+	if(this->m_mimeType != other.m_mimeType)
+		return(false);
 	if(this->m_imageWidth != other.m_imageWidth)
 		return(false);
 	if(this->m_imageHeight != other.m_imageHeight)
@@ -469,6 +484,8 @@ bool cPicture::operator==(const cPicture*& other) const
 	if(this->m_szFileName != other->m_szFileName)
 		return(false);
 	if(this->m_iFileSize != other->m_iFileSize)
+		return(false);
+	if(this->m_mimeType != other->m_mimeType)
 		return(false);
 	if(this->m_imageWidth != other->m_imageWidth)
 		return(false);
@@ -520,6 +537,8 @@ bool cPicture::operator==(const cPicture* other) const
 		return(false);
 	if(this->m_iFileSize != other->m_iFileSize)
 		return(false);
+	if(this->m_mimeType != other->m_mimeType)
+		return(false);
 	if(this->m_imageWidth != other->m_imageWidth)
 		return(false);
 	if(this->m_imageHeight != other->m_imageHeight)
@@ -569,6 +588,8 @@ bool cPicture::operator==(cPicture* other)
 	if(this->m_szFileName != other->m_szFileName)
 		return(false);
 	if(this->m_iFileSize != other->m_iFileSize)
+		return(false);
+	if(this->m_mimeType != other->m_mimeType)
 		return(false);
 	if(this->m_imageWidth != other->m_imageWidth)
 		return(false);
@@ -644,6 +665,7 @@ bool cPictureList::load(cSplashScreen *lpSplashScreen, QProgressBar *lpProgressB
 				  "         fileName, "
 				  "         filePath, "
 				  "         fileSize, "
+				  "         mimeType, "
 				  "         imageWidth, "
 				  "         imageHeight, "
 				  "         imageOrientation, "
@@ -684,6 +706,7 @@ bool cPictureList::load(cSplashScreen *lpSplashScreen, QProgressBar *lpProgressB
 		lpPicture->setFileName(query.value("fileName").toString());
 		lpPicture->setFilePath(query.value("filePath").toString());
 		lpPicture->setFileSize(query.value("fileSize").toLongLong());
+		lpPicture->setMimeType(query.value("mimeType").toString());
 		lpPicture->setImageWidth(query.value("imageWidth").toInt());
 		lpPicture->setImageHeight(query.value("imageHeight").toInt());
 		lpPicture->setImageOrientation(static_cast<qint16>(query.value("imageOrientation").toInt()));

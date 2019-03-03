@@ -603,6 +603,13 @@ public:
 	/*!
 	 \brief
 
+	 \fn mimeType
+	 \return QString
+	*/
+	QString					mimeType();
+	/*!
+	 \brief
+
 	 \fn imageWidth
 	 \return qint32
 	*/
@@ -773,6 +780,7 @@ private:
 	cEXIFValueList			m_exifValueList;				/*!< TODO: describe */
 	cIPTCValueList			m_iptcValueList;				/*!< TODO: describe */
 	cXMPValueList			m_xmpValueList;					/*!< TODO: describe */
+	QString					m_szMimeType;					/*!< TODO: describe */
 	qint32					m_iWidth;						/*!< TODO: describe */
 	qint32					m_iHeight;						/*!< TODO: describe */
 	QString					m_szFileName;					/*!< TODO: describe */
