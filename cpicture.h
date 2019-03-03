@@ -401,6 +401,21 @@ public:
 	/*!
 	 \brief
 
+	 \fn setDuration
+	 \param duration
+	*/
+	void					setDuration(const qint64& duration);
+	/*!
+	 \brief
+
+	 \fn gps
+	 \return qint64
+	*/
+	qint64					duration();
+
+	/*!
+	 \brief
+
 	 \fn setFileName
 	 \param fileName
 	*/
@@ -526,6 +541,7 @@ private:
 	qint32					m_whiteBalance;			/*!< TODO: describe */
 	qreal					m_focalLength35;		/*!< TODO: describe */
 	QString					m_gps;					/*!< TODO: describe */
+	qint64					m_duration;				/*!< TODO: describe */
 };
 
 Q_DECLARE_METATYPE(cPicture*)

@@ -10,8 +10,11 @@
 
 #include "common.h"
 
+#include "ccopier.h"
+
 #include <QBuffer>
 #include <QDir>
+#include <QEventLoop>
 
 
 QImage blob2Image(const QByteArray& ba)
@@ -86,7 +89,8 @@ QStandardItem* insertPath(QString szPath, QStandardItem* lpRootItem)
 	return(lpCurRoot);
 }
 
-bool copyFile(const QString& szSource, const QString& szDest, bool bDelete)
+//bool copyFile(cImportDialog* lpImportDialog, const QString& szSource, const QString& szDest, bool bDelete)
+bool copyFile(QProgressBar* lpProgressBar, const QString& szSource, const QString& szDest, bool bDelete)
 {
 	QString	szDestPath;
 	QString	szDestFilePath	= szDest;
@@ -102,7 +106,21 @@ bool copyFile(const QString& szSource, const QString& szDest, bool bDelete)
 	if(file.exists(szDestFilePath))
 		file.remove(szDestFilePath);
 
-	file.copy(szSource, szDestFilePath);
+	cCopier*	lpCopier	= new cCopier(szSource, szDest);
+
+	if(lpProgressBar)
+		QObject::connect(lpCopier, SIGNAL(newStatus(int)), lpProgressBar, SLOT(setValue(int)));
+//	connect(copier, SIGNAL(newStatus(QString)), this, SLOT(newStatus(QString)));
+//				connect(copier, SIGNAL(finished()), SIGNAL(copyFinished()));
+//				connect(copier, SIGNAL(finished()), copier, SLOT(deleteLater()));
+//				connect(this, SIGNAL(stopCopy()), copier, SLOT(stop()));
+
+	QEventLoop				loop;
+
+	lpCopier->copy();
+
+	QObject::connect(lpCopier, SIGNAL(finished()), &loop, SLOT(quit()));
+	loop.exec();
 
 	if(bDelete)
 		file.remove(szSource);

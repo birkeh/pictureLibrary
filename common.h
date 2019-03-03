@@ -7,10 +7,14 @@
 #define COMMON_H
 
 
+#include "cimportdialog.h"
+
 #include <QImage>
 #include <QByteArray>
 #include <QStandardItem>
 #include <QTreeView>
+
+#include <QProgressBar>
 
 #include <QDebug>
 
@@ -63,6 +67,6 @@ QStandardItem* insertPath(QString szPath, QStandardItem* lpRootItem);
  \param bDelete
  \return bool
 */
-bool copyFile(const QString& szSource, const QString& szDest, bool bDelete = false);
+bool copyFile(QProgressBar* lpProgressBar, const QString& szSource, const QString& szDest, bool bDelete = false);
 
 #endif // COMMON_H

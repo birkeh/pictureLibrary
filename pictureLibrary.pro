@@ -10,7 +10,7 @@ QMAKE_TARGET_PRODUCT = pictureLibrary
 QMAKE_TARGET_DESCRIPTION = pictureLibrary
 QMAKE_TARGET_COPYRIGHT = (c) 2019 WIN-DESIGN
 
-QT       += core gui sql multimedia
+QT       += core gui sql multimedia concurrent
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -65,7 +65,8 @@ SOURCES += \
     cimportdialog.cpp \
     cdatetimepicker.cpp \
     cthumbnailsortfilterproxymodel.cpp \
-    cfoldersortfilterproxymodel.cpp
+    cfoldersortfilterproxymodel.cpp \
+    ccopier.cpp
 
 HEADERS += \
         cmainwindow.h \
@@ -79,7 +80,8 @@ HEADERS += \
     cimportdialog.h \
     cdatetimepicker.h \
     cthumbnailsortfilterproxymodel.h \
-    cfoldersortfilterproxymodel.h
+    cfoldersortfilterproxymodel.h \
+    ccopier.h
 
 FORMS += \
         cmainwindow.ui \

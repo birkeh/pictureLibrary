@@ -757,6 +757,13 @@ public:
 	/*!
 	 \brief
 
+	 \fn duration
+	 \return QString
+	*/
+	QString					duration();
+	/*!
+	 \brief
+
 	 \fn fileName
 	 \return QString
 	*/

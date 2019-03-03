@@ -38,7 +38,8 @@ cPicture::cPicture(qint32 iID, QObject *parent) :
 	m_exifVersion(""),
 	m_whiteBalance(0),
 	m_focalLength35(0.0),
-	m_gps("")
+	m_gps(""),
+	m_duration(0)
 {
 }
 
@@ -78,6 +79,7 @@ bool cPicture::fromFile(const QString& szFileName)
 	m_whiteBalance			= exif.whiteBalance();
 	m_focalLength35			= exif.focalLength35();
 	m_gps					= exif.gps();
+	m_duration				= exif.duration().toLongLong();
 
 	return(true);
 }
@@ -97,12 +99,12 @@ bool cPicture::toDB()
 		}
 
 		if(!query.next())
-			query.prepare("INSERT INTO picture (fileName, filePath, fileSize, mimeType, imageWidth, imageHeight, imageOrientation, cameraMake, cameraModel, dateTime, fNumber, iso, flashID, focalLength, lensMake, lensModel, exposureTime, exposureBias, exifVersion, dateTimeOriginal, dateTimeDigitized, whiteBalance, focalLength35, gps, thumbnail) VALUES (:fileName, :filePath, :fileSize, :mimeType, :imageWidth, :imageHeight, :imageOrientation, :cameraMake, :cameraModel, :dateTime, :fNumber, :iso, :flashID, :focalLength, :lensMake, :lensModel, :exposureTime, :exposureBias, :exifVersion, :dateTimeOriginal, :dateTimeDigitized, :whiteBalance, :focalLength35, :gps, :thumbnail);");
+			query.prepare("INSERT INTO picture (fileName, filePath, fileSize, mimeType, imageWidth, imageHeight, imageOrientation, cameraMake, cameraModel, dateTime, fNumber, iso, flashID, focalLength, lensMake, lensModel, exposureTime, exposureBias, exifVersion, dateTimeOriginal, dateTimeDigitized, whiteBalance, focalLength35, gps, duration, thumbnail) VALUES (:fileName, :filePath, :fileSize, :mimeType, :imageWidth, :imageHeight, :imageOrientation, :cameraMake, :cameraModel, :dateTime, :fNumber, :iso, :flashID, :focalLength, :lensMake, :lensModel, :exposureTime, :exposureBias, :exifVersion, :dateTimeOriginal, :dateTimeDigitized, :whiteBalance, :focalLength35, :gps, :duration, :thumbnail);");
 		else
-			query.prepare("UPDATE picture SET fileName=:fileName, filePath=:filePath, fileSize=:fileSize, mimeType=:mimeType, imageWidth=:imageWidth, imageHeight=:imageHeight, imageOrientation=:imageOrientation, cameraMake=:cameraMake, cameraModel=:cameraModel, dateTime=:dateTime, fNumber=:fNumber, iso=:iso, flashID=:flashID, focalLength=:focalLength, lensMake=:lensMake, lensModel=:lensModel, exposureTime=:exposureTime, exposureBias=:exposureBias, exifVersion=:exifVersion, dateTimeOriginal=:dateTimeOriginal, dateTimeDigitized=:dateTimeDigitized, whiteBalance=:whiteBalance, focalLength35=:focalLength35, gps=:gps, thumbnail=:thumbnail WHERE id=:id;");
+			query.prepare("UPDATE picture SET fileName=:fileName, filePath=:filePath, fileSize=:fileSize, mimeType=:mimeType, imageWidth=:imageWidth, imageHeight=:imageHeight, imageOrientation=:imageOrientation, cameraMake=:cameraMake, cameraModel=:cameraModel, dateTime=:dateTime, fNumber=:fNumber, iso=:iso, flashID=:flashID, focalLength=:focalLength, lensMake=:lensMake, lensModel=:lensModel, exposureTime=:exposureTime, exposureBias=:exposureBias, exifVersion=:exifVersion, dateTimeOriginal=:dateTimeOriginal, dateTimeDigitized=:dateTimeDigitized, whiteBalance=:whiteBalance, focalLength35=:focalLength35, gps=:gps, duration=:duration, thumbnail=:thumbnail WHERE id=:id;");
 	}
 	else
-		query.prepare("INSERT INTO picture (fileName, filePath, fileSize, mimeType, imageWidth, imageHeight, imageOrientation, cameraMake, cameraModel, dateTime, fNumber, iso, flashID, focalLength, lensMake, lensModel, exposureTime, exposureBias, exifVersion, dateTimeOriginal, dateTimeDigitized, whiteBalance, focalLength35, gps, thumbnail) VALUES (:fileName, :filePath, :fileSize, :mimeType, :imageWidth, :imageHeight, :imageOrientation, :cameraMake, :cameraModel, :dateTime, :fNumber, :iso, :flashID, :focalLength, :lensMake, :lensModel, :exposureTime, :exposureBias, :exifVersion, :dateTimeOriginal, :dateTimeDigitized, :whiteBalance, :focalLength35, :gps, :thumbnail);");
+		query.prepare("INSERT INTO picture (fileName, filePath, fileSize, mimeType, imageWidth, imageHeight, imageOrientation, cameraMake, cameraModel, dateTime, fNumber, iso, flashID, focalLength, lensMake, lensModel, exposureTime, exposureBias, exifVersion, dateTimeOriginal, dateTimeDigitized, whiteBalance, focalLength35, gps, duration, thumbnail) VALUES (:fileName, :filePath, :fileSize, :mimeType, :imageWidth, :imageHeight, :imageOrientation, :cameraMake, :cameraModel, :dateTime, :fNumber, :iso, :flashID, :focalLength, :lensMake, :lensModel, :exposureTime, :exposureBias, :exifVersion, :dateTimeOriginal, :dateTimeDigitized, :whiteBalance, :focalLength35, :gps, :duration, :thumbnail);");
 
 
 	query.bindValue(":id",					m_iID);
@@ -130,6 +132,7 @@ bool cPicture::toDB()
 	query.bindValue(":whiteBalance",		m_whiteBalance);
 	query.bindValue(":focalLength35",		m_focalLength35);
 	query.bindValue(":gps",					m_gps);
+	query.bindValue(":duration",			m_duration);
 	if(!m_thumbnail.isNull())
 		query.bindValue(":thumbnail", image2Blob(m_thumbnail));
 	else
@@ -387,6 +390,16 @@ QString cPicture::gps()
 	return(m_gps);
 }
 
+void cPicture::setDuration(const qint64& duration)
+{
+	m_duration	= duration;
+}
+
+qint64 cPicture::duration()
+{
+	return(m_duration);
+}
+
 void cPicture::setFileName(const QString& fileName)
 {
 	m_szFileName	= fileName;
@@ -475,6 +488,8 @@ bool cPicture::operator==(const cPicture& other) const
 	   return(false);
 	if(this->m_gps != other.m_gps)
 	   return(false);
+	if(this->m_duration != other.m_duration)
+		return(false);
 
 	return(true);
 }
@@ -527,6 +542,8 @@ bool cPicture::operator==(const cPicture*& other) const
 	   return(false);
 	if(this->m_gps != other->m_gps)
 	   return(false);
+	if(this->m_duration != other->m_duration)
+		return(false);
 
 	return(true);
 }
@@ -579,6 +596,8 @@ bool cPicture::operator==(const cPicture* other) const
 	   return(false);
 	if(this->m_gps != other->m_gps)
 	   return(false);
+	if(this->m_duration != other->m_duration)
+		return(false);
 
 	return(true);
 }
@@ -631,6 +650,8 @@ bool cPicture::operator==(cPicture* other)
 	   return(false);
 	if(this->m_gps != other->m_gps)
 	   return(false);
+	if(this->m_duration != other->m_duration)
+		return(false);
 
 	return(true);
 }
@@ -686,6 +707,7 @@ bool cPictureList::load(cSplashScreen *lpSplashScreen, QProgressBar *lpProgressB
 				  "         whiteBalance, "
 				  "         focalLength35, "
 				  "         gps, "
+				  "         duration, "
 				  "         thumbnail "
 				  "FROM     picture "
 				  "ORDER BY filePath, "
@@ -699,6 +721,9 @@ bool cPictureList::load(cSplashScreen *lpSplashScreen, QProgressBar *lpProgressB
 
 	qint32	count	= 0;
 	qint32	step	= max/200;
+
+	if(!step)
+		step = 1;
 
 	while(query.next())
 	{
@@ -728,6 +753,7 @@ bool cPictureList::load(cSplashScreen *lpSplashScreen, QProgressBar *lpProgressB
 		lpPicture->setWhiteBalance(query.value("whiteBalance").toInt());
 		lpPicture->setFocalLength35(query.value("focalLength35").toDouble());
 		lpPicture->setGPS(query.value("gps").toString());
+		lpPicture->setDuration(query.value("duration").toLongLong());
 		lpPicture->setThumbnail(blob2Image(query.value("thumbnail").toByteArray()));
 
 		count++;

@@ -446,6 +446,11 @@ QString cEXIF::gps()
 	return(szGPS);
 }
 
+QString cEXIF::duration()
+{
+	return(getXMPTag("Xmp.video.Duration").toString());
+}
+
 QString cEXIF::fileName()
 {
 	return(m_szFileName);

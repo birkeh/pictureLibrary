@@ -211,6 +211,7 @@ bool cPictureLibrary::updateDatabase3(qint32 version)
 					"    whiteBalance             INTEGER, "
 					"    focalLength35            DOUBLE, "
 					"    gps                      TEXT, "
+					"    duration                 BIGINT, "
 					"    thumbnail                BLOB"
 					"); "))
 		return(false);

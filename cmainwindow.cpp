@@ -463,7 +463,7 @@ void cMainWindow::onChangeDate()
 		QString			szPath	= QString::number(lpPicture->dateTime().date().year()) + "/" + lpPicture->dateTime().date().toString("yyyy-MM-dd");
 		m_lpThumbnailSortFilterProxyModel->setData(index, QVariant::fromValue(szPath), Qt::UserRole+2);
 
-		if(copyFile(m_pictureLibrary.rootPath() + QDir::separator() +  lpPicture->filePath() + QDir::separator() + lpPicture->fileName(),
+		if(copyFile(0, m_pictureLibrary.rootPath() + QDir::separator() +  lpPicture->filePath() + QDir::separator() + lpPicture->fileName(),
 					m_pictureLibrary.rootPath() + QDir::separator() +  szPath + QDir::separator() + lpPicture->fileName(), true))
 		{
 			lpPicture->setFilePath(szPath);

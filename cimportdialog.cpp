@@ -55,6 +55,7 @@ void cImportDialog::initUI()
 {
 	ui->setupUi(this);
 	ui->m_lpProgress->setVisible(false);
+	ui->m_lpTotalProgress->setVisible(false);
 	ui->m_lpImport->setEnabled(false);
 
 	m_lpFolderViewModel	= new QStandardItemModel;
@@ -228,7 +229,9 @@ void cImportDialog::onImport()
 	QFile			file;
 
 	ui->m_lpProgress->setVisible(true);
-	ui->m_lpProgress->setRange(0, ui->m_lpThumbnailView->selectionModel()->selectedIndexes().count());
+	ui->m_lpProgress->setRange(0, 100);
+	ui->m_lpTotalProgress->setVisible(true);
+	ui->m_lpTotalProgress->setRange(0, ui->m_lpThumbnailView->selectionModel()->selectedIndexes().count());
 
 	for(int x = 0;x < ui->m_lpThumbnailView->selectionModel()->selectedIndexes().count();x++)
 	{
@@ -255,11 +258,10 @@ void cImportDialog::onImport()
 				szDest.append(szDestPath);
 				szDest.append(lpPicture->fileName());
 
-//				if(copyFile(szSource, szDest, ui->m_lpMove->isChecked()))
-				if(copyFile(szSource, szDest, false))
+//				if(copyFile(ui->m_lpProgress, szSource, szDest, ui->m_lpMove->isChecked()))
+				if(copyFile(ui->m_lpProgress, szSource, szDest, false))
 				{
-
-					ui->m_lpProgress->setValue(x);
+					ui->m_lpTotalProgress->setValue(x+1);
 					qApp->processEvents();
 
 					lpPicture->setFilePath(szDestPath.left(szDestPath.length()-1).replace("\\", "/"));
@@ -271,6 +273,7 @@ void cImportDialog::onImport()
 	}
 	ui->m_lpStatusText->setText("");
 	ui->m_lpProgress->setVisible(false);
+	ui->m_lpTotalProgress->setVisible(false);
 
 	m_bHasImported	= true;
 }
