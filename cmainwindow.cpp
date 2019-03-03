@@ -41,7 +41,6 @@ cMainWindow::cMainWindow(cSplashScreen* lpSplashScreen, QWidget *parent) :
 {
 	initUI();
 	createActions();
-
 	loadData();
 
 	updateRecentFileActions();

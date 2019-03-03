@@ -58,16 +58,16 @@ bool cPicture::fromFile(const QString& szFileName)
 	m_imageWidth			= exif.imageWidth();
 	m_imageHeight			= exif.imageHeight();
 	m_imageOrientation		= exif.imageOrientation();
-	m_cameraMake			= exif.cameraMake();
-	m_cameraModel			= exif.cameraModel();
+	m_cameraMake			= exif.cameraMake().simplified();
+	m_cameraModel			= exif.cameraModel().simplified();
 	m_dateTime				= exif.dateTime();
 	m_fNumber				= exif.fNumber();
 	m_iso					= exif.iso();
-	m_flash					= exif.flash();
+	m_flash					= exif.flash().simplified();
 	m_flashID				= exif.flashID();
 	m_focalLength			= exif.focalLength();
-	m_lensMake				= exif.lensMake();
-	m_lensModel				= exif.lensModel();
+	m_lensMake				= exif.lensMake().simplified();
+	m_lensModel				= exif.lensModel().simplified();
 	m_exposureTime			= exif.exposureTime();
 	m_exposureBias			= exif.exposureBias();
 	m_exifVersion			= exif.exifVersion();
@@ -414,6 +414,206 @@ QImage cPicture::thumbnail()
 	return(m_thumbnail);
 }
 
+bool cPicture::operator==(const cPicture& other) const
+{
+	if(this->m_szFileName != other.m_szFileName)
+		return(false);
+	if(this->m_iFileSize != other.m_iFileSize)
+		return(false);
+	if(this->m_imageWidth != other.m_imageWidth)
+		return(false);
+	if(this->m_imageHeight != other.m_imageHeight)
+		return(false);
+	if(this->m_imageOrientation != other.m_imageOrientation)
+		return(false);
+	if(this->m_cameraMake != other.m_cameraMake)
+			return(false);
+	if(this->m_cameraModel != other.m_cameraModel)
+	   return(false);
+	if(this->m_dateTime != other.m_dateTime)
+	   return(false);
+	if(this->m_fNumber != other.m_fNumber)
+	   return(false);
+	if(this->m_iso != other.m_iso)
+	   return(false);
+	if(this->m_flashID != other.m_flashID)
+	   return(false);
+	if(this->m_focalLength != other.m_focalLength)
+	   return(false);
+	if(this->m_lensMake != other.m_lensMake)
+	   return(false);
+	if(this->m_lensModel != other.m_lensModel)
+	   return(false);
+	if(this->m_exposureTime != other.m_exposureTime)
+	   return(false);
+	if(this->m_exposureBias != other.m_exposureBias)
+	   return(false);
+	if(this->m_exifVersion != other.m_exifVersion)
+	   return(false);
+	if(this->m_dateTimeOriginal != other.m_dateTimeOriginal)
+	   return(false);
+	if(this->m_dateTimeDigitized != other.m_dateTimeDigitized)
+	   return(false);
+	if(this->m_whiteBalance != other.m_whiteBalance)
+	   return(false);
+	if(this->m_focalLength35 != other.m_focalLength35)
+	   return(false);
+	if(this->m_gps != other.m_gps)
+	   return(false);
+
+	return(true);
+}
+
+bool cPicture::operator==(const cPicture*& other) const
+{
+	if(this->m_szFileName != other->m_szFileName)
+		return(false);
+	if(this->m_iFileSize != other->m_iFileSize)
+		return(false);
+	if(this->m_imageWidth != other->m_imageWidth)
+		return(false);
+	if(this->m_imageHeight != other->m_imageHeight)
+		return(false);
+	if(this->m_imageOrientation != other->m_imageOrientation)
+		return(false);
+	if(this->m_cameraMake != other->m_cameraMake)
+			return(false);
+	if(this->m_cameraModel != other->m_cameraModel)
+	   return(false);
+	if(this->m_dateTime != other->m_dateTime)
+	   return(false);
+	if(this->m_fNumber != other->m_fNumber)
+	   return(false);
+	if(this->m_iso != other->m_iso)
+	   return(false);
+	if(this->m_flashID != other->m_flashID)
+	   return(false);
+	if(this->m_focalLength != other->m_focalLength)
+	   return(false);
+	if(this->m_lensMake != other->m_lensMake)
+	   return(false);
+	if(this->m_lensModel != other->m_lensModel)
+	   return(false);
+	if(this->m_exposureTime != other->m_exposureTime)
+	   return(false);
+	if(this->m_exposureBias != other->m_exposureBias)
+	   return(false);
+	if(this->m_exifVersion != other->m_exifVersion)
+	   return(false);
+	if(this->m_dateTimeOriginal != other->m_dateTimeOriginal)
+	   return(false);
+	if(this->m_dateTimeDigitized != other->m_dateTimeDigitized)
+	   return(false);
+	if(this->m_whiteBalance != other->m_whiteBalance)
+	   return(false);
+	if(this->m_focalLength35 != other->m_focalLength35)
+	   return(false);
+	if(this->m_gps != other->m_gps)
+	   return(false);
+
+	return(true);
+}
+
+bool cPicture::operator==(const cPicture* other) const
+{
+	if(this->m_szFileName != other->m_szFileName)
+		return(false);
+	if(this->m_iFileSize != other->m_iFileSize)
+		return(false);
+	if(this->m_imageWidth != other->m_imageWidth)
+		return(false);
+	if(this->m_imageHeight != other->m_imageHeight)
+		return(false);
+	if(this->m_imageOrientation != other->m_imageOrientation)
+		return(false);
+	if(this->m_cameraMake != other->m_cameraMake)
+			return(false);
+	if(this->m_cameraModel != other->m_cameraModel)
+	   return(false);
+	if(this->m_dateTime != other->m_dateTime)
+	   return(false);
+	if(this->m_fNumber != other->m_fNumber)
+	   return(false);
+	if(this->m_iso != other->m_iso)
+	   return(false);
+	if(this->m_flashID != other->m_flashID)
+	   return(false);
+	if(this->m_focalLength != other->m_focalLength)
+	   return(false);
+	if(this->m_lensMake != other->m_lensMake)
+	   return(false);
+	if(this->m_lensModel != other->m_lensModel)
+	   return(false);
+	if(this->m_exposureTime != other->m_exposureTime)
+	   return(false);
+	if(this->m_exposureBias != other->m_exposureBias)
+	   return(false);
+	if(this->m_exifVersion != other->m_exifVersion)
+	   return(false);
+	if(this->m_dateTimeOriginal != other->m_dateTimeOriginal)
+	   return(false);
+	if(this->m_dateTimeDigitized != other->m_dateTimeDigitized)
+	   return(false);
+	if(this->m_whiteBalance != other->m_whiteBalance)
+	   return(false);
+	if(this->m_focalLength35 != other->m_focalLength35)
+	   return(false);
+	if(this->m_gps != other->m_gps)
+	   return(false);
+
+	return(true);
+}
+
+bool cPicture::operator==(cPicture* other)
+{
+	if(this->m_szFileName != other->m_szFileName)
+		return(false);
+	if(this->m_iFileSize != other->m_iFileSize)
+		return(false);
+	if(this->m_imageWidth != other->m_imageWidth)
+		return(false);
+	if(this->m_imageHeight != other->m_imageHeight)
+		return(false);
+	if(this->m_imageOrientation != other->m_imageOrientation)
+		return(false);
+	if(this->m_cameraMake != other->m_cameraMake)
+			return(false);
+	if(this->m_cameraModel != other->m_cameraModel)
+	   return(false);
+	if(this->m_dateTime != other->m_dateTime)
+	   return(false);
+	if(this->m_fNumber != other->m_fNumber)
+	   return(false);
+	if(this->m_iso != other->m_iso)
+	   return(false);
+	if(this->m_flashID != other->m_flashID)
+	   return(false);
+	if(this->m_focalLength != other->m_focalLength)
+	   return(false);
+	if(this->m_lensMake != other->m_lensMake)
+	   return(false);
+	if(this->m_lensModel != other->m_lensModel)
+	   return(false);
+	if(this->m_exposureTime != other->m_exposureTime)
+	   return(false);
+	if(this->m_exposureBias != other->m_exposureBias)
+	   return(false);
+	if(this->m_exifVersion != other->m_exifVersion)
+	   return(false);
+	if(this->m_dateTimeOriginal != other->m_dateTimeOriginal)
+	   return(false);
+	if(this->m_dateTimeDigitized != other->m_dateTimeDigitized)
+	   return(false);
+	if(this->m_whiteBalance != other->m_whiteBalance)
+	   return(false);
+	if(this->m_focalLength35 != other->m_focalLength35)
+	   return(false);
+	if(this->m_gps != other->m_gps)
+	   return(false);
+
+	return(true);
+}
+
 cPictureList::cPictureList(QObject *parent) :
 	QObject(parent)
 {
@@ -554,6 +754,16 @@ cPicture* cPictureList::find(qint32 iID)
 	for(int i = 0;i < count();i++)
 	{
 		if(at(i)->id() == iID)
+			return(at(i));
+	}
+	return(nullptr);
+}
+
+cPicture* cPictureList::find(cPicture* lpPicture)
+{
+	for(int i = 0;i < count();i++)
+	{
+		if(*lpPicture == *at(i))
 			return(at(i));
 	}
 	return(nullptr);

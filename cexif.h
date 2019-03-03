@@ -317,6 +317,270 @@ public:
 	cEXIFValue*		find(cEXIFTag* lpEXIFTag);
 };
 
+/**
+ * @brief
+ *
+ */
+class cIPTCTag
+{
+public:
+	cIPTCTag(const qint32& iTAGID, const QString& szTAGName, const qint32& iTypeID, const QString& szDescription);
+
+	qint32		m_iTAGID;					/*!< TODO: describe */
+	QString		m_szTAGName;				/*!< TODO: describe */
+	qint32		m_iTypeID;					/*!< TODO: describe */
+	QString		m_szDescription;			/*!< TODO: describe */
+};
+
+Q_DECLARE_METATYPE(cIPTCTag*)
+
+/*!
+ \brief
+
+ \class cIPTCTagList cexif.h "cexif.h"
+*/
+class cIPTCTagList : public QList<cIPTCTag*>
+{
+public:
+	cIPTCTagList();
+
+	/*!
+	 \brief
+
+	 \fn add
+	 \param iTAGID
+	 \param szTAGName
+	 \param iTypeID
+	 \param szDescription
+	 \return cIPTCTag
+	*/
+	cIPTCTag*		add(const qint32& iTAGID, const QString& szTAGName, const qint32& iTypeID, const QString& szDescription);
+	/*!
+	 \brief
+
+	 \fn find
+	 \param iTAGID
+	 \return cIPTCTag
+	*/
+	cIPTCTag*		find(const qint32& iTAGID);
+};
+
+/*!
+ \brief
+
+*/
+class cIPTCValue
+{
+public:
+	cIPTCValue(cIPTCTag* lpIPTCTag);
+
+	/*!
+	 \brief
+
+	 \fn iptcTag
+	 \return cIPTCTag
+	*/
+	cIPTCTag*		iptcTag();
+	/*!
+	 \brief
+
+	 \fn setValue
+	 \param szValue
+	 \param iTypeId
+	 \param iCount
+	*/
+	void			setValue(const QString& szValue, qint32 iTypeId, qint32 iCount = 1);
+	/*!
+	 \brief
+
+	 \fn value
+	 \return QVariant
+	*/
+	QVariant		value();
+	/*!
+	 \brief
+
+	 \fn valueList
+	 \return QList<QVariant>
+	*/
+	QList<QVariant>	valueList();
+
+private:
+	cIPTCTag*		m_lpIPTCTag;				/*!< TODO: describe */
+	QList<QVariant>	m_valueList;				/*!< TODO: describe */
+
+	/*!
+	 \brief
+
+	 \fn convertValue
+	 \param szValue
+	 \param iTypeId
+	 \return QVariant
+	*/
+	QVariant		convertValue(const QString& szValue, qint32 iTypeId);
+};
+
+Q_DECLARE_METATYPE(cIPTCValue*)
+
+/*!
+ \brief
+
+ \class cIPTCValueList cexif.h "cexif.h"
+*/
+class cIPTCValueList : public QList<cIPTCValue*>
+{
+public:
+	cIPTCValueList();
+
+	/*!
+	 \brief
+
+	 \fn add
+	 \param lpIPTCTag
+	 \return cIPTCValue
+	*/
+	cIPTCValue*		add(cIPTCTag* lpIPTCTag);
+	/*!
+	 \brief
+
+	 \fn find
+	 \param lpIPTCTag
+	 \return cIPTCValue
+	*/
+	cIPTCValue*		find(cIPTCTag* lpIPTCTag);
+};
+
+/**
+ * @brief
+ *
+ */
+class cXMPTag
+{
+public:
+	cXMPTag(const QString& szTAGName, const qint32& iTypeID, const QString& szDescription);
+
+	QString		m_szTAGName;				/*!< TODO: describe */
+	qint32		m_iTypeID;					/*!< TODO: describe */
+	QString		m_szDescription;			/*!< TODO: describe */
+};
+
+Q_DECLARE_METATYPE(cXMPTag*)
+
+/*!
+ \brief
+
+ \class cXMPTagList cexif.h "cexif.h"
+*/
+class cXMPTagList : public QList<cXMPTag*>
+{
+public:
+	cXMPTagList();
+
+	/*!
+	 \brief
+
+	 \fn add
+	 \param szTAGName
+	 \param iTypeID
+	 \param szDescription
+	 \return cXMPTag
+	*/
+	cXMPTag*		add(const QString& szTAGName, const qint32& iTypeID, const QString& szDescription);
+	/*!
+	 \brief
+
+	 \fn find
+	 \param szTAGName
+	 \return cXMPTag
+	*/
+	cXMPTag*		find(const QString& szTAGName);
+};
+
+/*!
+ \brief
+
+*/
+class cXMPValue
+{
+public:
+	cXMPValue(cXMPTag* lpXMPTag);
+
+	/*!
+	 \brief
+
+	 \fn exifTag
+	 \return cXMPTag
+	*/
+	cXMPTag*		xmpTag();
+	/*!
+	 \brief
+
+	 \fn setValue
+	 \param szValue
+	 \param iTypeId
+	 \param iCount
+	*/
+	void			setValue(const QString& szValue, qint32 iTypeId, qint32 iCount = 1);
+	/*!
+	 \brief
+
+	 \fn value
+	 \return QVariant
+	*/
+	QVariant		value();
+	/*!
+	 \brief
+
+	 \fn valueList
+	 \return QList<QVariant>
+	*/
+	QList<QVariant>	valueList();
+
+private:
+	cXMPTag*		m_lpXMPTag;					/*!< TODO: describe */
+	QList<QVariant>	m_valueList;				/*!< TODO: describe */
+
+	/*!
+	 \brief
+
+	 \fn convertValue
+	 \param szValue
+	 \param iTypeId
+	 \return QVariant
+	*/
+	QVariant		convertValue(const QString& szValue, qint32 iTypeId);
+};
+
+Q_DECLARE_METATYPE(cXMPValue*)
+
+/*!
+ \brief
+
+ \class cXMPValueList cexif.h "cexif.h"
+*/
+class cXMPValueList : public QList<cXMPValue*>
+{
+public:
+	cXMPValueList();
+
+	/*!
+	 \brief
+
+	 \fn add
+	 \param lpXMPTag
+	 \return cXMPValue
+	*/
+	cXMPValue*		add(cXMPTag* lpXMPTag);
+	/*!
+	 \brief
+
+	 \fn find
+	 \param lpXMPTag
+	 \return cXMPValue
+	*/
+	cXMPValue*		find(cXMPTag* lpXMPTag);
+};
+
 /*!
  \brief
 
@@ -507,6 +771,8 @@ public:
 
 private:
 	cEXIFValueList			m_exifValueList;				/*!< TODO: describe */
+	cIPTCValueList			m_iptcValueList;				/*!< TODO: describe */
+	cXMPValueList			m_xmpValueList;					/*!< TODO: describe */
 	qint32					m_iWidth;						/*!< TODO: describe */
 	qint32					m_iHeight;						/*!< TODO: describe */
 	QString					m_szFileName;					/*!< TODO: describe */
@@ -518,15 +784,35 @@ private:
 	cEXIFFlashList			m_exifFlashList;				/*!< TODO: describe */
 	cEXIFTagList			m_exifTagList;					/*!< TODO: describe */
 
+	cIPTCTagList			m_iptcTagList;					/*!< TODO: describe */
+
+	cXMPTagList				m_xmpTagList;					/*!< TODO: describe */
+
 	/*!
 	 \brief
 
-	 \fn getTag
+	 \fn getEXIFTag
 	 \param iTAGID
 	 \param iIFDID
 	 \return QVariant
 	*/
-	QVariant				getTag(qint32 iTAGID, qint32 iIFDID);
+	QVariant				getEXIFTag(qint32 iTAGID, qint32 iIFDID);
+	/*!
+	 \brief
+
+	 \fn getIPTCTag
+	 \param iTAGID
+	 \return QVariant
+	*/
+	QVariant				getIPTCTag(qint32 iTAGID);
+	/*!
+	 \brief
+
+	 \fn getXMPTag
+	 \param szTAGName
+	 \return QVariant
+	*/
+	QVariant				getXMPTag(const QString& szTAGName);
 	/*!
 	 \brief
 

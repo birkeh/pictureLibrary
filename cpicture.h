@@ -443,6 +443,42 @@ public:
 	*/
 	QImage					thumbnail();
 
+	/*!
+	 \brief
+
+	 \fn operator==
+	 \param other
+	 \return bool
+	*/
+	bool					operator==(const cPicture& other) const;
+
+	/*!
+	 \brief
+
+	 \fn operator==
+	 \param other
+	 \return bool
+	*/
+	bool					operator==(const cPicture*& other) const;
+
+	/*!
+	 \brief
+
+	 \fn operator==
+	 \param other
+	 \return bool
+	*/
+	bool					operator==(const cPicture* other) const;
+
+	/*!
+	 \brief
+
+	 \fn operator==
+	 \param other
+	 \return bool
+	*/
+	bool					operator==(cPicture* other);
+
 signals:
 
 public slots:
@@ -523,6 +559,7 @@ public:
 	 \return bool
 	*/
 	bool					add(cPicture* lpPicture, bool bNoCheck = false);
+
 	/*!
 	 \brief
 
@@ -531,6 +568,14 @@ public:
 	 \return cPicture
 	*/
 	cPicture*				find(qint32 iID);
+	/*!
+	 \brief
+
+	 \fn find
+	 \param iID
+	 \return cPicture
+	*/
+	cPicture*				find(cPicture* lpPicture);
 
 signals:
 

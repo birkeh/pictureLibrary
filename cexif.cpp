@@ -32,66 +32,179 @@ bool cEXIF::fromFile(const QString& szFileName)
 
 	m_szFileName	= "";
 
-	Exiv2::Image::UniquePtr			image		= Exiv2::ImageFactory::open(szFileName.toLocal8Bit().toStdString());
-	if(!image.get())
-		return(false);
-
-	image->readMetadata();
-
-	Exiv2::ExifData&				exifData	= image->exifData();
-
-	m_iWidth		= image->pixelWidth();
-	m_iHeight		= image->pixelHeight();
-	m_szFileName	= szFileName;
-
-	if(!exifData.empty())
+	try
 	{
-		Exiv2::ExifData::const_iterator	end			= exifData.end();
-		for(Exiv2::ExifData::const_iterator i = exifData.begin(); i != end; ++i)
-		{
-			cEXIFTag*	lpTag	= m_exifTagList.find(i->tag(), i->ifdId());
+		Exiv2::Image::UniquePtr	image		= Exiv2::ImageFactory::open(szFileName.toLocal8Bit().toStdString());
+		if(!image.get())
+			return(false);
 
-			if(lpTag)
+		image->readMetadata();
+
+		Exiv2::ExifData&		exifData	= image->exifData();
+		Exiv2::IptcData&		iptcData	= image->iptcData();
+		Exiv2::XmpData&			xmpData		= image->xmpData();
+
+		m_iWidth		= image->pixelWidth();
+		m_iHeight		= image->pixelHeight();
+
+		m_szFileName	= szFileName;
+
+		if(!iptcData.empty())
+		{
+			Exiv2::IptcData::const_iterator	end		= iptcData.end();
+
+			for(Exiv2::IptcData::const_iterator i = iptcData.begin(); i != end; ++i)
 			{
-				cEXIFValue*	lpValue	= m_exifValueList.add(lpTag);
-				if(lpValue)
-					lpValue->setValue(QString::fromStdString(i->value().toString()), i->typeId(), i->count());
+				cIPTCTag*	lpTag	= m_iptcTagList.find(i->tag());
+
+				if(lpTag)
+				{
+					cIPTCValue*	lpValue	= m_iptcValueList.add(lpTag);
+					if(lpValue)
+						lpValue->setValue(QString::fromStdString(i->value().toString()), i->typeId(), i->count());
+				}
+			}
+
+			Exiv2::PreviewManager			previewManager(*image);
+			Exiv2::PreviewPropertiesList	previewPropertiesList	= previewManager.getPreviewProperties();
+
+			for(Exiv2::PreviewPropertiesList::const_iterator i = previewPropertiesList.begin();i != previewPropertiesList.end();i++)
+			{
+				Exiv2::PreviewImage				previewImage			= previewManager.getPreviewImage(*i);
+				QImage							image;
+				image.loadFromData(static_cast<const uchar*>(previewImage.pData()), static_cast<qint32>(previewImage.size()));
+
+				QTransform	rotation;
+				int			angle	= 0;
+
+				switch(imageOrientation())
+				{
+				case 8:
+					angle	= 270;
+					break;
+				case 3:
+					angle	= 180;
+					break;
+				case 6:
+					angle	=  90;
+					break;
+				}
+
+				if(angle != 0)
+				{
+					rotation.rotate(angle);
+					image	= image.transformed(rotation);
+				}
+
+				m_previewList.append(image);
 			}
 		}
 
-		Exiv2::PreviewManager			previewManager(*image);
-		Exiv2::PreviewPropertiesList	previewPropertiesList	= previewManager.getPreviewProperties();
-
-		for(Exiv2::PreviewPropertiesList::const_iterator i = previewPropertiesList.begin();i != previewPropertiesList.end();i++)
+		if(!xmpData.empty())
 		{
-			Exiv2::PreviewImage				previewImage			= previewManager.getPreviewImage(*i);
-			QImage							image;
-			image.loadFromData(static_cast<const uchar*>(previewImage.pData()), static_cast<qint32>(previewImage.size()));
+			Exiv2::XmpData::const_iterator	end		= xmpData.end();
 
-			QTransform	rotation;
-			int			angle	= 0;
-
-			switch(imageOrientation())
+			for(Exiv2::XmpData::const_iterator i = xmpData.begin(); i != end; ++i)
 			{
-			case 8:
-				angle	= 270;
-				break;
-			case 3:
-				angle	= 180;
-				break;
-			case 6:
-				angle	=  90;
-				break;
+				cXMPTag*	lpTag	= m_xmpTagList.find(QString::fromStdString(i->key()));
+
+				if(lpTag)
+				{
+					cXMPValue*	lpValue	= m_xmpValueList.add(lpTag);
+					if(lpValue)
+						lpValue->setValue(QString::fromStdString(i->value().toString()), i->typeId(), i->count());
+				}
 			}
 
-			if(angle != 0)
-			{
-				rotation.rotate(angle);
-				image	= image.transformed(rotation);
-			}
+			Exiv2::PreviewManager			previewManager(*image);
+			Exiv2::PreviewPropertiesList	previewPropertiesList	= previewManager.getPreviewProperties();
 
-			m_previewList.append(image);
+			for(Exiv2::PreviewPropertiesList::const_iterator i = previewPropertiesList.begin();i != previewPropertiesList.end();i++)
+			{
+				Exiv2::PreviewImage				previewImage			= previewManager.getPreviewImage(*i);
+				QImage							image;
+				image.loadFromData(static_cast<const uchar*>(previewImage.pData()), static_cast<qint32>(previewImage.size()));
+
+				QTransform	rotation;
+				int			angle	= 0;
+
+				switch(imageOrientation())
+				{
+				case 8:
+					angle	= 270;
+					break;
+				case 3:
+					angle	= 180;
+					break;
+				case 6:
+					angle	=  90;
+					break;
+				}
+
+				if(angle != 0)
+				{
+					rotation.rotate(angle);
+					image	= image.transformed(rotation);
+				}
+
+				m_previewList.append(image);
+			}
 		}
+
+		if(!exifData.empty())
+		{
+			Exiv2::ExifData::const_iterator	end			= exifData.end();
+			for(Exiv2::ExifData::const_iterator i = exifData.begin(); i != end; ++i)
+			{
+				cEXIFTag*	lpTag	= m_exifTagList.find(i->tag(), i->ifdId());
+
+				if(lpTag)
+				{
+					cEXIFValue*	lpValue	= m_exifValueList.add(lpTag);
+					if(lpValue)
+						lpValue->setValue(QString::fromStdString(i->value().toString()), i->typeId(), i->count());
+				}
+			}
+
+			Exiv2::PreviewManager			previewManager(*image);
+			Exiv2::PreviewPropertiesList	previewPropertiesList	= previewManager.getPreviewProperties();
+
+			for(Exiv2::PreviewPropertiesList::const_iterator i = previewPropertiesList.begin();i != previewPropertiesList.end();i++)
+			{
+				Exiv2::PreviewImage				previewImage			= previewManager.getPreviewImage(*i);
+				QImage							image;
+				image.loadFromData(static_cast<const uchar*>(previewImage.pData()), static_cast<qint32>(previewImage.size()));
+
+				QTransform	rotation;
+				int			angle	= 0;
+
+				switch(imageOrientation())
+				{
+				case 8:
+					angle	= 270;
+					break;
+				case 3:
+					angle	= 180;
+					break;
+				case 6:
+					angle	=  90;
+					break;
+				}
+
+				if(angle != 0)
+				{
+					rotation.rotate(angle);
+					image	= image.transformed(rotation);
+				}
+
+				m_previewList.append(image);
+			}
+		}
+	}
+	catch (Exiv2::AnyError& e)
+	{
+		qDebug() << "Caught Exiv2 exception '" << e.what();
+		return(false);
 	}
 
 	if(!m_previewList.count())
@@ -174,7 +287,12 @@ qint32 cEXIF::imageWidth()
 	if(m_iWidth)
 		return(m_iWidth);
 
-	return(getTag(0x0100, 1).value<qint32>());
+	qint32	iWidth	= getEXIFTag(0x0100, 1).value<qint32>();
+
+	if(iWidth)
+		return(iWidth);
+
+	return(getXMPTag("Xmp.video.Width").value<qint32>());
 }
 
 qint32 cEXIF::imageHeight()
@@ -182,69 +300,91 @@ qint32 cEXIF::imageHeight()
 	if(m_iHeight)
 		return(m_iHeight);
 
-	return(getTag(0x0101, 1).value<qint32>());
+	qint32	iHeight	= getEXIFTag(0x0101, 1).value<qint32>();
+
+	if(iHeight)
+		return(iHeight);
+
+	return(getXMPTag("Xmp.video.Height").value<qint32>());
 }
 
 qint16 cEXIF::imageOrientation()
 {
-	return(getTag(0x0112, 1).value<qint16>());
+	return(getEXIFTag(0x0112, 1).value<qint16>());
 }
 
 QString cEXIF::cameraMake()
 {
-	return(getTag(0x010f, 1).value<QString>());
+	QString	szCameraMake	= getEXIFTag(0x010f, 1).toString();
+
+	if(!szCameraMake.isEmpty())
+		return(szCameraMake);
+
+	return(getXMPTag("Xmp.video.MajorBrand").toString());
 }
 
 QString cEXIF::cameraModel()
 {
-	return(getTag(0x0110, 1).value<QString>());
+	QString	szCameraModel	= getEXIFTag(0x0110, 1).toString();
+
+	if(!szCameraModel.isEmpty())
+		return(szCameraModel);
+
+	return(getXMPTag("Xmp.video.MajorBrand").toString());
 }
 
 QDateTime cEXIF::dateTime()
 {
-	QDateTime	dateTime	= QDateTime::fromString(getTag(0x0132, 1).value<QString>(), "yyyy:MM:dd hh:mm:ss");
+	QDateTime	dateTime	= QDateTime::fromString(getEXIFTag(0x0132, 1).value<QString>(), "yyyy:MM:dd hh:mm:ss");
+	if(dateTime.isValid())
+		return(dateTime);
 
-	return(dateTime);
+	dateTime	= QDateTime::fromString(getXMPTag("Xmp.video.DateTimeDigitized").toString(), "yyyy-MM-ddThh:mm:ssZ");
+	if(dateTime.isValid())
+		return(dateTime);
+
+	QFileInfo	info(m_szFileName);
+	return(info.birthTime());
 }
 
 QString cEXIF::fNumber()
 {
-	return(getTag(0x829d, 5).value<QString>());
+	return(getEXIFTag(0x829d, 5).value<QString>());
 }
 
 qint32 cEXIF::iso()
 {
-	return(getTag(0x8827, 5).value<qint32>());
+	return(getEXIFTag(0x8827, 5).value<qint32>());
 }
 
 QString cEXIF::flash()
 {
-	return(m_exifFlashList.flash(getTag(0x9209, 5).value<qint32>()));
+	return(m_exifFlashList.flash(getEXIFTag(0x9209, 5).value<qint32>()));
 }
 
 qint32 cEXIF::flashID()
 {
-	return(getTag(0x9209, 5).value<qint32>());
+	return(getEXIFTag(0x9209, 5).value<qint32>());
 }
 
 qreal cEXIF::focalLength()
 {
-	return(getTag(0x920a, 5).value<qreal>());
+	return(getEXIFTag(0x920a, 5).value<qreal>());
 }
 
 QString cEXIF::lensMake()
 {
-	return(getTag(0xa433, 5).value<QString>());
+	return(getEXIFTag(0xa433, 5).value<QString>());
 }
 
 QString cEXIF::lensModel()
 {
-	return(getTag(0xa434, 5).value<QString>());
+	return(getEXIFTag(0xa434, 5).value<QString>());
 }
 
 QString cEXIF::exposureTime()
 {
-	qreal	value	= getTag(0x829a, 5).value<qreal>();
+	qreal	value	= getEXIFTag(0x829a, 5).value<qreal>();
 
 	if(value == 0.0)
 		return("error");
@@ -257,32 +397,32 @@ QString cEXIF::exposureTime()
 
 qint32 cEXIF::exposureBias()
 {
-	return(getTag(0x9204, 5).value<qint32>());
+	return(getEXIFTag(0x9204, 5).value<qint32>());
 }
 
 QString cEXIF::exifVersion()
 {
-	return(getTag(0x9000, 5).value<QString>());
+	return(getEXIFTag(0x9000, 5).value<QString>());
 }
 
 QDateTime cEXIF::dateTimeOriginal()
 {
-	return(QDateTime::fromString(getTag(0x9003, 5).value<QString>(), "yyyy:MM:dd hh:mm:ss"));
+	return(QDateTime::fromString(getEXIFTag(0x9003, 5).value<QString>(), "yyyy:MM:dd hh:mm:ss"));
 }
 
 QDateTime cEXIF::dateTimeDigitized()
 {
-	return(QDateTime::fromString(getTag(0x9004, 5).value<QString>(), "yyyy:MM:dd hh:mm:ss"));
+	return(QDateTime::fromString(getEXIFTag(0x9004, 5).value<QString>(), "yyyy:MM:dd hh:mm:ss"));
 }
 
 qint32 cEXIF::whiteBalance()
 {
-	return(getTag(0xa403, 5).value<qint32>());
+	return(getEXIFTag(0xa403, 5).value<qint32>());
 }
 
 qreal cEXIF::focalLength35()
 {
-	return(getTag(0xa405, 5).value<qreal>());
+	return(getEXIFTag(0xa405, 5).value<qreal>());
 }
 
 QString cEXIF::gps()
@@ -295,7 +435,7 @@ QString cEXIF::gps()
 	if(eList.count() != 3)
 		return("");
 
-	QString szGPS	= QString("%1 %2° %3' %4\" %5 %6° %7' %8\"").arg(getTag(0x0001, 6).value<QString>()).arg(nList[0].value<QString>()).arg(nList[1].value<QString>()).arg(nList[2].value<QString>()).arg(getTag(0x0001, 6).value<QString>()).arg(eList[0].value<QString>()).arg(eList[1].value<QString>()).arg(eList[2].value<QString>());
+	QString szGPS	= QString("%1 %2° %3' %4\" %5 %6° %7' %8\"").arg(getEXIFTag(0x0001, 6).value<QString>()).arg(nList[0].value<QString>()).arg(nList[1].value<QString>()).arg(nList[2].value<QString>()).arg(getEXIFTag(0x0001, 6).value<QString>()).arg(eList[0].value<QString>()).arg(eList[1].value<QString>()).arg(eList[2].value<QString>());
 	return(szGPS);
 }
 
@@ -314,7 +454,7 @@ QImage cEXIF::thumbnail()
 	return(m_thumbnail);
 }
 
-QVariant cEXIF::getTag(qint32 iTAGID, qint32 iIFDID)
+QVariant cEXIF::getEXIFTag(qint32 iTAGID, qint32 iIFDID)
 {
 	cEXIFTag*	lpTag	= m_exifTagList.find(iTAGID, iIFDID);
 
@@ -322,6 +462,36 @@ QVariant cEXIF::getTag(qint32 iTAGID, qint32 iIFDID)
 		return(QVariant());
 
 	cEXIFValue*	lpValue	= m_exifValueList.find(lpTag);
+
+	if(!lpValue)
+		return(QVariant());
+
+	return(lpValue->value());
+}
+
+QVariant cEXIF::getIPTCTag(qint32 iTAGID)
+{
+	cIPTCTag*	lpTag	= m_iptcTagList.find(iTAGID);
+
+	if(!lpTag)
+		return(QVariant());
+
+	cIPTCValue*	lpValue	= m_iptcValueList.find(lpTag);
+
+	if(!lpValue)
+		return(QVariant());
+
+	return(lpValue->value());
+}
+
+QVariant cEXIF::getXMPTag(const QString& szTAGName)
+{
+	cXMPTag*	lpTag	= m_xmpTagList.find(szTAGName);
+
+	if(!lpTag)
+		return(QVariant());
+
+	cXMPValue*	lpValue	= m_xmpValueList.find(lpTag);
 
 	if(!lpValue)
 		return(QVariant());
@@ -1011,6 +1181,366 @@ cEXIFValue* cEXIFValueList::find(cEXIFTag* lpEXIFTag)
 	{
 		cEXIFValue*	lpValue	= at(x);
 		if(lpValue->exifTag() == lpEXIFTag)
+			return(lpValue);
+	}
+	return(nullptr);
+}
+
+cIPTCTag::cIPTCTag(const qint32& iTAGID, const QString& szTAGName, const qint32& iTypeID, const QString& szDescription) :
+	m_iTAGID(iTAGID),
+	m_szTAGName(szTAGName),
+	m_iTypeID(iTypeID),
+	m_szDescription(szDescription)
+{
+}
+
+cIPTCTagList::cIPTCTagList()
+{
+//	add(0x000b, QObject::tr("ProcessingSoftware"), 1, 2, QObject::tr("The name and version of the software used to post-process the picture."));
+}
+
+cIPTCTag* cIPTCTagList::add(const qint32& iTAGID, const QString& szTAGName, const qint32& iTypeID, const QString& szDescription)
+{
+	cIPTCTag*	lpNew	= find(iTAGID);
+
+	if(lpNew)
+		return(nullptr);
+
+	lpNew	= new cIPTCTag(iTAGID, szTAGName, iTypeID, szDescription);
+	append(lpNew);
+	return(lpNew);
+}
+
+cIPTCTag* cIPTCTagList::find(const qint32& iTAGID)
+{
+	for(int x = 0;x < count();x++)
+	{
+		cIPTCTag*	lpTag	= at(x);
+
+		if(lpTag->m_iTAGID == iTAGID)
+			return(lpTag);
+	}
+	return(nullptr);
+}
+
+cIPTCTag* cIPTCValue::iptcTag()
+{
+	return(m_lpIPTCTag);
+}
+
+cIPTCValue::cIPTCValue(cIPTCTag* lpIPTCTag) :
+	m_lpIPTCTag(lpIPTCTag)
+{
+}
+
+QVariant cIPTCValue::convertValue(const QString& szValue, qint32 iTypeId)
+{
+	QVariant	variant;
+
+	switch(iTypeId)
+	{
+	case 1:	//byte
+	case 3: //short
+	case 4: //long
+	case 8: //signed short
+		variant = QVariant::fromValue(szValue.toLong());
+		break;
+	case 5: //rational
+	case 10: //signed rational
+	case 11: //float
+		if(szValue.contains("/"))
+		{
+			QStringList	tmp	= szValue.split("/");
+			variant = QVariant::fromValue(tmp[0].toDouble()/tmp[1].toDouble());
+		}
+		else
+			variant	= QVariant::fromValue(szValue.toDouble());
+		break;
+	default:
+		variant	= szValue;
+	}
+	return(variant);
+}
+
+void cIPTCValue::setValue(const QString& szValue, qint32 iTypeId, qint32 iCount)
+{
+	if(iCount == 1 || iTypeId == 2 || iTypeId == 7)
+	{
+		m_valueList.append(convertValue(szValue, iTypeId));
+		return;
+	}
+
+	QStringList	valueList	= szValue.split(" ");
+
+	if(valueList.count() != iCount)
+		return;
+
+	for(int x = 0;x < iCount;x++)
+		m_valueList.append(convertValue(valueList[x], iTypeId));
+}
+
+QVariant cIPTCValue::value()
+{
+	if(m_valueList.count())
+		return(m_valueList[0]);
+
+	return(QVariant());
+}
+
+QList<QVariant> cIPTCValue::valueList()
+{
+	return(m_valueList);
+}
+
+cIPTCValueList::cIPTCValueList()
+{
+}
+
+cIPTCValue* cIPTCValueList::add(cIPTCTag* lpIPTCTag)
+{
+	cIPTCValue*	lpNew	= find(lpIPTCTag);
+
+	if(lpNew)
+		return(nullptr);
+
+	lpNew	= new cIPTCValue(lpIPTCTag);
+
+	append(lpNew);
+	return(lpNew);
+}
+
+cIPTCValue* cIPTCValueList::find(cIPTCTag* lpIPTCTag)
+{
+	for(int x = 0;x < count();x++)
+	{
+		cIPTCValue*	lpValue	= at(x);
+		if(lpValue->iptcTag() == lpIPTCTag)
+			return(lpValue);
+	}
+	return(nullptr);
+}
+
+cXMPTag::cXMPTag(const QString& szTAGName, const qint32& iTypeID, const QString& szDescription) :
+	m_szTAGName(szTAGName),
+	m_iTypeID(iTypeID),
+	m_szDescription(szDescription)
+{
+}
+
+cXMPTagList::cXMPTagList()
+{
+	add("Xmp.video.FileSize", 65541, QObject::tr("File Size"));
+	add("Xmp.video.FileName", 65541, QObject::tr("File Name"));
+	add("Xmp.video.MimeType", 65541, QObject::tr("Mime Type"));
+	add("Xmp.video.Container", 65541, QObject::tr("Container Type"));
+	add("Xmp.video.FileType", 65541, QObject::tr("File Type"));
+	add("Xmp.video.MicroSecPerFrame", 65541, QObject::tr("Micro Seconds Per Frame"));
+	add("Xmp.video.MaxDataRate", 65541, QObject::tr("Maximum Data Rate"));
+	add("Xmp.video.FrameCount", 65541, QObject::tr("Frame Count"));
+	add("Xmp.video.StreamCount", 65541, QObject::tr("Stream Count"));
+	add("Xmp.video.Width", 65541, QObject::tr("Video Width"));
+	add("Xmp.video.Height", 65541, QObject::tr("Video Height"));
+	add("Xmp.video.AspectRatio", 65541, QObject::tr("Video Aspect Ratio"));
+	add("Xmp.video.FileDataRate", 65541, QObject::tr("File Data Rate"));
+	add("Xmp.video.Duration", 65541, QObject::tr("Duration"));
+	add("Xmp.video.Codec", 65541, QObject::tr("Video Codec"));
+	add("Xmp.video.FrameRate", 65541, QObject::tr("Video Frame Rate"));
+	add("Xmp.video.VideoQuality", 65541, QObject::tr("Video Quality"));
+	add("Xmp.video.VideoSampleSize", 65541, QObject::tr("Video Sample Size"));
+	add("Xmp.video.Planes", 65541, QObject::tr("Planes"));
+	add("Xmp.video.PixelDepth", 65541, QObject::tr("Video Pixel Depth"));
+	add("Xmp.video.Compressor", 65541, QObject::tr("Compressor"));
+	add("Xmp.video.ImageLength", 65541, QObject::tr("Image Length"));
+	add("Xmp.video.PixelPerMeterX", 65541, QObject::tr("Pixels Per Meter X"));
+	add("Xmp.video.PixelPerMeterY", 65541, QObject::tr("Pixels Per Meter Y"));
+	add("Xmp.video.NumOfColours", 65541, QObject::tr("Number Of Colours"));
+	add("Xmp.video.NumOfImpColours", 65541, QObject::tr("Number Of Important Colours"));
+	add("Xmp.audio.Codec", 65541, QObject::tr("Audio Codec"));
+	add("Xmp.audio.SampleRate", 65541, QObject::tr("Audio Sample Rate"));
+	add("Xmp.audio.SampleCount", 65541, QObject::tr("Audio Sample Count"));
+	add("Xmp.audio.Compressor", 65541, QObject::tr("Audio Compressor"));
+	add("Xmp.audio.ChannelType", 65541, QObject::tr("Audio Channel Type"));
+	add("Xmp.audio.SampleType", 65541, QObject::tr("Audio Sample Type"));
+	add("Xmp.audio.BitsPerSample", 65541, QObject::tr("Bits Per Sample/ Bit Rate"));
+	add("Xmp.video.TotalFrameCount", 65541, QObject::tr("Total Frame Count"));
+	add("Xmp.video.DateTimeDigitized", 65541, QObject::tr("Date and Time Digitized"));
+	add("Xmp.video.Junk", 65541, QObject::tr("Junk Data"));
+	add("Xmp.video.MajorBrand", 65541, QObject::tr("QTime Major FileType Brand"));
+	add("Xmp.video.MinorVersion", 65541, QObject::tr("QTime Minor FileType Version"));
+	add("Xmp.video.CompatibleBrands", 65544, QObject::tr("QTime Compatible FileType Brand"));
+	add("Xmp.video.CompressorVersion", 65541, QObject::tr("Compressor Version"));
+	add("Xmp.video.HandlerType", 65541, QObject::tr("Handler Type"));
+	add("Xmp.video.PreviewDate", 65541, QObject::tr("Preview Date"));
+	add("Xmp.video.PreviewVersion", 65541, QObject::tr("Preview Version"));
+	add("Xmp.video.PreviewAtomType", 65541, QObject::tr("Preview Atom Type"));
+	add("Xmp.video.MovieHeaderVersion", 65541, QObject::tr("Movie Header Version"));
+	add("Xmp.video.DateUTC", 65541, QObject::tr("Date"));
+	add("Xmp.video.ModificationDate", 65541, QObject::tr("Modification Date"));
+	add("Xmp.video.TimeScale", 65541, QObject::tr("Time Scale"));
+	add("Xmp.video.PreferredRate", 65541, QObject::tr("Preferred Rate"));
+	add("Xmp.video.PreferredVolume", 65541, QObject::tr("Preferred Volume"));
+	add("Xmp.video.PreviewTime", 65541, QObject::tr("Preview Time"));
+	add("Xmp.video.PreviewDuration", 65541, QObject::tr("Preview Duration"));
+	add("Xmp.video.PosterTime", 65541, QObject::tr("Poster Time"));
+	add("Xmp.video.SelectionTime", 65541, QObject::tr("Selection Time"));
+	add("Xmp.video.SelectionDuration", 65541, QObject::tr("Selection Duration"));
+	add("Xmp.video.CurrentTime", 65541, QObject::tr("Current Time"));
+	add("Xmp.video.NextTrackID", 65541, QObject::tr("Next Track ID"));
+	add("Xmp.video.TrackHeaderVersion", 65541, QObject::tr("Track Header Version"));
+	add("Xmp.video.TrackCreateDate", 65541, QObject::tr("Video Track Create Date"));
+	add("Xmp.video.TrackModifyDate", 65541, QObject::tr("Video Track Modify Date"));
+	add("Xmp.video.TrackID", 65541, QObject::tr("Track ID"));
+	add("Xmp.video.TrackDuration", 65541, QObject::tr("Video Track Duration"));
+	add("Xmp.video.TrackLayer", 65541, QObject::tr("Video Track Layer"));
+	add("Xmp.video.TrackVolume", 65541, QObject::tr("Track Volume"));
+	add("Xmp.video.MediaHeaderVersion", 65541, QObject::tr("Media Header Version"));
+	add("Xmp.video.MediaCreateDate", 65541, QObject::tr("Media Track Create Date"));
+	add("Xmp.video.MediaModifyDate", 65541, QObject::tr("Media Track Modify Date"));
+	add("Xmp.video.MediaTimeScale", 65541, QObject::tr("Media Time Scale"));
+	add("Xmp.video.MediaDuration", 65541, QObject::tr("Media Track Duration"));
+	add("Xmp.video.MediaLangCode", 65541, QObject::tr("Media Language Code"));
+	add("Xmp.video.HandlerClass", 65541, QObject::tr("Handler Class"));
+	add("Xmp.video.GraphicsMode", 65541, QObject::tr("Graphics Mode"));
+	add("Xmp.video.OpColor", 65541, QObject::tr("Operation Colours"));
+	add("Xmp.video.SourceImageWidth", 65541, QObject::tr("Source Image Width"));
+	add("Xmp.video.SourceImageHeight", 65541, QObject::tr("Source Image Height"));
+	add("Xmp.video.XResolution", 65541, QObject::tr("X Resolution"));
+	add("Xmp.video.YResolution", 65541, QObject::tr("Y Resolution"));
+	add("Xmp.video.BitDepth", 65541, QObject::tr("Bit Depth"));
+	add("Xmp.audio.TrackHeaderVersion", 65541, QObject::tr("Track Header Version"));
+	add("Xmp.audio.TrackCreateDate", 65541, QObject::tr("Audio Track Create Date"));
+	add("Xmp.audio.TrackModifyDate", 65541, QObject::tr("Audio Track Modify Date"));
+	add("Xmp.audio.TrackID", 65541, QObject::tr("Track ID"));
+	add("Xmp.audio.TrackDuration", 65541, QObject::tr("Audio Track Duration"));
+	add("Xmp.audio.TrackLayer", 65541, QObject::tr("Audio Track Layer"));
+	add("Xmp.audio.MediaHeaderVersion", 65541, QObject::tr("Media Header Version"));
+	add("Xmp.audio.MediaCreateDate", 65541, QObject::tr("Media Track Create Date"));
+	add("Xmp.audio.MediaModifyDate", 65541, QObject::tr("Media Track Modify Date"));
+	add("Xmp.audio.MediaTimeScale", 65541, QObject::tr("Media Time Scale"));
+	add("Xmp.audio.MediaDuration", 65541, QObject::tr("Media Track Duration"));
+	add("Xmp.audio.MediaLangCode", 65541, QObject::tr("Media Language Code"));
+	add("Xmp.audio.HandlerClass", 65541, QObject::tr("Handler Class"));
+	add("Xmp.audio.HandlerType", 65541, QObject::tr("Handler Type"));
+	add("Xmp.audio.Balance", 65541, QObject::tr("Balance"));
+}
+
+cXMPTag* cXMPTagList::add(const QString& szTAGName, const qint32& iTypeID, const QString& szDescription)
+{
+	cXMPTag*	lpNew	= find(szTAGName);
+
+	if(lpNew)
+		return(nullptr);
+
+	lpNew	= new cXMPTag(szTAGName, iTypeID, szDescription);
+	append(lpNew);
+	return(lpNew);
+}
+
+cXMPTag* cXMPTagList::find(const QString& szTAGName)
+{
+	for(int x = 0;x < count();x++)
+	{
+		cXMPTag*	lpTag	= at(x);
+
+		if(lpTag->m_szTAGName == szTAGName)
+			return(lpTag);
+	}
+	return(nullptr);
+}
+
+cXMPTag* cXMPValue::xmpTag()
+{
+	return(m_lpXMPTag);
+}
+
+cXMPValue::cXMPValue(cXMPTag* lpXMPTag) :
+	m_lpXMPTag(lpXMPTag)
+{
+}
+
+QVariant cXMPValue::convertValue(const QString& szValue, qint32 iTypeId)
+{
+	QVariant	variant;
+
+	switch(iTypeId)
+	{
+	case 1:	//byte
+	case 3: //short
+	case 4: //long
+	case 8: //signed short
+		variant = QVariant::fromValue(szValue.toLong());
+		break;
+	case 5: //rational
+	case 10: //signed rational
+	case 11: //float
+		if(szValue.contains("/"))
+		{
+			QStringList	tmp	= szValue.split("/");
+			variant = QVariant::fromValue(tmp[0].toDouble()/tmp[1].toDouble());
+		}
+		else
+			variant	= QVariant::fromValue(szValue.toDouble());
+		break;
+	default:
+		variant	= szValue;
+	}
+	return(variant);
+}
+
+void cXMPValue::setValue(const QString& szValue, qint32 iTypeId, qint32 iCount)
+{
+//	if(iCount == 1 || iTypeId == 2 || iTypeId == 7)
+//	{
+//		m_valueList.append(convertValue(szValue, iTypeId));
+//		return;
+//	}
+
+//	QStringList	valueList	= szValue.split(" ");
+
+//	if(valueList.count() != iCount)
+//		return;
+
+//	for(int x = 0;x < iCount;x++)
+//		m_valueList.append(convertValue(valueList[x], iTypeId));
+	m_valueList.append(convertValue(szValue, iTypeId));
+}
+
+QVariant cXMPValue::value()
+{
+	if(m_valueList.count())
+		return(m_valueList[0]);
+
+	return(QVariant());
+}
+
+QList<QVariant> cXMPValue::valueList()
+{
+	return(m_valueList);
+}
+
+cXMPValueList::cXMPValueList()
+{
+}
+
+cXMPValue* cXMPValueList::add(cXMPTag* lpXMPTag)
+{
+	cXMPValue*	lpNew	= find(lpXMPTag);
+
+	if(lpNew)
+		return(nullptr);
+
+	lpNew	= new cXMPValue(lpXMPTag);
+
+	append(lpNew);
+	return(lpNew);
+}
+
+cXMPValue* cXMPValueList::find(cXMPTag* lpXMPTag)
+{
+	for(int x = 0;x < count();x++)
+	{
+		cXMPValue*	lpValue	= at(x);
+		if(lpValue->xmpTag() == lpXMPTag)
 			return(lpValue);
 	}
 	return(nullptr);

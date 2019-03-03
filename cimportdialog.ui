@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>697</width>
-    <height>510</height>
+    <height>536</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,7 +15,7 @@
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0">
-    <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0,1,0,0,0">
+    <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1,1,1000,1,1,1">
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
@@ -40,11 +40,39 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
-        <widget class="QCheckBox" name="m_lpRecursive">
-         <property name="text">
-          <string>recursive</string>
-         </property>
-        </widget>
+        <layout class="QVBoxLayout" name="verticalLayout_5">
+         <item>
+          <widget class="QCheckBox" name="m_lpRecursive">
+           <property name="text">
+            <string>recursive</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_6">
+         <item>
+          <widget class="QCheckBox" name="m_lpPictures">
+           <property name="text">
+            <string>pictures</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="m_lpVideos">
+           <property name="text">
+            <string>videos</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
        <item>
         <layout class="QVBoxLayout" name="verticalLayout">
@@ -194,7 +222,7 @@
            <x>0</x>
            <y>0</y>
            <width>69</width>
-           <height>316</height>
+           <height>342</height>
           </rect>
          </property>
          <layout class="QGridLayout" name="gridLayout">
@@ -257,6 +285,22 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>m_lpPath</tabstop>
+  <tabstop>m_lpPathSelect</tabstop>
+  <tabstop>m_lpRecursive</tabstop>
+  <tabstop>m_lpPictures</tabstop>
+  <tabstop>m_lpVideos</tabstop>
+  <tabstop>m_lpCopy</tabstop>
+  <tabstop>m_lpMove</tabstop>
+  <tabstop>m_lpDetectHDR</tabstop>
+  <tabstop>m_lpDetectJPG_RAW</tabstop>
+  <tabstop>m_lpRead</tabstop>
+  <tabstop>m_lpImport</tabstop>
+  <tabstop>m_lpFolderView</tabstop>
+  <tabstop>m_lpThumbnailView</tabstop>
+  <tabstop>scrollArea</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

@@ -10,7 +10,7 @@ QMAKE_TARGET_PRODUCT = pictureLibrary
 QMAKE_TARGET_DESCRIPTION = pictureLibrary
 QMAKE_TARGET_COPYRIGHT = (c) 2019 WIN-DESIGN
 
-QT       += core gui sql
+QT       += core gui sql multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 

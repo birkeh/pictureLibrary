@@ -90,6 +90,9 @@ void cImportDialog::initUI()
 		ui->m_lpCopy->setChecked(true);
 	else
 		ui->m_lpMove->setChecked(true);
+
+	ui->m_lpPictures->setChecked(settings.value("import/pictures", QVariant::fromValue(true)).toBool());
+	ui->m_lpVideos->setChecked(settings.value("import/videos", QVariant::fromValue(true)).toBool());
 	ui->m_lpDetectHDR->setChecked(settings.value("import/detectHDR", QVariant::fromValue(true)).toBool());
 	ui->m_lpDetectJPG_RAW->setChecked(settings.value("import/detectJPG_RAW", QVariant::fromValue(true)).toBool());
 }
@@ -185,6 +188,8 @@ void cImportDialog::savePosition()
 		settings.setValue(QString("main/splitter%1").arg(x+1), QVariant::fromValue(sizes[x]));
 
 	settings.setValue("import/recursive", QVariant::fromValue(ui->m_lpRecursive->isChecked()));
+	settings.setValue("import/pictures", QVariant::fromValue(ui->m_lpRecursive->isChecked()));
+	settings.setValue("import/videos", QVariant::fromValue(ui->m_lpRecursive->isChecked()));
 	settings.setValue("import/copy", QVariant::fromValue(ui->m_lpCopy->isChecked()));
 	settings.setValue("import/detectHDR", QVariant::fromValue(ui->m_lpDetectHDR->isChecked()));
 	settings.setValue("import/detectJPG_RAW", QVariant::fromValue(ui->m_lpDetectJPG_RAW->isChecked()));
@@ -274,9 +279,11 @@ void cImportDialog::readDirectory(const QString& szPath, bool bRecursive)
 {
 	QMimeDatabase	mimeDB;
 	QDir			dir(szPath);
-	QStringList		szDirs	= dir.entryList(QDir::Dirs);
-	QFileInfoList	szFiles	= dir.entryInfoList(QDir::Files);
+	QStringList		szDirs		= dir.entryList(QDir::Dirs);
+	QFileInfoList	szFiles		= dir.entryInfoList(QDir::Files);
 	QDateTime		oldDateTime;
+	bool			bPictures	= ui->m_lpPictures->isChecked();
+	bool			bVideos		= ui->m_lpVideos->isChecked();
 
 	if(bRecursive)
 	{
@@ -292,7 +299,7 @@ void cImportDialog::readDirectory(const QString& szPath, bool bRecursive)
 		QFileInfo	fileInfo	= szFiles[x];
 		QMimeType	mimeType	= mimeDB.mimeTypeForFile(szFiles[x]);
 
-		if(mimeType.name().startsWith("image"))
+		if((mimeType.name().startsWith("image") && bPictures) || (mimeType.name().startsWith("video") && bVideos))
 		{
 			ui->m_lpStatusText->setText(QString(tr("found %1")).arg(fileInfo.fileName()));
 			qApp->processEvents();
