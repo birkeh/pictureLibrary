@@ -157,6 +157,17 @@ void cMainWindow::displayData()
 		else
 			icon	= QIcon(QPixmap::fromImage(m_pictureList[x]->thumbnail()));
 
+		if(icon.isNull())
+		{
+			QPixmap		pixmap(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT);
+			QPainter	painter(&pixmap);
+			painter.setBrush(Qt::black);
+			painter.drawRect(0, 0, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT);
+			painter.end();
+			icon	= QIcon(pixmap);
+		}
+
+
 		QStandardItem*	lpItem		= new QStandardItem(icon, m_pictureList[x]->fileName());
 		lpItem->setTextAlignment(Qt::AlignCenter);
 		lpItem->setData(QVariant::fromValue(m_pictureList[x]));

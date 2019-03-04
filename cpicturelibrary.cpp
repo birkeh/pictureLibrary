@@ -9,6 +9,8 @@
 #include <QSqlQuery>
 #include <QSqlError>
 
+#include <QDir>
+
 #include <QSettings>
 
 
@@ -21,7 +23,9 @@ cPictureLibrary::cPictureLibrary(QObject *parent) : QObject(parent)
 bool cPictureLibrary::openDatabase()
 {
 	QSettings	settings;
-	QString		szDB	= settings.value("database/path").toString();
+	m_szRootPath	= settings.value("database/rootPath", QDir::homePath()).toString();
+
+	QString		szDB	= m_szRootPath + QDir::separator() + "pictureLibrary.db";
 
 	m_db	= QSqlDatabase::addDatabase("QSQLITE");
 	m_db.setHostName("localhost");
@@ -51,20 +55,6 @@ bool cPictureLibrary::openDatabase()
 			updateDatabase(query.value("version").toInt());
 		query.finish();
 	}
-
-	if(!query.exec("SELECT rootPath FROM config;"))
-	{
-		myDebug << query.lastError().text();
-		return(false);
-	}
-
-	if(!query.next())
-	{
-		myDebug << query.lastError().text();
-		return(false);
-	}
-
-	m_szRootPath	= query.value("rootPath").toString();
 
 	return(true);
 }
@@ -106,8 +96,7 @@ bool cPictureLibrary::createDatabase()
 	QSqlQuery	query;
 
 	if(!createTable("CREATE TABLE config ( "
-					"    version                  INTEGER, "
-					"    rootPath                 TEXT"
+					"    version                  INTEGER"
 					"); "))
 		return(false);
 
@@ -137,139 +126,27 @@ bool cPictureLibrary::createDatabase()
 					"    whiteBalance             INTEGER, "
 					"    focalLength35            DOUBLE, "
 					"    gps                      TEXT, "
-					"    thumbnail                BLOB"
-					"); "))
-		return(false);
-
-	query.prepare("INSERT INTO config (version) VALUES (:version);");
-	query.bindValue(":version", 4);
-	if(!query.exec())
-	{
-		myDebug << query.lastError().text();
-		return(false);
-	}
-
-	return(true);
-}
-
-bool cPictureLibrary::updateDatabase(qint32 version)
-{
-	if(version < 4)
-		updateDatabase4(version);
-
-	return(true);
-}
-
-bool cPictureLibrary::updateDatabase2(qint32 /*version*/)
-{
-	QSqlQuery	query;
-
-	if(!query.exec("ALTER TABLE config ADD rootPath TEXT;"))
-	{
-		myDebug << query.lastError().text();
-		return(false);
-	}
-
-	if(!query.exec("UPDATE config SET version=2;"))
-	{
-		myDebug << query.lastError().text();
-		return(false);
-	}
-
-	return(true);
-}
-
-bool cPictureLibrary::updateDatabase3(qint32 version)
-{
-	if(version < 2)
-		updateDatabase2(version);
-
-	QSqlQuery	query;
-
-	if(!createTable("CREATE TABLE picture ( "
-					"    id                       INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE, "
-					"    fileName                 TEXT, "
-					"    filePath                 TEXT, "
-					"    fileSize                 BIGINT, "
-					"    imageWidth               INTEGER, "
-					"    imageHeight              INTEGER, "
-					"    imageOrientation         INTEGER, "
-					"    cameraMake               TEXT, "
-					"    cameraModel              TEXT, "
-					"    dateTime                 DATETIME, "
-					"    fNumber                  TEXT, "
-					"    iso                      INTEGER, "
-					"    flashID                  INTEGER, "
-					"    focalLength              DOUBLE, "
-					"    lensMake                 TEXT, "
-					"    lensModel                TEXT, "
-					"    exposureTime             TEXT, "
-					"    exposureBias             INTEGER, "
-					"    exifVersion              TEXT, "
-					"    dateTimeOriginal         DATETIME, "
-					"    dateTimeDigitized        DATETIME, "
-					"    whiteBalance             INTEGER, "
-					"    focalLength35            DOUBLE, "
-					"    gps                      TEXT, "
 					"    duration                 BIGINT, "
 					"    thumbnail                BLOB"
 					"); "))
 		return(false);
 
-	if(!query.exec("UPDATE config SET version=3;"))
-	{
-		myDebug << query.lastError().text();
-		return(false);
-	}
-
-	return(true);
-}
-
-bool cPictureLibrary::updateDatabase4(qint32 version)
-{
-	if(version < 3)
-		updateDatabase3(version);
-
-	QSqlQuery	query;
-
-	QString	rootPath;
-
-	if(!query.exec("SELECT rootPath FROM config;"))
-	{
-		myDebug << query.lastError().text();
-		return(false);
-	}
-	if(!query.next())
-	{
-		myDebug << query.lastError().text();
-		return(false);
-	}
-	rootPath	= query.value("rootPath").toString();
-
-	if(!query.exec("ALTER TABLE picture ADD filePath TEXT;"))
-	{
-		myDebug << query.lastError().text();
-		return(false);
-	}
-
-	query.prepare(" UPDATE    picture"
-				  " SET       fileName = REPLACE(fileName, RTRIM(fileName, REPLACE(fileName, '\', '')), ''),"
-				  "			  filePath = SUBSTR(SUBSTR(fileName, LENGTH(:rootPath1)+2, LENGTH(SUBSTR(fileName, LENGTH(:rootPath2)+2))-LENGTH(REPLACE(fileName, RTRIM(fileName, REPLACE(fileName, '\', '')), ''))), 1, LENGTH(SUBSTR(fileName, LENGTH(:rootPath3)+2, LENGTH(SUBSTR(fileName, LENGTH(:rootPath4)+2))-LENGTH(REPLACE(fileName, RTRIM(fileName, REPLACE(fileName, '\', '')), ''))))-1);");
-	query.bindValue(":rootPath1", rootPath);
-	query.bindValue(":rootPath2", rootPath);
-	query.bindValue(":rootPath3", rootPath);
-	query.bindValue(":rootPath4", rootPath);
+	query.prepare("INSERT INTO config (version) VALUES (:version);");
+	query.bindValue(":version", 1);
 	if(!query.exec())
 	{
 		myDebug << query.lastError().text();
 		return(false);
 	}
 
-	if(!query.exec("UPDATE config SET version=4;"))
-	{
-		myDebug << query.lastError().text();
-		return(false);
-	}
+	return(true);
+}
+
+bool cPictureLibrary::updateDatabase(qint32 /*version*/)
+{
+//	if(version < 4)
+//		updateDatabase4(version);
 
 	return(true);
 }
+

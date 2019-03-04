@@ -253,7 +253,7 @@ void cImportDialog::onImport()
 					szDestPath.append(QString::number(lpPicture->dateTime().date().year()) + QDir::separator() + lpPicture->dateTime().date().toString("yyyy-MM-dd") + QDir::separator());
 
 				if(!lpPicture->cameraModel().isEmpty())
-					szDestPath.append(lpPicture->cameraModel() + QDir::separator());
+					szDestPath.append(lpPicture->cameraModel().replace("/", "_").replace("\\", "_") + QDir::separator());
 
 				szDest.append(szDestPath);
 				szDest.append(lpPicture->fileName());
@@ -342,6 +342,16 @@ void cImportDialog::readDirectory(const QString& szPath, bool bRecursive)
 				}
 				else
 					icon	= QIcon(QPixmap::fromImage(lpPicture->thumbnail()));
+
+				if(icon.isNull())
+				{
+					QPixmap		pixmap(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT);
+					QPainter	painter(&pixmap);
+					painter.setBrush(Qt::black);
+					painter.drawRect(0, 0, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT);
+					painter.end();
+					icon	= QIcon(pixmap);
+				}
 
 				QStandardItem*	lpItem		= new QStandardItem(icon, lpPicture->fileName());
 				lpItem->setTextAlignment(Qt::AlignCenter);

@@ -1499,7 +1499,7 @@ QVariant cXMPValue::convertValue(const QString& szValue, qint32 iTypeId)
 	return(variant);
 }
 
-void cXMPValue::setValue(const QString& szValue, qint32 iTypeId, qint32 iCount)
+void cXMPValue::setValue(const QString& szValue, qint32 iTypeId, qint32 /*iCount*/)
 {
 //	if(iCount == 1 || iTypeId == 2 || iTypeId == 7)
 //	{

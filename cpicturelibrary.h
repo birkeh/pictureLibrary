@@ -85,30 +85,6 @@ private:
 	/*!
 	 \brief
 
-	 \fn updateDatabase2
-	 \param version
-	 \return bool
-	*/
-	bool						updateDatabase2(qint32 version);
-	/*!
-	 \brief
-
-	 \fn updateDatabase3
-	 \param version
-	 \return bool
-	*/
-	bool						updateDatabase3(qint32 version);
-	/*!
-	 \brief
-
-	 \fn updateDatabase4
-	 \param version
-	 \return bool
-	*/
-	bool						updateDatabase4(qint32 version);
-	/*!
-	 \brief
-
 	 \fn createTable
 	 \param szSQL
 	 \return bool
