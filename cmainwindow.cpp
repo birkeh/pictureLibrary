@@ -178,6 +178,10 @@ void cMainWindow::displayData()
 	}
 
 	ui->m_lpFolderView->expandAll();
+
+	m_lpFolderSortFilterProxyModel->sort(0);
+	m_lpThumbnailSortFilterProxyModel->sort(0);
+
 	ui->m_lpStatusBar->showMessage(tr("done."), 3);
 }
 

@@ -41,6 +41,15 @@ QByteArray image2Blob(const QImage &image)
 	return(ba);
 }
 
+QString ms2String(qint64 ms)
+{
+	qint64	h	= ms/3600000;
+	qint64	m	= (ms-h*3600000)/60000;
+	qint64	s	= (ms-h*3600000-m*60000)/1000;
+
+	return(QString("%1:%2:%3").arg(static_cast<int>(h)).arg(static_cast<int>(h), 2, 10, QChar('0')).arg(static_cast<int>(s), 2, 10, QChar('0')));
+}
+
 QStandardItem* insertPath(QString szPath, QStandardItem* lpRootItem)
 {
 	if(!lpRootItem)

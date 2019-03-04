@@ -242,6 +242,12 @@ void cImportDialog::onImport()
 
 			if(lpPicture)
 			{
+				if(m_pictureList.find(lpPicture))
+				{
+					if(QMessageBox::question(this, tr("File Exists"), QString(tr("%1%2%3 already exists.\nDo you want to overwrite?").arg(lpPicture->filePath()).arg(QDir::separator()).arg(lpPicture->fileName()))) == QMessageBox::No)
+						continue;
+					continue;
+				}
 				ui->m_lpStatusText->setText(QString("importing %1 ...").arg(lpPicture->fileName()));
 				qApp->processEvents();
 

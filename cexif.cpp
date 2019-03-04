@@ -351,7 +351,7 @@ QDateTime cEXIF::dateTime()
 		return(dateTime);
 
 	QFileInfo	info(m_szFileName);
-	return(info.birthTime());
+	return(info.lastModified());
 }
 
 QString cEXIF::fNumber()

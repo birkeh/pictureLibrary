@@ -51,6 +51,15 @@ QByteArray		image2Blob(const QImage& image);
 /*!
  \brief
 
+ \fn ms2String
+ \param ms
+ \return QString
+*/
+QString			ms2String(qint64 ms);
+
+/*!
+ \brief
+
  \fn insertPath
  \param szPath
  \param lpRootItem
