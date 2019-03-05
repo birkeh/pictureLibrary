@@ -41,6 +41,36 @@ QByteArray image2Blob(const QImage &image)
 	return(ba);
 }
 
+QString picture2Path(cPicture* lpPicture, const QDateTime& newDate, const QString& szNewTitle)
+{
+	QString	szPath("");
+
+	if(newDate.isValid())
+		szPath	= newDate.toString("yyyy/yyyy-MM-dd");
+	else if(lpPicture->dateTime().isValid())
+		szPath	= lpPicture->dateTime().toString("yyyy/yyyy-MM-dd");
+
+	if(!szNewTitle.isEmpty())
+	{
+		if(szPath.isEmpty())
+			szPath	= szNewTitle;
+		else
+			szPath.append(" - " + szNewTitle);
+	}
+	else if(!lpPicture->title().isEmpty())
+	{
+		if(szPath.isEmpty())
+			szPath	= lpPicture->title();
+		else
+			szPath.append(" - " + lpPicture->title());
+	}
+
+	if(!lpPicture->cameraModel().isEmpty())
+		szPath.append("/" + lpPicture->cameraModel().replace("/", "_").replace("\\", "_"));
+
+	return(szPath);
+}
+
 QString ms2String(qint64 ms)
 {
 	qint64	h	= ms/3600000;
@@ -81,7 +111,7 @@ QStandardItem* insertPath(QString szPath, QStandardItem* lpRootItem)
 		if(!bFound)
 			break;
 
-		szPath1.append(szPathList[path]+QDir::separator());
+		szPath1.append(szPathList[path]+"/");
 	}
 
 	for(;path < szPathList.count();path++)
@@ -90,7 +120,7 @@ QStandardItem* insertPath(QString szPath, QStandardItem* lpRootItem)
 		QStandardItem*	lpNewItem	= new QStandardItem(szPathList[path]);
 		lpCurRoot->appendRow(lpNewItem);
 		lpNewItem->setData(QVariant::fromValue(szPath1), Qt::UserRole+2);
-		szPath1.append(QDir::separator());
+		szPath1.append("/");
 
 		lpCurRoot	= lpNewItem;
 	}
@@ -98,7 +128,6 @@ QStandardItem* insertPath(QString szPath, QStandardItem* lpRootItem)
 	return(lpCurRoot);
 }
 
-//bool copyFile(cImportDialog* lpImportDialog, const QString& szSource, const QString& szDest, bool bDelete)
 bool copyFile(QProgressBar* lpProgressBar, const QString& szSource, const QString& szDest, bool bDelete)
 {
 	QString	szDestPath;
@@ -115,14 +144,16 @@ bool copyFile(QProgressBar* lpProgressBar, const QString& szSource, const QStrin
 	if(file.exists(szDestFilePath))
 		file.remove(szDestFilePath);
 
+	if(szSource[1] == ':' && szDest[1] == ':' && szSource[0] == szDest[0] && bDelete) // move
+	{
+		if(dir.rename(szSource, szDest))
+			return(true);
+	}
+
 	cCopier*	lpCopier	= new cCopier(szSource, szDest);
 
 	if(lpProgressBar)
 		QObject::connect(lpCopier, SIGNAL(newStatus(int)), lpProgressBar, SLOT(setValue(int)));
-//	connect(copier, SIGNAL(newStatus(QString)), this, SLOT(newStatus(QString)));
-//				connect(copier, SIGNAL(finished()), SIGNAL(copyFinished()));
-//				connect(copier, SIGNAL(finished()), copier, SLOT(deleteLater()));
-//				connect(this, SIGNAL(stopCopy()), copier, SLOT(stop()));
 
 	QEventLoop				loop;
 

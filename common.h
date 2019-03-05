@@ -10,6 +10,8 @@
 #include "cimportdialog.h"
 
 #include <QImage>
+#include "cpicture.h"
+
 #include <QByteArray>
 #include <QStandardItem>
 #include <QTreeView>
@@ -47,6 +49,16 @@ QImage			blob2Image(const QByteArray& ba);
  \return QByteArray
 */
 QByteArray		image2Blob(const QImage& image);
+/*!
+ \brief
+
+ \fn picture2Path
+ \param lpPicture
+ \param newDate
+ \param szNewTitle
+ \return QString
+*/
+QString		picture2Path(cPicture* lpPicture, const QDateTime& newDate = QDateTime(), const QString& szNewTitle = "");
 
 /*!
  \brief

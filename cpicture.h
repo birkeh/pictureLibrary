@@ -86,6 +86,21 @@ public:
 	/*!
 	 \brief
 
+	 \fn setTitle
+	 \param title
+	*/
+	void					setTitle(const QString& title);
+	/*!
+	 \brief
+
+	 \fn title
+	 \return QString
+	*/
+	QString					title();
+
+	/*!
+	 \brief
+
 	 \fn setImageWidth
 	 \param imageWidth
 	*/
@@ -518,6 +533,7 @@ private:
 	QString					m_szFileName;			/*!< TODO: describe */
 	QString					m_szFilePath;			/*!< TODO: describe */
 	qint64					m_iFileSize;			/*!< TODO: describe */
+	QString					m_szTitle;				/*!< TODO: describe */
 	QImage					m_thumbnail;			/*!< TODO: describe */
 	QString					m_mimeType;				/*!< TODO: describe */
 	qint32					m_imageWidth;			/*!< TODO: describe */

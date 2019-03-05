@@ -140,7 +140,7 @@ private:
 
 	 \fn savePosition
 	*/
-	void						savePosition();
+	void							savePosition();
 protected:
 };
 

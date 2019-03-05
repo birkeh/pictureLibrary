@@ -95,8 +95,23 @@ private:
 	 \fn initUI
 	*/
 	void							initUI();
-	void							createActions(); /*!< TODO: describe */
+	/*!
+	 \brief
+
+	 \fn createActions
+	*/
+	void							createActions();
+	/*!
+	 \brief
+
+	 \fn createFileActions
+	*/
 	void							createFileActions();
+	/*!
+	 \brief
+
+	 \fn createContextActions
+	*/
 	void							createContextActions();
 
 	/*!

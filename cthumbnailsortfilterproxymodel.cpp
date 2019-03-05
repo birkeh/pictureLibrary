@@ -28,5 +28,5 @@ bool cThumbnailSortFilterProxyModel::filterAcceptsRow(int sourceRow, const QMode
 {
 	QModelIndex	index0	= sourceModel()->index(sourceRow, 0, sourceParent);
 	QString		tmp		= sourceModel()->data(index0, Qt::UserRole+2).toString();
-	return(sourceModel()->data(index0, Qt::UserRole+2).toString().contains(m_szPath));
+	return(sourceModel()->data(index0, Qt::UserRole+2).toString().startsWith(m_szPath));
 }

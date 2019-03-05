@@ -25,7 +25,7 @@ bool cPictureLibrary::openDatabase()
 	QSettings	settings;
 	m_szRootPath	= settings.value("database/rootPath", QDir::homePath()).toString();
 
-	QString		szDB	= m_szRootPath + QDir::separator() + "pictureLibrary.db";
+	QString		szDB	= m_szRootPath + "/" + "pictureLibrary.db";
 
 	m_db	= QSqlDatabase::addDatabase("QSQLITE");
 	m_db.setHostName("localhost");
@@ -103,9 +103,9 @@ bool cPictureLibrary::createDatabase()
 	if(!createTable("CREATE TABLE picture ( "
 					"    id                       INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE, "
 					"    fileName                 TEXT, "
-					"    filePath                 TEXT, "
 					"    fileSize                 BIGINT, "
 					"    mimeType                 TEXT, "
+					"    title                    TEXT, "
 					"    imageWidth               INTEGER, "
 					"    imageHeight              INTEGER, "
 					"    imageOrientation         INTEGER, "

@@ -142,12 +142,15 @@ void cImportDialog::onThumbnailSelected(const QItemSelection& /*selection*/, con
 		return;
 	}
 
-	QModelIndex		index	= ui->m_lpThumbnailView->selectionModel()->selectedIndexes()[0];
-	if(!index.isValid())
-		return;
+	for(int x = 0;x < ui->m_lpThumbnailView->selectionModel()->selectedIndexes().count();x++)
+	{
+		QModelIndex		index	= ui->m_lpThumbnailView->selectionModel()->selectedIndexes()[x];
+		if(!index.isValid())
+			return;
 
-	cPicture*		lpPicture		= m_lpThumbnailSortFilterProxyModel->data(index, Qt::UserRole+1).value<cPicture*>();
-	lpToolBoxInfo->setPicture(lpPicture);
+		cPicture*		lpPicture	= m_lpThumbnailSortFilterProxyModel->data(index, Qt::UserRole+1).value<cPicture*>();
+		lpToolBoxInfo->setPicture(lpPicture);
+	}
 }
 
 void cImportDialog::onFolderSelected(const QItemSelection& /*selection*/, const QItemSelection& /*previous*/)
@@ -244,25 +247,20 @@ void cImportDialog::onImport()
 			{
 				if(m_pictureList.find(lpPicture))
 				{
-					if(QMessageBox::question(this, tr("File Exists"), QString(tr("%1%2%3 already exists.\nDo you want to overwrite?").arg(lpPicture->filePath()).arg(QDir::separator()).arg(lpPicture->fileName()))) == QMessageBox::No)
+					if(QMessageBox::question(this, tr("File Exists"), QString(tr("%1%2%3 already exists.\nDo you want to overwrite?").arg(lpPicture->filePath()).arg("/").arg(lpPicture->fileName()))) == QMessageBox::No)
 						continue;
 					continue;
 				}
 				ui->m_lpStatusText->setText(QString("importing %1 ...").arg(lpPicture->fileName()));
 				qApp->processEvents();
 
-				QString	szSource	= lpPicture->filePath() + QDir::separator() + lpPicture->fileName();
-				QString	szDest		= m_szRootPath + QDir::separator();
-				QString	szDestPath	= "";
+				QString	szSource	= lpPicture->filePath() + "/" + lpPicture->fileName();
+				QString	szDest		= m_szRootPath + "/";
+				QString	szDestPath	= picture2Path(lpPicture);
 
-				if(lpPicture->dateTime().isValid())
-					szDestPath.append(QString::number(lpPicture->dateTime().date().year()) + QDir::separator() + lpPicture->dateTime().date().toString("yyyy-MM-dd") + QDir::separator());
-
-				if(!lpPicture->cameraModel().isEmpty())
-					szDestPath.append(lpPicture->cameraModel().replace("/", "_").replace("\\", "_") + QDir::separator());
-
-				szDest.append(szDestPath);
+				szDest.append(szDestPath + "/");
 				szDest.append(lpPicture->fileName());
+				szDest	= szDest.replace("\\", "/");
 
 //				if(copyFile(ui->m_lpProgress, szSource, szDest, ui->m_lpMove->isChecked()))
 				if(copyFile(ui->m_lpProgress, szSource, szDest, false))
@@ -270,7 +268,7 @@ void cImportDialog::onImport()
 					ui->m_lpTotalProgress->setValue(x+1);
 					qApp->processEvents();
 
-					lpPicture->setFilePath(szDestPath.left(szDestPath.length()-1).replace("\\", "/"));
+					lpPicture->setFilePath(szDestPath);
 					lpPicture->toDB();
 					m_pictureList.add(lpPicture);
 				}
@@ -300,7 +298,7 @@ void cImportDialog::readDirectory(const QString& szPath, bool bRecursive)
 		szDirs.removeAll("..");
 
 		for(int x = 0;x < szDirs.count();x++)
-			readDirectory(szPath + QDir::separator() + szDirs[x], bRecursive);
+			readDirectory(szPath + "/" + szDirs[x], bRecursive);
 	}
 
 	for(int x = 0;x < szFiles.count();x++)

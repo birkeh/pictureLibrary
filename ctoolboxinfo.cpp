@@ -23,27 +23,35 @@ cToolBoxInfo::~cToolBoxInfo()
 
 void cToolBoxInfo::setPicture(cPicture* lpPicture)
 {
+	if(!lpPicture)
+	{
+		ui->m_lpFileNamePicture->setText("---");
+		ui->m_lpPathPicture->setText("---");
+		ui->m_lpDatePicture->setText("---");
+		ui->m_lpSizePicture->setText("---");
+		ui->m_lpCameraPicture->setText("---");
+		ui->m_lpLensModelPicture->setText("---");
+		ui->m_lpFNumberPicture->setText("---");
+		ui->m_lpExposureTimePicture->setText("---");
+		ui->m_lpExposureBiasPicture->setText("---");
+		ui->m_lpISOPicture->setText("---");
+		ui->m_lpFocalLengthPicture->setText("---");
+		ui->m_lpFlashPicture->setText("---");
+		ui->m_lpGPSPicture->setText("---");
+
+		ui->m_lpFileNameVideo->setText("---");
+		ui->m_lpPathVideo->setText("---");
+		ui->m_lpDateVideo->setText("---");
+		ui->m_lpSizeVideo->setText("---");
+		ui->m_lpCameraVideo->setText("---");
+		ui->m_lpDurationVideo->setText("---");
+
+		return;
+	}
 
 	if(lpPicture->mimeType().startsWith("image"))
 	{
 		ui->m_lpCategory->setCurrentIndex(0);
-		if(!lpPicture)
-		{
-			ui->m_lpFileNamePicture->setText("---");
-			ui->m_lpPathPicture->setText("---");
-			ui->m_lpDatePicture->setText("---");
-			ui->m_lpSizePicture->setText("---");
-			ui->m_lpCameraPicture->setText("---");
-			ui->m_lpLensModelPicture->setText("---");
-			ui->m_lpFNumberPicture->setText("---");
-			ui->m_lpExposureTimePicture->setText("---");
-			ui->m_lpExposureBiasPicture->setText("---");
-			ui->m_lpISOPicture->setText("---");
-			ui->m_lpFocalLengthPicture->setText("---");
-			ui->m_lpFlashPicture->setText("---");
-			ui->m_lpGPSPicture->setText("---");
-			return;
-		}
 
 		ui->m_lpFileNamePicture->setText(lpPicture->fileName());
 		ui->m_lpPathPicture->setText(lpPicture->filePath());
@@ -62,16 +70,6 @@ void cToolBoxInfo::setPicture(cPicture* lpPicture)
 	else
 	{
 		ui->m_lpCategory->setCurrentIndex(1);
-		if(!lpPicture)
-		{
-			ui->m_lpFileNameVideo->setText("---");
-			ui->m_lpPathVideo->setText("---");
-			ui->m_lpDateVideo->setText("---");
-			ui->m_lpSizeVideo->setText("---");
-			ui->m_lpCameraVideo->setText("---");
-			ui->m_lpDurationVideo->setText("---");
-			return;
-		}
 
 		ui->m_lpFileNameVideo->setText(lpPicture->fileName());
 		ui->m_lpPathVideo->setText(lpPicture->filePath());

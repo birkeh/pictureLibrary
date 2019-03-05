@@ -467,7 +467,7 @@ void cMainWindow::onChangeDate()
 	{
 		cDateTimePicker	dateTimePicker;
 		dateTimePicker.setWindowTitle("Date");
-		dateTimePicker.setText(QString(tr("Please set a new date for \"%1\".").arg(lpPicture->filePath() + QDir::separator() + lpPicture->fileName())));
+		dateTimePicker.setText(QString(tr("Please set a new date for \"%1\".").arg(lpPicture->filePath() + "/" + lpPicture->fileName())));
 		dateTimePicker.setImage(lpPicture->thumbnail());
 
 		dateTimePicker.setDateTime(lpPicture->dateTime());
@@ -475,11 +475,12 @@ void cMainWindow::onChangeDate()
 			return;
 
 		lpPicture->setDateTime(dateTimePicker.dateTime());
-		QString			szPath	= QString::number(lpPicture->dateTime().date().year()) + "/" + lpPicture->dateTime().date().toString("yyyy-MM-dd");
+//		QString			szPath	= QString::number(lpPicture->dateTime().date().year()) + "/" + lpPicture->dateTime().date().toString("yyyy-MM-dd");
+		QString			szPath	= picture2Path(lpPicture);
 		m_lpThumbnailSortFilterProxyModel->setData(index, QVariant::fromValue(szPath), Qt::UserRole+2);
 
-		if(copyFile(0, m_pictureLibrary.rootPath() + QDir::separator() +  lpPicture->filePath() + QDir::separator() + lpPicture->fileName(),
-					m_pictureLibrary.rootPath() + QDir::separator() +  szPath + QDir::separator() + lpPicture->fileName(), true))
+		if(copyFile(nullptr, m_pictureLibrary.rootPath() + "/" +  lpPicture->filePath() + "/" + lpPicture->fileName(),
+					m_pictureLibrary.rootPath() + "/" +  szPath + "/" + lpPicture->fileName(), true))
 		{
 			lpPicture->setFilePath(szPath);
 			lpPicture->toDB();
