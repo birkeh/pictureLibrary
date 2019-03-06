@@ -41,7 +41,7 @@ QByteArray image2Blob(const QImage &image)
 	return(ba);
 }
 
-QString picture2Path(cPicture* lpPicture, const QDateTime& newDate, const QString& szNewTitle)
+QString picture2Path(cPicture* lpPicture, const QDateTime& newDate, const QString& szNewTitle, const qint8& newHDR)
 {
 	QString	szPath("");
 
@@ -67,6 +67,9 @@ QString picture2Path(cPicture* lpPicture, const QDateTime& newDate, const QStrin
 
 	if(!lpPicture->cameraModel().isEmpty())
 		szPath.append("/" + lpPicture->cameraModel().replace("/", "_").replace("\\", "_"));
+
+	if((newHDR == -1 &&lpPicture->hdr()) || newHDR == 1)
+		szPath.append("/HDR");
 
 	return(szPath);
 }

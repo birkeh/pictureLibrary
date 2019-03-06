@@ -423,10 +423,25 @@ public:
 	/*!
 	 \brief
 
-	 \fn gps
+	 \fn duration
 	 \return qint64
 	*/
 	qint64					duration();
+
+	/*!
+	 \brief
+
+	 \fn setHDR
+	 \param hdr
+	*/
+	void					setHDR(const bool& hdr);
+	/*!
+	 \brief
+
+	 \fn hdr
+	 \return bool
+	*/
+	bool					hdr();
 
 	/*!
 	 \brief
@@ -558,6 +573,7 @@ private:
 	qreal					m_focalLength35;		/*!< TODO: describe */
 	QString					m_gps;					/*!< TODO: describe */
 	qint64					m_duration;				/*!< TODO: describe */
+	bool					m_hdr;					/*!< TODO: describe */
 };
 
 Q_DECLARE_METATYPE(cPicture*)
@@ -624,6 +640,15 @@ public:
 	 \return cPicture
 	*/
 	cPicture*				find(cPicture* lpPicture);
+
+	/*!
+	 \brief
+
+	 \fn hasPath
+	 \param szPath
+	 \return bool
+	*/
+	bool					hasPath(const QString& szPath);
 
 signals:
 

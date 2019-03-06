@@ -148,6 +148,14 @@ private:
 	*/
 	void							displayData();
 
+	/*!
+	 \brief
+
+	 \fn cleanFolderTree
+	 \param bProgressBar
+	*/
+	void							cleanFolderTree(const QString& folder);
+
 protected:
 	/*!
 	 \brief

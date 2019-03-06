@@ -58,7 +58,7 @@ QByteArray		image2Blob(const QImage& image);
  \param szNewTitle
  \return QString
 */
-QString		picture2Path(cPicture* lpPicture, const QDateTime& newDate = QDateTime(), const QString& szNewTitle = "");
+QString		picture2Path(cPicture* lpPicture, const QDateTime& newDate = QDateTime(), const QString& szNewTitle = "", const qint8& newHDR = -1);
 
 /*!
  \brief

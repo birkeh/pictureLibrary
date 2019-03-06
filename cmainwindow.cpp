@@ -185,6 +185,55 @@ void cMainWindow::displayData()
 	ui->m_lpStatusBar->showMessage(tr("done."), 3);
 }
 
+QStandardItem*	findItem(QStandardItemModel* lpModel, QModelIndex parent, const QString& text)
+{
+//	qDebug() << lpModel->rowCount(parent);
+
+	for(int x = 0;x < lpModel->rowCount(parent);x++)
+	{
+//		qDebug() << lpModel->data(index, Qt::UserRole+2).toString();
+		QModelIndex	index	= lpModel->index(x, 0, parent);
+		if(lpModel->data(index, Qt::UserRole+2).toString() == text)
+			return(lpModel->itemFromIndex(index));
+
+		if(lpModel->hasChildren(index))
+		{
+			QStandardItem*	lpItem	= findItem(lpModel, index, text);
+			if(lpItem)
+				return(lpItem);
+		}
+	}
+	return(nullptr);
+}
+
+void cMainWindow::cleanFolderTree(const QString& folder)
+{
+	if(m_pictureList.hasPath(folder))
+		return;
+
+	QStandardItem*	lpItem	= findItem(m_lpFolderViewModel, QModelIndex(), folder);
+
+	if(!lpItem)
+		return;
+
+	if(lpItem->hasChildren())
+		return;
+
+	QModelIndex	indexSource	= m_lpFolderViewModel->indexFromItem(lpItem);
+	qDebug() << indexSource.row();
+
+	QStandardItem*	lpItem1	= m_lpFolderViewModel->itemFromIndex(indexSource);
+	qDebug() << lpItem1->text();
+
+	QModelIndex	indexFilter	= m_lpFolderSortFilterProxyModel->mapFromSource(indexSource);
+	qDebug() << indexFilter.row();
+
+	qDebug() << lpItem->text();
+
+	if(indexFilter.isValid())
+		m_lpFolderSortFilterProxyModel->removeRow(indexFilter.row());
+}
+
 void cMainWindow::closeEvent(QCloseEvent *event)
 {
 	QSettings	settings;
@@ -482,7 +531,10 @@ void cMainWindow::onChangeDate()
 		if(copyFile(nullptr, m_pictureLibrary.rootPath() + "/" +  lpPicture->filePath() + "/" + lpPicture->fileName(),
 					m_pictureLibrary.rootPath() + "/" +  szPath + "/" + lpPicture->fileName(), true))
 		{
+			QString	szOldPath	= lpPicture->filePath();
 			lpPicture->setFilePath(szPath);
+			cleanFolderTree(szOldPath);
+
 			lpPicture->toDB();
 			insertPath(szPath, m_lpRootItem);
 			m_lpFolderSortFilterProxyModel->sort(0);
