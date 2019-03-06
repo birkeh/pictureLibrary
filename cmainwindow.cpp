@@ -240,6 +240,23 @@ void cMainWindow::cleanFolderTree(const QString& folder)
 
 		if(m_pictureList.hasPath(lpItem->data(Qt::UserRole+2).toString()))
 			break;
+
+		if(indexSource.child(0, 0).isValid())
+			break;
+	}
+
+	QDir	dir;
+	szFolder	= m_pictureLibrary.rootPath() + "/" + folder;
+
+	while(szFolder.length() > m_pictureLibrary.rootPath().length())
+	{
+		dir.setPath(szFolder);
+		if(dir.isEmpty())
+			dir.rmdir(szFolder);
+		else
+			break;
+
+		szFolder	= szFolder.left(szFolder.lastIndexOf("/"));
 	}
 }
 
