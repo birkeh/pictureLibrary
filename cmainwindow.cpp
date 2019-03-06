@@ -187,14 +187,13 @@ void cMainWindow::displayData()
 
 QStandardItem*	findItem(QStandardItemModel* lpModel, QModelIndex parent, const QString& text)
 {
-//	qDebug() << lpModel->rowCount(parent);
-
 	for(int x = 0;x < lpModel->rowCount(parent);x++)
 	{
-//		qDebug() << lpModel->data(index, Qt::UserRole+2).toString();
 		QModelIndex	index	= lpModel->index(x, 0, parent);
 		if(lpModel->data(index, Qt::UserRole+2).toString() == text)
+		{
 			return(lpModel->itemFromIndex(index));
+		}
 
 		if(lpModel->hasChildren(index))
 		{
@@ -220,18 +219,28 @@ void cMainWindow::cleanFolderTree(const QString& folder)
 		return;
 
 	QModelIndex	indexSource	= m_lpFolderViewModel->indexFromItem(lpItem);
-	qDebug() << indexSource.row();
+	QModelIndex	indexParent	= indexSource.parent();
 
-	QStandardItem*	lpItem1	= m_lpFolderViewModel->itemFromIndex(indexSource);
-	qDebug() << lpItem1->text();
+	QString		szFolder	= folder;
 
-	QModelIndex	indexFilter	= m_lpFolderSortFilterProxyModel->mapFromSource(indexSource);
-	qDebug() << indexFilter.row();
+	while(indexParent.isValid() && !folder.isEmpty())
+	{
+		m_lpFolderViewModel->removeRow(indexSource.row(), indexParent);
 
-	qDebug() << lpItem->text();
+		if(!szFolder.contains("/"))
+			break;
 
-	if(indexFilter.isValid())
-		m_lpFolderSortFilterProxyModel->removeRow(indexFilter.row());
+		szFolder	= szFolder.left(szFolder.lastIndexOf("/"));
+
+		indexSource	= indexParent;
+		indexParent	= indexSource.parent();
+		QStandardItem*	lpItem	= m_lpFolderViewModel->itemFromIndex(indexSource);
+		if(!lpItem)
+			break;
+
+		if(m_pictureList.hasPath(lpItem->data(Qt::UserRole+2).toString()))
+			break;
+	}
 }
 
 void cMainWindow::closeEvent(QCloseEvent *event)

@@ -26,7 +26,22 @@ QString cThumbnailSortFilterProxyModel::filterPath()
 
 bool cThumbnailSortFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
 {
+	if(m_szPath.isEmpty())
+		return(true);
+
 	QModelIndex	index0	= sourceModel()->index(sourceRow, 0, sourceParent);
 	QString		tmp		= sourceModel()->data(index0, Qt::UserRole+2).toString();
-	return(sourceModel()->data(index0, Qt::UserRole+2).toString().startsWith(m_szPath));
+
+	QString		szPath	= sourceModel()->data(index0, Qt::UserRole+2).toString();
+
+	if(!szPath.startsWith(m_szPath))
+		return(false);
+
+	if(szPath.length() == m_szPath.length())
+		return(true);
+
+	if(szPath.mid(m_szPath.length(), 1) == "/")
+		return(true);
+
+	return(false);
 }
