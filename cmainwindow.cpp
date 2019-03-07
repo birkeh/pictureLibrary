@@ -8,6 +8,7 @@
 #include "cmainwindow.h"
 #include "cimportdialog.h"
 
+#include "cdatepicker.h"
 #include "cdatetimepicker.h"
 
 #include "ui_cmainwindow.h"
@@ -23,6 +24,7 @@
 #include <QStandardItem>
 #include <QIcon>
 #include <QPixmap>
+#include <QInputDialog>
 
 
 cMainWindow::cMainWindow(cSplashScreen* lpSplashScreen, QWidget *parent) :
@@ -96,6 +98,8 @@ void cMainWindow::initUI()
 	qint32		iWidth3	= settings.value("main/splitter3", QVariant::fromValue(-1)).toInt();
 
 	ui->m_lpSplitter->setSizes(QList<int>() << iWidth1 << iWidth2 << iWidth3);
+
+	ui->m_lpToolBox->setCurrentIndex(0);
 }
 
 void cMainWindow::createActions()
@@ -113,9 +117,25 @@ void cMainWindow::createActions()
 
 void cMainWindow::createContextActions()
 {
-	m_lpChangeDateAction	= new QAction(tr("change date"), this);
-	m_lpChangeDateAction->setStatusTip(tr("change the date of this picture"));
-	connect(m_lpChangeDateAction,	&QAction::triggered,	this,	&cMainWindow::onChangeDate);
+	m_lpChangeTitleAction		= new QAction(tr("change title"), this);
+	m_lpChangeTitleAction->setStatusTip(tr("change the title of this picture(s)"));
+	connect(m_lpChangeTitleAction,		&QAction::triggered,	this,	&cMainWindow::onChangeTitle);
+
+	m_lpChangeDateAction		= new QAction(tr("change date"), this);
+	m_lpChangeDateAction->setStatusTip(tr("change the date of this pictures"));
+	connect(m_lpChangeDateAction,		&QAction::triggered,	this,	&cMainWindow::onChangeDate);
+
+	m_lpChangeDateTimeAction	= new QAction(tr("change date and time"), this);
+	m_lpChangeDateTimeAction->setStatusTip(tr("change the date and time of this picture"));
+	connect(m_lpChangeDateTimeAction,	&QAction::triggered,	this,	&cMainWindow::onChangeDateTime);
+
+	m_lpSetHDRAction			= new QAction(tr("set HDR"), this);
+	m_lpSetHDRAction->setStatusTip(tr("set this picture(s) to HDR"));
+	connect(m_lpSetHDRAction,			&QAction::triggered,	this,	&cMainWindow::onSetHDR);
+
+	m_lpUnsetHDRAction			= new QAction(tr("unset HDR"), this);
+	m_lpUnsetHDRAction->setStatusTip(tr("unset this picture(s) from HDR"));
+	connect(m_lpUnsetHDRAction,			&QAction::triggered,	this,	&cMainWindow::onUnsetHDR);
 }
 
 void cMainWindow::loadData(bool bProgressBar)
@@ -171,7 +191,6 @@ void cMainWindow::displayData()
 		QStandardItem*	lpItem		= new QStandardItem(icon, m_pictureList[x]->fileName());
 		lpItem->setTextAlignment(Qt::AlignCenter);
 		lpItem->setData(QVariant::fromValue(m_pictureList[x]));
-		lpItem->setData(QVariant::fromValue(m_pictureList[x]->filePath()), Qt::UserRole+2);
 		m_lpThumbnailViewModel->appendRow(lpItem);
 
 		insertPath(m_pictureList[x]->filePath(), m_lpRootItem);
@@ -190,7 +209,7 @@ QStandardItem*	findItem(QStandardItemModel* lpModel, QModelIndex parent, const Q
 	for(int x = 0;x < lpModel->rowCount(parent);x++)
 	{
 		QModelIndex	index	= lpModel->index(x, 0, parent);
-		if(lpModel->data(index, Qt::UserRole+2).toString() == text)
+		if(lpModel->data(index, Qt::UserRole+1).toString() == text)
 		{
 			return(lpModel->itemFromIndex(index));
 		}
@@ -238,7 +257,7 @@ void cMainWindow::cleanFolderTree(const QString& folder)
 		if(!lpItem)
 			break;
 
-		if(m_pictureList.hasPath(lpItem->data(Qt::UserRole+2).toString()))
+		if(m_pictureList.hasPath(lpItem->data(Qt::UserRole+1).toString()))
 			break;
 
 		if(indexSource.child(0, 0).isValid())
@@ -319,11 +338,25 @@ void cMainWindow::createFileActions()
 
 void cMainWindow::onThumbnailSelected(const QItemSelection& /*selection*/, const QItemSelection& /*previous*/)
 {
-	cToolBoxInfo*	lpToolBoxInfo	= static_cast<cToolBoxInfo*>(ui->m_lpToolBox->widget(0));
+	if(!ui->m_lpThumbnailView->selectionModel()->selectedIndexes().count())
+	{
+		ui->m_lpToolBoxInfo->setPicture(nullptr);
+		return;
+	}
 
 	if(ui->m_lpThumbnailView->selectionModel()->selectedIndexes().count() != 1)
 	{
-		lpToolBoxInfo->setPicture(nullptr);
+		QList<cPicture*>	pictureList;
+
+		for(int x = 0;x < ui->m_lpThumbnailView->selectionModel()->selectedIndexes().count();x++)
+		{
+			QModelIndex		index	= ui->m_lpThumbnailView->selectionModel()->selectedIndexes()[x];
+			if(!index.isValid())
+				return;
+
+			pictureList.append(m_lpThumbnailSortFilterProxyModel->data(index, Qt::UserRole+1).value<cPicture*>());
+		}
+		ui->m_lpToolBoxInfo->setPicture(pictureList);
 		return;
 	}
 
@@ -334,7 +367,7 @@ void cMainWindow::onThumbnailSelected(const QItemSelection& /*selection*/, const
 			return;
 
 		cPicture*		lpPicture	= m_lpThumbnailSortFilterProxyModel->data(index, Qt::UserRole+1).value<cPicture*>();
-		lpToolBoxInfo->setPicture(lpPicture);
+		ui->m_lpToolBoxInfo->setPicture(lpPicture);
 	}
 }
 
@@ -347,7 +380,7 @@ void cMainWindow::onFolderSelected(const QItemSelection& /*selection*/, const QI
 	if(!index.isValid())
 		return;
 
-	m_lpThumbnailSortFilterProxyModel->setFilterPath(m_lpFolderSortFilterProxyModel->data(index, Qt::UserRole+2).toString());
+	m_lpThumbnailSortFilterProxyModel->setFilterPath(m_lpFolderSortFilterProxyModel->data(index, Qt::UserRole+1).toString());
 }
 
 void cMainWindow::setCurrentFile(const QString& fileName)
@@ -520,14 +553,131 @@ void cMainWindow::onThumbnailViewContextMenu(const QPoint& pos)
 {
 	QMenu			menu(this);
 
-	if(ui->m_lpThumbnailView->selectionModel()->selectedIndexes().count() != 1)
-		return;
+	menu.addAction(m_lpChangeTitleAction);
 
-	menu.addAction(m_lpChangeDateAction);
+	if(ui->m_lpThumbnailView->selectionModel()->selectedIndexes().count() != 1)
+		menu.addAction(m_lpChangeDateAction);
+	else
+		menu.addAction(m_lpChangeDateTimeAction);
+
+	menu.addAction(m_lpSetHDRAction);
+	menu.addAction(m_lpUnsetHDRAction);
+
 	menu.exec(ui->m_lpThumbnailView->mapToGlobal(pos));
 }
 
+void cMainWindow::onChangeTitle()
+{
+	QModelIndex			index		= ui->m_lpThumbnailView->selectionModel()->selectedIndexes()[0];
+	if(!index.isValid())
+		return;
+
+	cPicture*			lpPicture	= m_lpThumbnailSortFilterProxyModel->data(index, Qt::UserRole+1).value<cPicture*>();
+	QString				szCurTitle	= lpPicture->title();
+	QList<cPicture*>	pictureList;
+
+	pictureList.append(lpPicture);
+
+	for(int x = 1;x < ui->m_lpThumbnailView->selectionModel()->selectedIndexes().count();x++)
+	{
+		index				= ui->m_lpThumbnailView->selectionModel()->selectedIndexes()[x];
+		if(!index.isValid())
+			return;
+
+		lpPicture			= m_lpThumbnailSortFilterProxyModel->data(index, Qt::UserRole+1).value<cPicture*>();
+		if(lpPicture->title() != szCurTitle)
+			szCurTitle	= "";
+
+		pictureList.append(lpPicture);
+	}
+
+	QInputDialog	dialog(this);
+	dialog.setLabelText(tr("Enter new title:"));
+	dialog.setTextValue(szCurTitle);
+	if(dialog.exec() == QDialog::Rejected)
+		return;
+
+	QString	szNewTitle	= dialog.textValue();
+
+	for(int x = 0;x < pictureList.count();x++)
+	{
+		cPicture*	lpPicture	= pictureList[x];
+		QString		szPath		= picture2Path(lpPicture, QDateTime(), szNewTitle);
+
+		if(copyFile(nullptr, m_pictureLibrary.rootPath() + "/" +  lpPicture->filePath() + "/" + lpPicture->fileName(),
+					m_pictureLibrary.rootPath() + "/" +  szPath + "/" + lpPicture->fileName(), true))
+		{
+			QString	szOldPath	= lpPicture->filePath();
+			lpPicture->setTitle(szNewTitle);
+			lpPicture->setFilePath(szPath);
+
+			lpPicture->toDB();
+			insertPath(szPath, m_lpRootItem);
+			cleanFolderTree(szOldPath);
+		}
+	}
+	m_lpFolderSortFilterProxyModel->sort(0);
+	m_lpThumbnailSortFilterProxyModel->invalidate();
+}
+
 void cMainWindow::onChangeDate()
+{
+	QModelIndex			index		= ui->m_lpThumbnailView->selectionModel()->selectedIndexes()[0];
+	if(!index.isValid())
+		return;
+
+	cPicture*			lpPicture	= m_lpThumbnailSortFilterProxyModel->data(index, Qt::UserRole+1).value<cPicture*>();
+	QDate				curDate		= lpPicture->dateTime().date();
+	QList<cPicture*>	pictureList;
+
+	pictureList.append(lpPicture);
+
+	for(int x = 1;x < ui->m_lpThumbnailView->selectionModel()->selectedIndexes().count();x++)
+	{
+		index				= ui->m_lpThumbnailView->selectionModel()->selectedIndexes()[x];
+		if(!index.isValid())
+			return;
+
+		lpPicture			= m_lpThumbnailSortFilterProxyModel->data(index, Qt::UserRole+1).value<cPicture*>();
+		if(lpPicture->dateTime().date() != curDate)
+			curDate	= QDate();
+
+		pictureList.append(lpPicture);
+	}
+
+	cDatePicker		datePicker(this);
+	datePicker.setDate(curDate);
+	if(datePicker.exec() == QDialog::Rejected)
+		return;
+
+	QDate	newDate	= datePicker.date();
+	if(!newDate.isValid())
+		return;
+
+	for(int x = 0;x < pictureList.count();x++)
+	{
+		cPicture*	lpPicture	= pictureList[x];
+		QDateTime	dateTime	= lpPicture->dateTime();
+		dateTime.setDate(newDate);
+		QString		szPath		= picture2Path(lpPicture, dateTime);
+
+		if(copyFile(nullptr, m_pictureLibrary.rootPath() + "/" +  lpPicture->filePath() + "/" + lpPicture->fileName(),
+					m_pictureLibrary.rootPath() + "/" +  szPath + "/" + lpPicture->fileName(), true))
+		{
+			QString	szOldPath	= lpPicture->filePath();
+			lpPicture->setDateTime(dateTime);
+			lpPicture->setFilePath(szPath);
+
+			lpPicture->toDB();
+			insertPath(szPath, m_lpRootItem);
+			cleanFolderTree(szOldPath);
+		}
+	}
+	m_lpFolderSortFilterProxyModel->sort(0);
+	m_lpThumbnailSortFilterProxyModel->invalidate();
+}
+
+void cMainWindow::onChangeDateTime()
 {
 	if(ui->m_lpThumbnailView->selectionModel()->selectedIndexes().count() != 1)
 		return;
@@ -549,23 +699,95 @@ void cMainWindow::onChangeDate()
 		if(dateTimePicker.exec() == QDialog::Rejected)
 			return;
 
-		lpPicture->setDateTime(dateTimePicker.dateTime());
-//		QString			szPath	= QString::number(lpPicture->dateTime().date().year()) + "/" + lpPicture->dateTime().date().toString("yyyy-MM-dd");
-		QString			szPath	= picture2Path(lpPicture);
-		m_lpThumbnailSortFilterProxyModel->setData(index, QVariant::fromValue(szPath), Qt::UserRole+2);
+		QString	szPath	= picture2Path(lpPicture, dateTimePicker.dateTime());
 
 		if(copyFile(nullptr, m_pictureLibrary.rootPath() + "/" +  lpPicture->filePath() + "/" + lpPicture->fileName(),
 					m_pictureLibrary.rootPath() + "/" +  szPath + "/" + lpPicture->fileName(), true))
 		{
 			QString	szOldPath	= lpPicture->filePath();
+			lpPicture->setDateTime(dateTimePicker.dateTime());
 			lpPicture->setFilePath(szPath);
-			cleanFolderTree(szOldPath);
 
 			lpPicture->toDB();
 			insertPath(szPath, m_lpRootItem);
+			cleanFolderTree(szOldPath);
 			m_lpFolderSortFilterProxyModel->sort(0);
 
 			m_lpThumbnailSortFilterProxyModel->invalidate();
 		}
 	}
+}
+
+void cMainWindow::onSetHDR()
+{
+	QModelIndex			index;
+	cPicture*			lpPicture;
+	QList<cPicture*>	pictureList;
+
+	for(int x = 0;x < ui->m_lpThumbnailView->selectionModel()->selectedIndexes().count();x++)
+	{
+		index				= ui->m_lpThumbnailView->selectionModel()->selectedIndexes()[x];
+		if(!index.isValid())
+			return;
+
+		lpPicture			= m_lpThumbnailSortFilterProxyModel->data(index, Qt::UserRole+1).value<cPicture*>();
+		pictureList.append(lpPicture);
+	}
+
+	for(int x = 0;x < pictureList.count();x++)
+	{
+		cPicture*	lpPicture	= pictureList[x];
+		QString		szPath		= picture2Path(lpPicture, QDateTime(), QString(), 1);
+
+		if(copyFile(nullptr, m_pictureLibrary.rootPath() + "/" +  lpPicture->filePath() + "/" + lpPicture->fileName(),
+					m_pictureLibrary.rootPath() + "/" +  szPath + "/" + lpPicture->fileName(), true))
+		{
+			QString	szOldPath	= lpPicture->filePath();
+			lpPicture->setHDR(true);
+			lpPicture->setFilePath(szPath);
+
+			lpPicture->toDB();
+			insertPath(szPath, m_lpRootItem);
+			cleanFolderTree(szOldPath);
+		}
+	}
+	m_lpFolderSortFilterProxyModel->sort(0);
+	m_lpThumbnailSortFilterProxyModel->invalidate();
+}
+
+void cMainWindow::onUnsetHDR()
+{
+	QModelIndex			index;
+	cPicture*			lpPicture;
+	QList<cPicture*>	pictureList;
+
+	for(int x = 0;x < ui->m_lpThumbnailView->selectionModel()->selectedIndexes().count();x++)
+	{
+		index				= ui->m_lpThumbnailView->selectionModel()->selectedIndexes()[x];
+		if(!index.isValid())
+			return;
+
+		lpPicture			= m_lpThumbnailSortFilterProxyModel->data(index, Qt::UserRole+1).value<cPicture*>();
+		pictureList.append(lpPicture);
+	}
+
+	for(int x = 0;x < pictureList.count();x++)
+	{
+		cPicture*	lpPicture	= pictureList[x];
+		QString		szPath		= picture2Path(lpPicture, QDateTime(), QString(), 0);
+
+		if(copyFile(nullptr, m_pictureLibrary.rootPath() + "/" +  lpPicture->filePath() + "/" + lpPicture->fileName(),
+					m_pictureLibrary.rootPath() + "/" +  szPath + "/" + lpPicture->fileName(), true))
+		{
+			QString	szOldPath	= lpPicture->filePath();
+			lpPicture->setHDR(false);
+			lpPicture->setFilePath(szPath);
+
+			lpPicture->toDB();
+			insertPath(szPath, m_lpRootItem);
+			cleanFolderTree(szOldPath);
+		}
+	}
+	m_lpFolderSortFilterProxyModel->sort(0);
+	m_lpThumbnailSortFilterProxyModel->invalidate();
 }

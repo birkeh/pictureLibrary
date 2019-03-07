@@ -42,6 +42,9 @@
        <property name="contextMenuPolicy">
         <enum>Qt::CustomContextMenu</enum>
        </property>
+       <property name="editTriggers">
+        <set>QAbstractItemView::NoEditTriggers</set>
+       </property>
        <property name="wordWrap">
         <bool>true</bool>
        </property>
@@ -104,7 +107,7 @@
          <item row="0" column="0">
           <widget class="QToolBox" name="m_lpToolBox">
            <property name="currentIndex">
-            <number>0</number>
+            <number>1</number>
            </property>
            <widget class="cToolBoxInfo" name="m_lpToolBoxInfo">
             <property name="geometry">
@@ -112,11 +115,24 @@
               <x>0</x>
               <y>0</y>
               <width>69</width>
-              <height>564</height>
+              <height>537</height>
              </rect>
             </property>
             <attribute name="label">
              <string>Information</string>
+            </attribute>
+           </widget>
+           <widget class="QWidget" name="m_lpToolBoxFlags">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>69</width>
+              <height>537</height>
+             </rect>
+            </property>
+            <attribute name="label">
+             <string>Flags</string>
             </attribute>
            </widget>
           </widget>

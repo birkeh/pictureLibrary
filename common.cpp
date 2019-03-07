@@ -50,14 +50,14 @@ QString picture2Path(cPicture* lpPicture, const QDateTime& newDate, const QStrin
 	else if(lpPicture->dateTime().isValid())
 		szPath	= lpPicture->dateTime().toString("yyyy/yyyy-MM-dd");
 
-	if(!szNewTitle.isEmpty())
+	if(!szNewTitle.isNull() && !szNewTitle.isEmpty())
 	{
 		if(szPath.isEmpty())
 			szPath	= szNewTitle;
 		else
 			szPath.append(" - " + szNewTitle);
 	}
-	else if(!lpPicture->title().isEmpty())
+	else if(szNewTitle.isNull() && !lpPicture->title().isEmpty())
 	{
 		if(szPath.isEmpty())
 			szPath	= lpPicture->title();
@@ -122,7 +122,7 @@ QStandardItem* insertPath(QString szPath, QStandardItem* lpRootItem)
 		szPath1.append(szPathList[path]);
 		QStandardItem*	lpNewItem	= new QStandardItem(szPathList[path]);
 		lpCurRoot->appendRow(lpNewItem);
-		lpNewItem->setData(QVariant::fromValue(szPath1), Qt::UserRole+2);
+		lpNewItem->setData(QVariant::fromValue(szPath1), Qt::UserRole+1);
 		szPath1.append("/");
 
 		lpCurRoot	= lpNewItem;

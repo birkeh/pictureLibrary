@@ -47,6 +47,13 @@ public:
 	 \param lpPicture
 	*/
 	void				setPicture(cPicture* lpPicture);
+	/*!
+	 \brief
+
+	 \fn setPicture
+	 \param pictureList
+	*/
+	void				setPicture(QList<cPicture*> pictureList);
 private:
 	Ui::cToolBoxInfo*	ui;					/*!< TODO: describe */
 };

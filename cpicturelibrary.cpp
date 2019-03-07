@@ -127,6 +127,7 @@ bool cPictureLibrary::createDatabase()
 					"    focalLength35            DOUBLE, "
 					"    gps                      TEXT, "
 					"    duration                 BIGINT, "
+					"    hdr                      BOOLEAN, "
 					"    thumbnail                BLOB"
 					"); "))
 		return(false);

@@ -87,7 +87,11 @@ private:
 	enum							{ MaxRecentFiles = 5 };					/*!< TODO: describe */
 	QAction*						m_lpRecentFileAction[MaxRecentFiles];	/*!< TODO: describe */
 
-	QAction*						m_lpChangeDateAction; /*!< TODO: describe */
+	QAction*						m_lpChangeTitleAction;					/*!< TODO: describe */
+	QAction*						m_lpChangeDateAction;					/*!< TODO: describe */
+	QAction*						m_lpChangeDateTimeAction;				/*!< TODO: describe */
+	QAction*						m_lpSetHDRAction;						/*!< TODO: describe */
+	QAction*						m_lpUnsetHDRAction;						/*!< TODO: describe */
 
 	/*!
 	 \brief
@@ -212,9 +216,33 @@ private slots:
 	/*!
 	 \brief
 
+	 \fn onChangeTitle
+	*/
+	void							onChangeTitle();
+	/*!
+	 \brief
+
 	 \fn onChangeDate
 	*/
 	void							onChangeDate();
+	/*!
+	 \brief
+
+	 \fn onChangeDateTime
+	*/
+	void							onChangeDateTime();
+	/*!
+	 \brief
+
+	 \fn onSetHDR
+	*/
+	void							onSetHDR();
+	/*!
+	 \brief
+
+	 \fn onUnsetHDR
+	*/
+	void							onUnsetHDR();
 };
 
 #endif // CMAINWINDOW_H

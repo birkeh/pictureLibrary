@@ -4,6 +4,7 @@
 */
 
 #include "cthumbnailsortfilterproxymodel.h"
+#include "cpicture.h"
 
 
 cThumbnailSortFilterProxyModel::cThumbnailSortFilterProxyModel(QObject* parent) :
@@ -29,10 +30,13 @@ bool cThumbnailSortFilterProxyModel::filterAcceptsRow(int sourceRow, const QMode
 	if(m_szPath.isEmpty())
 		return(true);
 
-	QModelIndex	index0	= sourceModel()->index(sourceRow, 0, sourceParent);
-	QString		tmp		= sourceModel()->data(index0, Qt::UserRole+2).toString();
+	QModelIndex	index0		= sourceModel()->index(sourceRow, 0, sourceParent);
+	cPicture*	lpPicture	= sourceModel()->data(index0, Qt::UserRole+1).value<cPicture*>();
 
-	QString		szPath	= sourceModel()->data(index0, Qt::UserRole+2).toString();
+	if(!lpPicture)
+		return(false);
+
+	QString		szPath		= lpPicture->filePath();
 
 	if(!szPath.startsWith(m_szPath))
 		return(false);
