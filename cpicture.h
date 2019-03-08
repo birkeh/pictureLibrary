@@ -9,6 +9,9 @@
 
 #include "csplashscreen.h"
 
+#include "cperson.h"
+#include "cflag.h"
+
 #include <QObject>
 #include <QList>
 #include <QImage>
@@ -506,6 +509,62 @@ public:
 	/*!
 	 \brief
 
+	 \fn addPerson
+	 \param lpPerson
+	*/
+	void					addPerson(cPerson* lpPerson);
+	/*!
+	 \brief
+
+	 \fn removePerson
+	 \param lpPerson
+	*/
+	void					removePerson(cPerson* lpPerson);
+	/*!
+	 \brief
+
+	 \fn clearPersonList
+	*/
+	void					clearPersonList();
+	/*!
+	 \brief
+
+	 \fn personList
+	 \return cPersonList
+	*/
+	cPersonList&			personList();
+
+	/*!
+	 \brief
+
+	 \fn addFlag
+	 \param lpFlag
+	*/
+	void					addFlag(cFlag* lpFlag);
+	/*!
+	 \brief
+
+	 \fn removeFlag
+	 \param lpFlag
+	*/
+	void					removeFlag(cFlag* lpFlag);
+	/*!
+	 \brief
+
+	 \fn clearFlagList
+	*/
+	void					clearFlagList();
+	/*!
+	 \brief
+
+	 \fn flagList
+	 \return cFlagList
+	*/
+	cFlagList&				flagList();
+
+	/*!
+	 \brief
+
 	 \fn operator==
 	 \param other
 	 \return bool
@@ -574,6 +633,9 @@ private:
 	QString					m_gps;					/*!< TODO: describe */
 	qint64					m_duration;				/*!< TODO: describe */
 	bool					m_hdr;					/*!< TODO: describe */
+
+	cPersonList				m_personList;			/*!< TODO: describe */
+	cFlagList				m_flagList;				/*!< TODO: describe */
 };
 
 Q_DECLARE_METATYPE(cPicture*)
@@ -603,7 +665,7 @@ public:
 	 \param lpProgressBar
 	 \return bool
 	*/
-	bool					load(cSplashScreen* lpSplashScreen, QProgressBar* lpProgressBar = nullptr);
+	bool					load(cPersonList& personList, cFlagList& flagList, cSplashScreen* lpSplashScreen, QProgressBar* lpProgressBar = nullptr);
 
 	/*!
 	 \brief
@@ -650,6 +712,13 @@ public:
 	*/
 	bool					hasPath(const QString& szPath);
 
+	/*!
+	 \brief
+
+	 \fn titleList
+	 \return QStringList
+	*/
+	QStringList				titleList();
 signals:
 
 public slots:

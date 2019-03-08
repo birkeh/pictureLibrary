@@ -115,11 +115,24 @@
               <x>0</x>
               <y>0</y>
               <width>69</width>
-              <height>537</height>
+              <height>510</height>
              </rect>
             </property>
             <attribute name="label">
              <string>Information</string>
+            </attribute>
+           </widget>
+           <widget class="cToolBoxPerson" name="m_lpToolBoxPerson">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>69</width>
+              <height>510</height>
+             </rect>
+            </property>
+            <attribute name="label">
+             <string>People</string>
             </attribute>
            </widget>
            <widget class="QWidget" name="m_lpToolBoxFlags">
@@ -128,7 +141,7 @@
               <x>0</x>
               <y>0</y>
               <width>69</width>
-              <height>537</height>
+              <height>510</height>
              </rect>
             </property>
             <attribute name="label">
@@ -175,6 +188,12 @@
    <class>cToolBoxInfo</class>
    <extends>QWidget</extends>
    <header>ctoolboxinfo.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>cToolBoxPerson</class>
+   <extends>QWidget</extends>
+   <header>ctoolboxperson.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

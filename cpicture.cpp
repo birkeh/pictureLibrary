@@ -160,6 +160,32 @@ bool cPicture::toDB()
 		m_iID	= query.value("id").toInt();
 	}
 
+	query.prepare("DELETE FROM picture_person WHERE pictureID=:pictureID;");
+	query.bindValue(":pictureID", m_iID);
+	query.exec();
+
+	query.prepare("INSERT INTO picture_person (pictureID, personID) VALUES (:pictureID, :personID);");
+	query.bindValue(":pictureID", m_iID);
+
+	for(cPersonList::iterator i = m_personList.begin();i != m_personList.end();i++)
+	{
+		query.bindValue(":personID", (*i)->id());
+		query.exec();
+	}
+
+	query.prepare("DELETE FROM picture_flag WHERE pictureID=:pictureID;");
+	query.bindValue(":pictureID", m_iID);
+	query.exec();
+
+	query.prepare("INSERT INTO picture_flag (pictureID, flagID) VALUES (:pictureID, :flagID);");
+	query.bindValue(":pictureID", m_iID);
+
+	for(cFlagList::iterator i = m_flagList.begin();i != m_flagList.end();i++)
+	{
+		query.bindValue(":flagID", (*i)->id());
+		query.exec();
+	}
+
 	return(true);
 }
 
@@ -463,6 +489,52 @@ QImage cPicture::thumbnail()
 	return(m_thumbnail);
 }
 
+void cPicture::addPerson(cPerson* lpPerson)
+{
+	if(m_personList.contains(lpPerson))
+		return;
+	m_personList.add(lpPerson);
+}
+
+void cPicture::removePerson(cPerson* lpPerson)
+{
+	if(m_personList.contains(lpPerson))
+		m_personList.removeAll(lpPerson);
+}
+
+void cPicture::clearPersonList()
+{
+	m_personList.clear();
+}
+
+cPersonList& cPicture::personList()
+{
+	return(m_personList);
+}
+
+void cPicture::addFlag(cFlag* lpFlag)
+{
+	if(m_flagList.contains(lpFlag))
+		return;
+	m_flagList.add(lpFlag);
+}
+
+void cPicture::removeFlag(cFlag* lpFlag)
+{
+	if(m_flagList.contains(lpFlag))
+		m_flagList.removeAll(lpFlag);
+}
+
+void cPicture::clearFlagList()
+{
+	m_flagList.clear();
+}
+
+cFlagList& cPicture::flagList()
+{
+	return(m_flagList);
+}
+
 bool cPicture::operator==(const cPicture& other) const
 {
 	if(this->m_szFileName != other.m_szFileName)
@@ -692,7 +764,7 @@ cPictureList::cPictureList(QObject *parent) :
 {
 }
 
-bool cPictureList::load(cSplashScreen *lpSplashScreen, QProgressBar *lpProgressBar)
+bool cPictureList::load(cPersonList& personList, cFlagList& flagList, cSplashScreen *lpSplashScreen, QProgressBar *lpProgressBar)
 {
 	cEXIFFlashList	flashList;
 	QSqlQuery		query;
@@ -801,6 +873,108 @@ bool cPictureList::load(cSplashScreen *lpSplashScreen, QProgressBar *lpProgressB
 		}
 	}
 
+	query.prepare("SELECT	COUNT(1) cnt FROM picture_person;");
+
+	if(!query.exec())
+	{
+		myDebug << query.lastError().text();
+		return(false);
+	}
+	query.next();
+
+	max		= static_cast<qint32>(query.value("cnt").toLongLong());
+
+	if(lpProgressBar)
+		lpProgressBar->setMaximum(max);
+	else if(lpSplashScreen)
+		lpSplashScreen->setMax(max);
+
+	query.prepare("SELECT   pictureID, "
+				  "         personID "
+				  "FROM     picture_person;");
+
+	if(!query.exec())
+	{
+		myDebug << query.lastError().text();
+		return(false);
+	}
+
+	count	= 0;
+	step	= max/200;
+
+	if(!step)
+		step = 1;
+
+	while(query.next())
+	{
+		cPicture*	lpPicture	= find(query.value("pictureID").toInt());
+		cPerson*	lpPerson	= personList.find(query.value("personID").toInt());
+
+		if(lpPicture && lpPerson)
+			lpPicture->addPerson(lpPerson);
+
+		count++;
+		if(!(count % step))
+		{
+			if(lpProgressBar)
+				lpProgressBar->setValue(count);
+			else if(lpSplashScreen)
+				lpSplashScreen->setProgress(count);
+			qApp->processEvents();
+		}
+	}
+
+	query.prepare("SELECT	COUNT(1) cnt FROM picture_flag;");
+
+	if(!query.exec())
+	{
+		myDebug << query.lastError().text();
+		return(false);
+	}
+	query.next();
+
+	max		= static_cast<qint32>(query.value("cnt").toLongLong());
+
+	if(lpProgressBar)
+		lpProgressBar->setMaximum(max);
+	else if(lpSplashScreen)
+		lpSplashScreen->setMax(max);
+
+	query.prepare("SELECT   pictureID, "
+				  "         flagID "
+				  "FROM     picture_flag;");
+
+	if(!query.exec())
+	{
+		myDebug << query.lastError().text();
+		return(false);
+	}
+
+	count	= 0;
+	step	= max/200;
+
+	if(!step)
+		step = 1;
+
+	while(query.next())
+	{
+		cPicture*	lpPicture	= find(query.value("pictureID").toInt());
+		cFlag*		lpFlag		= flagList.find(query.value("flagID").toInt());
+
+		if(lpPicture && lpFlag)
+			lpPicture->addFlag(lpFlag);
+
+		count++;
+		if(!(count % step))
+		{
+			if(lpProgressBar)
+				lpProgressBar->setValue(count);
+			else if(lpSplashScreen)
+				lpSplashScreen->setProgress(count);
+			qApp->processEvents();
+		}
+	}
+
 	return(true);
 }
 
@@ -834,30 +1008,42 @@ bool cPictureList::add(cPicture* lpPicture, bool bNoCheck)
 
 cPicture* cPictureList::find(qint32 iID)
 {
-	for(int i = 0;i < count();i++)
+	for(cPictureList::iterator i = begin(); i != end(); i++)
 	{
-		if(at(i)->id() == iID)
-			return(at(i));
+		if((*i)->id() == iID)
+			return(*i);
 	}
 	return(nullptr);
 }
 
 cPicture* cPictureList::find(cPicture* lpPicture)
 {
-	for(int i = 0;i < count();i++)
+	for(cPictureList::iterator i = begin(); i != end(); i++)
 	{
-		if(*lpPicture == *at(i))
-			return(at(i));
+		if(*lpPicture == (**i))
+			return(*i);
 	}
 	return(nullptr);
 }
 
 bool cPictureList::hasPath(const QString& szPath)
 {
-	for(int i = 0;i < count();i++)
+	for(cPictureList::iterator i = begin(); i != end(); i++)
 	{
-		if(at(i)->filePath() == szPath)
+		if((*i)->filePath() == szPath)
 			return(true);
 	}
 	return(false);
+}
+
+QStringList cPictureList::titleList()
+{
+	QStringList	szTitleList;
+
+	for(cPictureList::iterator i = begin(); i != end();i++)
+		szTitleList.append((*i)->title());
+
+	szTitleList.removeDuplicates();
+	szTitleList.sort(Qt::CaseInsensitive);
+	return(szTitleList);
 }

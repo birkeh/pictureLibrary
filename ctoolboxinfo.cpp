@@ -21,9 +21,9 @@ cToolBoxInfo::~cToolBoxInfo()
 	delete ui;
 }
 
-void cToolBoxInfo::setPicture(cPicture* lpPicture)
+void cToolBoxInfo::setPicture(cPictureList& pictureList)
 {
-	if(!lpPicture)
+	if(!pictureList.count())
 	{
 		ui->m_lpTitlePicture->setText("---");
 		ui->m_lpFileNamePicture->setText("---");
@@ -53,43 +53,6 @@ void cToolBoxInfo::setPicture(cPicture* lpPicture)
 		return;
 	}
 
-	if(lpPicture->mimeType().startsWith("image"))
-	{
-		ui->m_lpCategory->setCurrentIndex(0);
-
-		ui->m_lpTitlePicture->setText(lpPicture->title());
-		ui->m_lpFileNamePicture->setText(lpPicture->fileName());
-		ui->m_lpPathPicture->setText(lpPicture->filePath());
-		ui->m_lpDatePicture->setText(lpPicture->dateTime().toString());
-		ui->m_lpSizePicture->setText(QString("%1x%2").arg(lpPicture->imageWidth()).arg(lpPicture->imageHeight()));
-		ui->m_lpHDRPicture->setText(lpPicture->hdr() ? tr("yes") : tr("no"));
-		ui->m_lpCameraPicture->setText(QString("%1 %2").arg(lpPicture->cameraMake()).arg(lpPicture->cameraModel()));
-		ui->m_lpLensModelPicture->setText(lpPicture->lensModel());
-		ui->m_lpFNumberPicture->setText("f 1:" + lpPicture->fNumber());
-		ui->m_lpExposureTimePicture->setText(lpPicture->exposureTime());
-		ui->m_lpExposureBiasPicture->setText(QString::number(lpPicture->exposureBias()));
-		ui->m_lpISOPicture->setText(QString::number(lpPicture->iso()));
-		ui->m_lpFocalLengthPicture->setText(QString("%1 mm").arg(lpPicture->focalLength()));
-		ui->m_lpFlashPicture->setText(lpPicture->flash());
-		ui->m_lpGPSPicture->setText(lpPicture->gps());
-	}
-	else
-	{
-		ui->m_lpCategory->setCurrentIndex(1);
-
-		ui->m_lpTitleVideo->setText(lpPicture->title());
-		ui->m_lpFileNameVideo->setText(lpPicture->fileName());
-		ui->m_lpPathVideo->setText(lpPicture->filePath());
-		ui->m_lpDateVideo->setText(lpPicture->dateTime().toString());
-		ui->m_lpSizeVideo->setText(QString("%1x%2").arg(lpPicture->imageWidth()).arg(lpPicture->imageHeight()));
-		ui->m_lpHDRVideo->setText(lpPicture->hdr() ? tr("yes") : tr("no"));
-		ui->m_lpCameraVideo->setText(QString("%1 %2").arg(lpPicture->cameraMake()).arg(lpPicture->cameraModel()));
-		ui->m_lpDurationVideo->setText(ms2String(lpPicture->duration()));
-	}
-}
-
-void cToolBoxInfo::setPicture(QList<cPicture*> pictureList)
-{
 	cPicture*	lpPicture		= pictureList[0];
 	QString		mimeType		= lpPicture->mimeType().left(lpPicture->mimeType().indexOf("/"));
 	QString		title			= lpPicture->title();

@@ -66,7 +66,7 @@ public:
 	 \fn date
 	 \return QDate
 	*/
-	QDate				date();
+	QDate					date();
 
 private:
 	Ui::cDatePicker *ui; /*!< TODO: describe */

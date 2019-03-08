@@ -105,6 +105,9 @@
         <layout class="QVBoxLayout" name="verticalLayout_4">
          <item>
           <widget class="QCheckBox" name="m_lpDetectHDR">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="text">
             <string>detect HDR</string>
            </property>
@@ -112,6 +115,9 @@
          </item>
          <item>
           <widget class="QCheckBox" name="m_lpDetectJPG_RAW">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="text">
             <string>detect JPG/RAW</string>
            </property>

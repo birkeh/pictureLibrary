@@ -44,16 +44,9 @@ public:
 	 \brief
 
 	 \fn setPicture
-	 \param lpPicture
-	*/
-	void				setPicture(cPicture* lpPicture);
-	/*!
-	 \brief
-
-	 \fn setPicture
 	 \param pictureList
 	*/
-	void				setPicture(QList<cPicture*> pictureList);
+	void				setPicture(cPictureList& pictureList);
 private:
 	Ui::cToolBoxInfo*	ui;					/*!< TODO: describe */
 };

@@ -132,6 +132,42 @@ bool cPictureLibrary::createDatabase()
 					"); "))
 		return(false);
 
+	if(!createTable("CREATE TABLE person ( "
+					"    id                       INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE, "
+					"    name                     TEXT "
+					"); "))
+		return(false);
+
+	if(!createTable("CREATE TABLE flags ( "
+					"    id                       INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE, "
+					"    name                     TEXT "
+					"); "))
+		return(false);
+
+	if(!createTable("CREATE TABLE picture_flags ( "
+					"    pictureID INTEGER REFERENCES picture (id), "
+					"    flagsID   INTEGER REFERENCES flags (id) "
+					"); "))
+		return(false);
+
+	if(!createTable("CREATE UNIQUE INDEX picture_flag_idx ON picture_flags ( "
+					"    pictureID, "
+					"    flagsID "
+					"); "))
+		return(false);
+
+	if(!createTable("CREATE TABLE picture_person ( "
+					"    pictureID INTEGER REFERENCES picture (id), "
+					"    personID   INTEGER REFERENCES people (id)  "
+					"); "))
+		return(false);
+
+	if(!createTable("CREATE UNIQUE INDEX picture_person_idx ON picture_person ( "
+					"    pictureID, "
+					"    personID "
+					"); "))
+		return(false);
+
 	query.prepare("INSERT INTO config (version) VALUES (:version);");
 	query.bindValue(":version", 1);
 	if(!query.exec())

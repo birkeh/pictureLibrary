@@ -127,7 +127,6 @@ void cImportDialog::onPathSelect()
 
 void cImportDialog::onThumbnailSelected(const QItemSelection& /*selection*/, const QItemSelection& /*previous*/)
 {
-	cToolBoxInfo*	lpToolBoxInfo	= ui->m_lpInfo;
 	qint32			iCount			= ui->m_lpThumbnailView->selectionModel()->selectedRows().count();
 	ui->m_lpCount->setText(QString("count: %1, selected: %2").arg(m_lpThumbnailViewModel->rowCount()).arg(iCount));
 
@@ -136,11 +135,7 @@ void cImportDialog::onThumbnailSelected(const QItemSelection& /*selection*/, con
 	else
 		ui->m_lpImport->setEnabled(false);
 
-	if(ui->m_lpThumbnailView->selectionModel()->selectedIndexes().count() != 1)
-	{
-		lpToolBoxInfo->setPicture(nullptr);
-		return;
-	}
+	cPictureList	pictureList;
 
 	for(int x = 0;x < ui->m_lpThumbnailView->selectionModel()->selectedIndexes().count();x++)
 	{
@@ -148,9 +143,9 @@ void cImportDialog::onThumbnailSelected(const QItemSelection& /*selection*/, con
 		if(!index.isValid())
 			return;
 
-		cPicture*		lpPicture	= m_lpThumbnailSortFilterProxyModel->data(index, Qt::UserRole+1).value<cPicture*>();
-		lpToolBoxInfo->setPicture(lpPicture);
+		pictureList.append(m_lpThumbnailSortFilterProxyModel->data(index, Qt::UserRole+1).value<cPicture*>());
 	}
+	ui->m_lpInfo->setPicture(pictureList);
 }
 
 void cImportDialog::onFolderSelected(const QItemSelection& /*selection*/, const QItemSelection& /*previous*/)

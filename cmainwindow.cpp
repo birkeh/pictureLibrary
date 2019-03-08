@@ -10,6 +10,7 @@
 
 #include "cdatepicker.h"
 #include "cdatetimepicker.h"
+#include "ccombopicker.h"
 
 #include "ui_cmainwindow.h"
 
@@ -142,8 +143,15 @@ void cMainWindow::loadData(bool bProgressBar)
 {
 	m_bLoading	= true;
 
+	m_personList.clear();
+	m_personList.load(m_lpSplashScreen, bProgressBar ? m_lpProgressBar : nullptr);
+	ui->m_lpToolBoxPerson->setPersonList(&m_personList);
+
+	m_flagList.clear();
+	m_flagList.load(m_lpSplashScreen, bProgressBar ? m_lpProgressBar : nullptr);
+
 	m_pictureList.clear();
-	m_pictureList.load(m_lpSplashScreen, bProgressBar ? m_lpProgressBar : nullptr);
+	m_pictureList.load(m_personList, m_flagList, m_lpSplashScreen, bProgressBar ? m_lpProgressBar : nullptr);
 
 	displayData();
 
@@ -338,27 +346,7 @@ void cMainWindow::createFileActions()
 
 void cMainWindow::onThumbnailSelected(const QItemSelection& /*selection*/, const QItemSelection& /*previous*/)
 {
-	if(!ui->m_lpThumbnailView->selectionModel()->selectedIndexes().count())
-	{
-		ui->m_lpToolBoxInfo->setPicture(nullptr);
-		return;
-	}
-
-	if(ui->m_lpThumbnailView->selectionModel()->selectedIndexes().count() != 1)
-	{
-		QList<cPicture*>	pictureList;
-
-		for(int x = 0;x < ui->m_lpThumbnailView->selectionModel()->selectedIndexes().count();x++)
-		{
-			QModelIndex		index	= ui->m_lpThumbnailView->selectionModel()->selectedIndexes()[x];
-			if(!index.isValid())
-				return;
-
-			pictureList.append(m_lpThumbnailSortFilterProxyModel->data(index, Qt::UserRole+1).value<cPicture*>());
-		}
-		ui->m_lpToolBoxInfo->setPicture(pictureList);
-		return;
-	}
+	cPictureList	pictureList;
 
 	for(int x = 0;x < ui->m_lpThumbnailView->selectionModel()->selectedIndexes().count();x++)
 	{
@@ -366,9 +354,10 @@ void cMainWindow::onThumbnailSelected(const QItemSelection& /*selection*/, const
 		if(!index.isValid())
 			return;
 
-		cPicture*		lpPicture	= m_lpThumbnailSortFilterProxyModel->data(index, Qt::UserRole+1).value<cPicture*>();
-		ui->m_lpToolBoxInfo->setPicture(lpPicture);
+		pictureList.append(m_lpThumbnailSortFilterProxyModel->data(index, Qt::UserRole+1).value<cPicture*>());
 	}
+	ui->m_lpToolBoxInfo->setPicture(pictureList);
+	ui->m_lpToolBoxPerson->setPicture(pictureList);
 }
 
 void cMainWindow::onFolderSelected(const QItemSelection& /*selection*/, const QItemSelection& /*previous*/)
@@ -591,13 +580,15 @@ void cMainWindow::onChangeTitle()
 		pictureList.append(lpPicture);
 	}
 
-	QInputDialog	dialog(this);
-	dialog.setLabelText(tr("Enter new title:"));
-	dialog.setTextValue(szCurTitle);
-	if(dialog.exec() == QDialog::Rejected)
+	cComboPicker	comboPicker(this);
+	comboPicker.setList(m_pictureList.titleList());
+	comboPicker.setEditable(true);
+	comboPicker.setWindowTitle("Enter new title");
+	comboPicker.setSelection(szCurTitle);
+	if(comboPicker.exec() == QDialog::Rejected)
 		return;
 
-	QString	szNewTitle	= dialog.textValue();
+	QString	szNewTitle	= comboPicker.selection();
 
 	for(int x = 0;x < pictureList.count();x++)
 	{

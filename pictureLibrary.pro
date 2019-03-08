@@ -67,7 +67,11 @@ SOURCES += \
     cthumbnailsortfilterproxymodel.cpp \
     cfoldersortfilterproxymodel.cpp \
     ccopier.cpp \
-    cdatepicker.cpp
+    cdatepicker.cpp \
+    ccombopicker.cpp \
+    cflag.cpp \
+    cperson.cpp \
+    ctoolboxperson.cpp
 
 HEADERS += \
         cmainwindow.h \
@@ -83,14 +87,20 @@ HEADERS += \
     cthumbnailsortfilterproxymodel.h \
     cfoldersortfilterproxymodel.h \
     ccopier.h \
-    cdatepicker.h
+    cdatepicker.h \
+    ccombopicker.h \
+    cflag.h \
+    cperson.h \
+    ctoolboxperson.h
 
 FORMS += \
         cmainwindow.ui \
     ctoolboxinfo.ui \
     cimportdialog.ui \
     cdatetimepicker.ui \
-    cdatepicker.ui
+    cdatepicker.ui \
+    ccombopicker.ui \
+    ctoolboxperson.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
