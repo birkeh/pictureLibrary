@@ -26,7 +26,7 @@ bool cFlag::toDB()
 
 	if(m_iID != -1)
 	{
-		query.prepare("SELECT id FROM flags WHERE id=:id;");
+		query.prepare("SELECT id FROM flag WHERE id=:id;");
 		query.bindValue(":id", m_iID);
 		if(!query.exec())
 		{
@@ -35,12 +35,12 @@ bool cFlag::toDB()
 		}
 
 		if(!query.next())
-			query.prepare("INSERT INTO flags (name) VALUES (:name);");
+			query.prepare("INSERT INTO flag (name) VALUES (:name);");
 		else
-			query.prepare("UPDATE flags SET name=:name WHERE id=:id;");
+			query.prepare("UPDATE flag SET name=:name WHERE id=:id;");
 	}
 	else
-		query.prepare("INSERT INTO flags (name) VALUES (:name);");
+		query.prepare("INSERT INTO flag (name) VALUES (:name);");
 
 
 	query.bindValue(":id",					m_iID);
@@ -54,7 +54,7 @@ bool cFlag::toDB()
 
 	if(m_iID == -1)
 	{
-		query.prepare("SELECT id FROM flags WHERE _rowid_=(SELECT MAX(_rowid_) FROM flags);");
+		query.prepare("SELECT id FROM flag WHERE _rowid_=(SELECT MAX(_rowid_) FROM flag);");
 		if(!query.exec())
 		{
 			myDebug << query.lastError().text();
@@ -129,7 +129,7 @@ bool cFlagList::load(cSplashScreen *lpSplashScreen, QProgressBar *lpProgressBar)
 {
 	QSqlQuery		query;
 
-	query.prepare("SELECT	COUNT(1) cnt FROM flags;");
+	query.prepare("SELECT	COUNT(1) cnt FROM flag;");
 
 	if(!query.exec())
 	{
@@ -147,7 +147,7 @@ bool cFlagList::load(cSplashScreen *lpSplashScreen, QProgressBar *lpProgressBar)
 
 	query.prepare("SELECT   id, "
 				  "         name "
-				  "FROM     flags "
+				  "FROM     flag "
 				  "ORDER BY UPPER(name);");
 
 	if(!query.exec())
@@ -164,8 +164,8 @@ bool cFlagList::load(cSplashScreen *lpSplashScreen, QProgressBar *lpProgressBar)
 
 	while(query.next())
 	{
-		cFlag*	lpFlags	= add(query.value("id").toInt(), true);
-		lpFlags->setName(query.value("name").toString());
+		cFlag*	lpFlag	= add(query.value("id").toInt(), true);
+		lpFlag->setName(query.value("name").toString());
 
 		count++;
 		if(!(count % step))
@@ -194,18 +194,18 @@ cFlag* cFlagList::add(qint32 iID, bool bNoCheck)
 	return(lpNew);
 }
 
-bool cFlagList::add(cFlag* lpFlags, bool bNoCheck)
+bool cFlagList::add(cFlag* lpFlag, bool bNoCheck)
 {
 	if(bNoCheck)
 	{
-		append(lpFlags);
+		append(lpFlag);
 		return(true);
 	}
 
-	if(contains(lpFlags))
+	if(contains(lpFlag))
 		return(false);
 
-	append(lpFlags);
+	append(lpFlag);
 	return(true);
 }
 
@@ -219,11 +219,11 @@ cFlag* cFlagList::find(qint32 iID)
 	return(nullptr);
 }
 
-cFlag* cFlagList::find(cFlag* lpFlags)
+cFlag* cFlagList::find(cFlag* lpFlag)
 {
 	for(cFlagList::iterator i = begin(); i != end(); i++)
 	{
-		if(*lpFlags == (**i))
+		if(*lpFlag == (**i))
 			return(*i);
 	}
 	return(nullptr);
@@ -231,12 +231,12 @@ cFlag* cFlagList::find(cFlag* lpFlags)
 
 QStringList cFlagList::flagList()
 {
-	QStringList	szFlagsList;
+	QStringList	szFlagList;
 
 	for(cFlagList::iterator i = begin(); i != end();i++)
-		szFlagsList.append((*i)->name());
+		szFlagList.append((*i)->name());
 
-	szFlagsList.removeDuplicates();
-	szFlagsList.sort(Qt::CaseInsensitive);
-	return(szFlagsList);
+	szFlagList.removeDuplicates();
+	szFlagList.sort(Qt::CaseInsensitive);
+	return(szFlagList);
 }

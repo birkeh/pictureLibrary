@@ -163,7 +163,7 @@ public:
 	 \param bNoCheck
 	 \return bool
 	*/
-	bool					add(cFlag* lpFlags, bool bNoCheck = false);
+	bool					add(cFlag* lpFlag, bool bNoCheck = false);
 
 	/*!
 	 \brief
@@ -180,7 +180,7 @@ public:
 	 \param iID
 	 \return cFlag
 	*/
-	cFlag*					find(cFlag* lpFlags);
+	cFlag*					find(cFlag* lpFlag);
 
 	/*!
 	 \brief

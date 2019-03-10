@@ -185,6 +185,14 @@ private slots:
 	/*!
 	 \brief
 
+	 \fn onThumbnailDoubleClicked
+	 \param index
+	*/
+	void							onThumbnailDoubleClicked(const QModelIndex& index);
+
+	/*!
+	 \brief
+
 	 \fn onFolderSelected
 	 \param selection
 	 \param previous

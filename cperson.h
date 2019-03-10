@@ -163,7 +163,7 @@ public:
 	 \param bNoCheck
 	 \return bool
 	*/
-	bool					add(cPerson* lpPersons, bool bNoCheck = false);
+	bool					add(cPerson* lpPerson, bool bNoCheck = false);
 
 	/*!
 	 \brief
@@ -180,7 +180,15 @@ public:
 	 \param iID
 	 \return cPerson
 	*/
-	cPerson*				find(cPerson* lpPersons);
+	cPerson*				find(cPerson* lpPerson);
+	/*!
+	 \brief
+
+	 \fn remove
+	 \param lpPerson
+	 \return bool
+	*/
+	bool					remove(cPerson* lpPerson);
 
 	/*!
 	 \brief

@@ -24,6 +24,14 @@ bool cPerson::toDB()
 {
 	QSqlQuery	query;
 
+	query.prepare("SELECT id FROM person WHERE UPPER(name)=UPPER(:name);");
+	query.bindValue(":name", m_szName);
+	if(query.exec())
+	{
+		if(query.next())
+			return(false);
+	}
+
 	if(m_iID != -1)
 	{
 		query.prepare("SELECT id FROM person WHERE id=:id;");
@@ -219,14 +227,45 @@ cPerson* cPersonList::find(qint32 iID)
 	return(nullptr);
 }
 
-cPerson* cPersonList::find(cPerson* lpFlags)
+cPerson* cPersonList::find(cPerson* lpPerson)
 {
 	for(cPersonList::iterator i = begin(); i != end(); i++)
 	{
-		if(*lpFlags == (**i))
+		if(*lpPerson == (**i))
 			return(*i);
 	}
 	return(nullptr);
+}
+
+bool cPersonList::remove(cPerson* lpPerson)
+{
+	if(!find(lpPerson))
+		return(true);
+
+	QSqlQuery	query;
+
+	query.prepare("SELECT COUNT(1) cnt FROM picture_person WHERE personID=:id;");
+	query.bindValue(":id", lpPerson->id());
+
+	if(!query.exec())
+		return(false);
+
+	if(!query.next())
+		return(false);
+
+	if(query.value("cnt").toInt() != 0)
+		return(false);
+
+	query.prepare("DELETE FROM person WHERE id=:id;");
+	query.bindValue(":id", lpPerson->id());
+
+	if(!query.exec())
+		return(false);
+
+	this->removeOne(lpPerson);
+	delete lpPerson;
+
+	return(true);
 }
 
 QStringList cPersonList::personList()

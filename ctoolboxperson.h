@@ -12,6 +12,7 @@
 
 #include <QWidget>
 #include <QStandardItemModel>
+#include <QItemSelection>
 
 
 namespace Ui {
@@ -64,7 +65,34 @@ private:
 	cPictureList			m_pictureList;			/*!< TODO: describe */
 	bool					m_bLoading;				/*!< TODO: describe */
 
+	QAction*				m_lpPersonAddAction;	/*!< TODO: describe */
+	QAction*				m_lpPersonEditAction;	/*!< TODO: describe */
+	QAction*				m_lpPersonDeleteAction;	/*!< TODO: describe */
+
+	bool					m_bEditing;				/*!< TODO: describe */
+
+	/*!
+	 \brief
+
+	 \fn initUI
+	*/
+	void					initUI();
+	/*!
+	 \brief
+
+	 \fn createActions
+	*/
+	void					createActions();
+
 private slots:
+	/*!
+	 \brief
+
+	 \fn onPersonSelected
+	 \param selection
+	 \param previous
+	*/
+	void					onPersonSelected(const QItemSelection& selection, const QItemSelection& previous);
 	/*!
 	 \brief
 
@@ -74,6 +102,40 @@ private slots:
 	 \param roles
 	*/
 	void					personChanged(const QModelIndex& topLeft, const QModelIndex& bottomright, const QVector<int>& roles);
+	/*!
+	 \brief
+
+	 \fn onPersonAdd
+	*/
+	void					onPersonAdd();
+	/*!
+	 \brief
+
+	 \fn onPersonEdit
+	*/
+	void					onPersonEdit();
+	/*!
+	 \brief
+
+	 \fn onPersonDelete
+	*/
+	void					onPersonDelete();
+
+	/*!
+	 \brief
+
+	 \fn onPersonViewContextMenu
+	 \param pos
+	*/
+	void					onPersonViewContextMenu(const QPoint& pos);
+
+	/*!
+	 \brief
+
+	 \fn onPersonChanged
+	 \param lpItem
+	*/
+	void					onPersonChanged(QStandardItem* lpItem);
 };
 
 #endif // CTOOLBOXPERSON_H

@@ -12,6 +12,10 @@
 #include "cdatetimepicker.h"
 #include "ccombopicker.h"
 
+#include "cimage.h"
+
+#include "cimageviewer.h"
+
 #include "ui_cmainwindow.h"
 
 #include <QDebug>
@@ -114,6 +118,8 @@ void cMainWindow::createActions()
 	connect(ui->m_lpFolderView->selectionModel(),		&QItemSelectionModel::selectionChanged,	this,	&cMainWindow::onFolderSelected);
 
 	connect(ui->m_lpThumbnailView,						&QListView::customContextMenuRequested,	this,	&cMainWindow::onThumbnailViewContextMenu);
+
+	connect(ui->m_lpThumbnailView,						&QListView::doubleClicked,				this,	&cMainWindow::onThumbnailDoubleClicked);
 }
 
 void cMainWindow::createContextActions()
@@ -358,6 +364,28 @@ void cMainWindow::onThumbnailSelected(const QItemSelection& /*selection*/, const
 	}
 	ui->m_lpToolBoxInfo->setPicture(pictureList);
 	ui->m_lpToolBoxPerson->setPicture(pictureList);
+}
+
+void cMainWindow::onThumbnailDoubleClicked(const QModelIndex& index)
+{
+	if(!index.isValid())
+		return;
+
+	cPicture*		lpPicture	= m_lpThumbnailSortFilterProxyModel->data(index, Qt::UserRole+1).value<cPicture*>();
+	QFile			file(m_pictureLibrary.rootPath() + "/" + lpPicture->filePath() + "/" + lpPicture->fileName());
+
+	if(!file.exists())
+		return;
+
+	cImageViewer	imageViewer(this);
+//	imageViewer.showMaximized();
+
+	cImage			image(file.fileName());
+	if(image.isNull())
+		return;
+
+	imageViewer.setImage(&image);
+	imageViewer.exec();
 }
 
 void cMainWindow::onFolderSelected(const QItemSelection& /*selection*/, const QItemSelection& /*previous*/)

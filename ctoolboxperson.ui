@@ -18,11 +18,17 @@
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
       <widget class="QTreeView" name="m_lpPersonList">
+       <property name="contextMenuPolicy">
+        <enum>Qt::CustomContextMenu</enum>
+       </property>
        <property name="editTriggers">
-        <set>QAbstractItemView::NoEditTriggers</set>
+        <set>QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed</set>
        </property>
        <property name="alternatingRowColors">
         <bool>true</bool>
+       </property>
+       <property name="selectionMode">
+        <enum>QAbstractItemView::ExtendedSelection</enum>
        </property>
        <property name="rootIsDecorated">
         <bool>false</bool>

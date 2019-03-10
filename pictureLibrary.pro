@@ -71,7 +71,9 @@ SOURCES += \
     ccombopicker.cpp \
     cflag.cpp \
     cperson.cpp \
-    ctoolboxperson.cpp
+    ctoolboxperson.cpp \
+    clabel.cpp \
+    cimageviewer.cpp
 
 HEADERS += \
         cmainwindow.h \
@@ -91,7 +93,9 @@ HEADERS += \
     ccombopicker.h \
     cflag.h \
     cperson.h \
-    ctoolboxperson.h
+    ctoolboxperson.h \
+    clabel.h \
+    cimageviewer.h
 
 FORMS += \
         cmainwindow.ui \
@@ -100,7 +104,8 @@ FORMS += \
     cdatetimepicker.ui \
     cdatepicker.ui \
     ccombopicker.ui \
-    ctoolboxperson.ui
+    ctoolboxperson.ui \
+    cimageviewer.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

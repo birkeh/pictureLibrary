@@ -132,7 +132,7 @@
              </rect>
             </property>
             <attribute name="label">
-             <string>People</string>
+             <string>Person</string>
             </attribute>
            </widget>
            <widget class="QWidget" name="m_lpToolBoxFlags">
