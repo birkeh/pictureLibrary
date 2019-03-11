@@ -230,6 +230,37 @@ cTag* cTagList::find(cTag* lpTag)
 	return(nullptr);
 }
 
+bool cTagList::remove(cTag* lpTag)
+{
+	if(!find(lpTag))
+		return(true);
+
+	QSqlQuery	query;
+
+	query.prepare("SELECT COUNT(1) cnt FROM picture_tag WHERE tagID=:id;");
+	query.bindValue(":id", lpTag->id());
+
+	if(!query.exec())
+		return(false);
+
+	if(!query.next())
+		return(false);
+
+	if(query.value("cnt").toInt() != 0)
+		return(false);
+
+	query.prepare("DELETE FROM tag WHERE id=:id;");
+	query.bindValue(":id", lpTag->id());
+
+	if(!query.exec())
+		return(false);
+
+	this->removeOne(lpTag);
+	delete lpTag;
+
+	return(true);
+}
+
 QStringList cTagList::tagList()
 {
 	QStringList	szTagList;

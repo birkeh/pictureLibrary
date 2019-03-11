@@ -148,7 +148,7 @@
              <string>Location</string>
             </attribute>
            </widget>
-           <widget class="ctoolBoxTag" name="m_lpToolBoxTags">
+           <widget class="cToolBoxTag" name="m_lpToolBoxTags">
             <property name="geometry">
              <rect>
               <x>0</x>
@@ -216,7 +216,7 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>ctoolBoxTag</class>
+   <class>cToolBoxTag</class>
    <extends>QWidget</extends>
    <header>ctoolboxtag.h</header>
    <container>1</container>

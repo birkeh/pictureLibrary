@@ -181,6 +181,14 @@ public:
 	 \return cTag
 	*/
 	cTag*					find(cTag* lpTag);
+	/*!
+	 \brief
+
+	 \fn remove
+	 \param lpTag
+	 \return bool
+	*/
+	bool					remove(cTag* lpTag);
 
 	/*!
 	 \brief

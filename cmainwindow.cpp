@@ -153,11 +153,16 @@ void cMainWindow::loadData(bool bProgressBar)
 	m_personList.load(m_lpSplashScreen, bProgressBar ? m_lpProgressBar : nullptr);
 	ui->m_lpToolBoxPerson->setPersonList(&m_personList);
 
+	m_locationList.clear();
+	m_locationList.load(m_lpSplashScreen, bProgressBar ? m_lpProgressBar : nullptr);
+	ui->m_lpToolBoxLocation->setLocationList(&m_locationList);
+
 	m_tagList.clear();
 	m_tagList.load(m_lpSplashScreen, bProgressBar ? m_lpProgressBar : nullptr);
+	ui->m_lpToolBoxTags->setTagList(&m_tagList);
 
 	m_pictureList.clear();
-	m_pictureList.load(m_personList, m_tagList, m_lpSplashScreen, bProgressBar ? m_lpProgressBar : nullptr);
+	m_pictureList.load(m_personList, m_locationList, m_tagList, m_lpSplashScreen, bProgressBar ? m_lpProgressBar : nullptr);
 
 	displayData();
 
@@ -364,6 +369,8 @@ void cMainWindow::onThumbnailSelected(const QItemSelection& /*selection*/, const
 	}
 	ui->m_lpToolBoxInfo->setPicture(pictureList);
 	ui->m_lpToolBoxPerson->setPicture(pictureList);
+	ui->m_lpToolBoxLocation->setPicture(pictureList);
+	ui->m_lpToolBoxTags->setPicture(pictureList);
 }
 
 void cMainWindow::onThumbnailDoubleClicked(const QModelIndex& index)
@@ -377,10 +384,12 @@ void cMainWindow::onThumbnailDoubleClicked(const QModelIndex& index)
 	if(!file.exists())
 		return;
 
+	QApplication::setOverrideCursor(Qt::WaitCursor);
 	cImageViewer	imageViewer(this);
-//	imageViewer.showMaximized();
 
 	cImage			image(file.fileName());
+	QApplication::restoreOverrideCursor();
+
 	if(image.isNull())
 		return;
 

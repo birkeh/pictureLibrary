@@ -173,6 +173,19 @@ bool cPicture::toDB()
 		query.exec();
 	}
 
+	query.prepare("DELETE FROM picture_location WHERE pictureID=:pictureID;");
+	query.bindValue(":pictureID", m_iID);
+	query.exec();
+
+	query.prepare("INSERT INTO picture_location (pictureID, locationID) VALUES (:pictureID, :locationID);");
+	query.bindValue(":pictureID", m_iID);
+
+	for(cLocationList::iterator i = m_locationList.begin();i != m_locationList.end();i++)
+	{
+		query.bindValue(":locationID", (*i)->id());
+		query.exec();
+	}
+
 	query.prepare("DELETE FROM picture_tag WHERE pictureID=:pictureID;");
 	query.bindValue(":pictureID", m_iID);
 	query.exec();
@@ -521,8 +534,8 @@ void cPicture::addLocation(cLocation* lpLocation)
 
 void cPicture::removeLocation(cLocation* lpLocation)
 {
-	if(m_tagList.contains(lpTag))
-		m_tagList.removeAll(lpTag);
+	if(m_locationList.contains(lpLocation))
+		m_locationList.removeAll(lpLocation);
 }
 
 void cPicture::clearLocationList()

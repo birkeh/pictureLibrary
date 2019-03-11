@@ -46,10 +46,10 @@ public:
 	/*!
 	 \brief
 
-	 \param lpLocationList
-	 \fn setLocationList
+	 \param lpTagList
+	 \fn setTagList
 	*/
-	void					setLocationList(cLocationList* lpLocationList);
+	void					setTagList(cTagList* lpTagList);
 
 	/*!
 	 \brief
@@ -61,14 +61,14 @@ public:
 
 private:
 	Ui::cToolBoxTag*		ui;							/*!< TODO: describe */
-	QStandardItemModel*		m_lpLocationListModel;		/*!< TODO: describe */
-	cPersonList*			m_lpLocationList;			/*!< TODO: describe */
+	QStandardItemModel*		m_lpTagListModel;			/*!< TODO: describe */
+	cTagList*				m_lpTagList;				/*!< TODO: describe */
 	cPictureList			m_pictureList;				/*!< TODO: describe */
 	bool					m_bLoading;					/*!< TODO: describe */
 
-	QAction*				m_lpLocationAddAction;		/*!< TODO: describe */
-	QAction*				m_lpLocationEditAction;		/*!< TODO: describe */
-	QAction*				m_lpLocationDeleteAction;	/*!< TODO: describe */
+	QAction*				m_lpTagAddAction;			/*!< TODO: describe */
+	QAction*				m_lpTagEditAction;			/*!< TODO: describe */
+	QAction*				m_lpTagDeleteAction;		/*!< TODO: describe */
 
 	bool					m_bEditing;					/*!< TODO: describe */
 
@@ -89,54 +89,54 @@ private slots:
 	/*!
 	 \brief
 
-	 \fn onLocationSelected
+	 \fn onTagSelected
 	 \param selection
 	 \param previous
 	*/
-	void					onLocationSelected(const QItemSelection& selection, const QItemSelection& previous);
+	void					onTagSelected(const QItemSelection& selection, const QItemSelection& previous);
 	/*!
 	 \brief
 
-	 \fn locationChanged
+	 \fn tagChanged
 	 \param topLeft
 	 \param bottomright
 	 \param roles
 	*/
-	void					locationChanged(const QModelIndex& topLeft, const QModelIndex& bottomright, const QVector<int>& roles);
+	void					tagChanged(const QModelIndex& topLeft, const QModelIndex& bottomright, const QVector<int>& roles);
 	/*!
 	 \brief
 
-	 \fn onLocationAdd
+	 \fn onTagAdd
 	*/
-	void					onLocationAdd();
+	void					onTagAdd();
 	/*!
 	 \brief
 
-	 \fn onLocationEdit
+	 \fn onTagEdit
 	*/
-	void					onLocationEdit();
+	void					onTagEdit();
 	/*!
 	 \brief
 
-	 \fn onLocationDelete
+	 \fn onTagDelete
 	*/
-	void					onLocationDelete();
+	void					onTagDelete();
 
 	/*!
 	 \brief
 
-	 \fn onLocationViewContextMenu
+	 \fn onTagViewContextMenu
 	 \param pos
 	*/
-	void					onLocationViewContextMenu(const QPoint& pos);
+	void					onTagViewContextMenu(const QPoint& pos);
 
 	/*!
 	 \brief
 
-	 \fn onLocationChanged
+	 \fn onTagChanged
 	 \param lpItem
 	*/
-	void					onLocationChanged(QStandardItem* lpItem);
+	void					onTagChanged(QStandardItem* lpItem);
 };
 
 #endif // CTOOLBOXTAG_H

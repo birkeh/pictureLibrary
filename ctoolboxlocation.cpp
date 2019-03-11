@@ -54,7 +54,7 @@ void cToolBoxLocation::createActions()
 
 	connect(ui->m_lpLocationList->selectionModel(),	&QItemSelectionModel::selectionChanged,			this,	&cToolBoxLocation::onLocationSelected);
 
-	connect(m_lpLocationListModel,	SIGNAL(dataChanged(QModelIndex,	QModelIndex, QVector<int>)),	SLOT(personChanged(QModelIndex, QModelIndex, QVector<int>)));
+	connect(m_lpLocationListModel,	SIGNAL(dataChanged(QModelIndex,	QModelIndex, QVector<int>)),	SLOT(locationChanged(QModelIndex, QModelIndex, QVector<int>)));
 	connect(ui->m_lpLocationList,					&QTreeView::customContextMenuRequested,			this,	&cToolBoxLocation::onLocationViewContextMenu);
 	connect(m_lpLocationListModel,					&QStandardItemModel::itemChanged,				this,	&cToolBoxLocation::onLocationChanged);
 }
@@ -100,9 +100,9 @@ void cToolBoxLocation::setPicture(cPictureList& pictureList)
 	for(cPictureList::iterator i = pictureList.begin();i != pictureList.end();i++)
 	{
 		m_pictureList.add(*i, true);
-		cPersonList&	personList	= (*i)->personList();
+		cLocationList&	locationList	= (*i)->locationList();
 
-		for(cPersonList::iterator j = personList.begin();j != personList.end();j++)
+		for(cLocationList::iterator j = locationList.begin();j != locationList.end();j++)
 		{
 			if(list.contains((*j)->id()))
 				list[(*j)->id()] ++;
@@ -114,11 +114,11 @@ void cToolBoxLocation::setPicture(cPictureList& pictureList)
 	for(int i = 0;i < m_lpLocationListModel->rowCount();i++)
 	{
 		QStandardItem*	lpItem		= m_lpLocationListModel->item(i, 0);
-		cPerson*		lpPerson	= lpItem->data().value<cPerson*>();
+		cLocation*		lpLocation	= lpItem->data().value<cLocation*>();
 
-		if(list.contains(lpPerson->id()))
+		if(list.contains(lpLocation->id()))
 		{
-			if(list[lpPerson->id()] == count)
+			if(list[lpLocation->id()] == count)
 				lpItem->setCheckState(Qt::Checked);
 			else
 				lpItem->setCheckState(Qt::PartiallyChecked);
@@ -155,15 +155,15 @@ void cToolBoxLocation::locationChanged(const QModelIndex& /*topLeft*/, const QMo
 
 		if(lpItem->checkState() != Qt::PartiallyChecked)
 		{
-			cPerson*	lpPerson		= lpItem->data(Qt::UserRole+1).value<cPerson*>();
-			if(lpPerson)
+			cLocation*	lpLocation		= lpItem->data(Qt::UserRole+1).value<cLocation*>();
+			if(lpLocation)
 			{
 				for(cPictureList::iterator i = m_pictureList.begin();i != m_pictureList.end();i++)
 				{
 					if(lpItem->checkState() == Qt::Checked)
-						(*i)->addPerson(lpPerson);
+						(*i)->addLocation(lpLocation);
 					else if(lpItem->checkState() == Qt::Unchecked)
-						(*i)->removePerson(lpPerson);
+						(*i)->removeLocation(lpLocation);
 				}
 			}
 		}
@@ -277,21 +277,21 @@ void cToolBoxLocation::onLocationChanged(QStandardItem* lpItem)
 	if(m_bEditing)
 		return;
 
-	cPerson*	lpPerson	= lpItem->data(Qt::UserRole+1).value<cPerson*>();
-	if(!lpPerson)
+	cLocation*	lpLocation	= lpItem->data(Qt::UserRole+1).value<cLocation*>();
+	if(!lpLocation)
 		return;
 
-	if(lpItem->text() == lpPerson->name())
+	if(lpItem->text() == lpLocation->name())
 		return;
 
-	QString		szOldName	= lpPerson->name();
-	lpPerson->setName(lpItem->text());
-	if(!lpPerson->toDB())
+	QString		szOldName	= lpLocation->name();
+	lpLocation->setName(lpItem->text());
+	if(!lpLocation->toDB())
 	{
 		QMessageBox::critical(this, tr("ERROR"), QString(tr("%1 already exists.").arg(lpItem->text())));
 		m_bEditing	= true;
 		lpItem->setText(szOldName);
-		lpPerson->setName(szOldName);
+		lpLocation->setName(szOldName);
 		m_bEditing	= false;
 	}
 }

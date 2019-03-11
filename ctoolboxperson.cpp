@@ -1,3 +1,8 @@
+/*!
+ \file cToolBoxPerson.cpp
+
+*/
+
 #include "ctoolboxperson.h"
 #include "ui_ctoolboxperson.h"
 
