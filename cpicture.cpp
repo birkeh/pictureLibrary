@@ -173,16 +173,16 @@ bool cPicture::toDB()
 		query.exec();
 	}
 
-	query.prepare("DELETE FROM picture_flag WHERE pictureID=:pictureID;");
+	query.prepare("DELETE FROM picture_tag WHERE pictureID=:pictureID;");
 	query.bindValue(":pictureID", m_iID);
 	query.exec();
 
-	query.prepare("INSERT INTO picture_flag (pictureID, flagID) VALUES (:pictureID, :flagID);");
+	query.prepare("INSERT INTO picture_tag (pictureID, tagID) VALUES (:pictureID, :tagID);");
 	query.bindValue(":pictureID", m_iID);
 
-	for(cFlagList::iterator i = m_flagList.begin();i != m_flagList.end();i++)
+	for(cTagList::iterator i = m_tagList.begin();i != m_tagList.end();i++)
 	{
-		query.bindValue(":flagID", (*i)->id());
+		query.bindValue(":tagID", (*i)->id());
 		query.exec();
 	}
 
@@ -512,27 +512,50 @@ cPersonList& cPicture::personList()
 	return(m_personList);
 }
 
-void cPicture::addFlag(cFlag* lpFlag)
+void cPicture::addLocation(cLocation* lpLocation)
 {
-	if(m_flagList.contains(lpFlag))
+	if(m_locationList.contains(lpLocation))
 		return;
-	m_flagList.add(lpFlag);
+	m_locationList.add(lpLocation);
 }
 
-void cPicture::removeFlag(cFlag* lpFlag)
+void cPicture::removeLocation(cLocation* lpLocation)
 {
-	if(m_flagList.contains(lpFlag))
-		m_flagList.removeAll(lpFlag);
+	if(m_tagList.contains(lpTag))
+		m_tagList.removeAll(lpTag);
 }
 
-void cPicture::clearFlagList()
+void cPicture::clearLocationList()
 {
-	m_flagList.clear();
+	m_locationList.clear();
 }
 
-cFlagList& cPicture::flagList()
+cLocationList& cPicture::locationList()
 {
-	return(m_flagList);
+	return(m_locationList);
+}
+
+void cPicture::addTag(cTag* lpTag)
+{
+	if(m_tagList.contains(lpTag))
+		return;
+	m_tagList.add(lpTag);
+}
+
+void cPicture::removeTag(cTag* lpTag)
+{
+	if(m_tagList.contains(lpTag))
+		m_tagList.removeAll(lpTag);
+}
+
+void cPicture::clearTagList()
+{
+	m_tagList.clear();
+}
+
+cTagList& cPicture::tagList()
+{
+	return(m_tagList);
 }
 
 bool cPicture::operator==(const cPicture& other) const
@@ -764,7 +787,7 @@ cPictureList::cPictureList(QObject *parent) :
 {
 }
 
-bool cPictureList::load(cPersonList& personList, cFlagList& flagList, cSplashScreen *lpSplashScreen, QProgressBar *lpProgressBar)
+bool cPictureList::load(cPersonList& personList, cLocationList& locationList, cTagList& tagList, cSplashScreen *lpSplashScreen, QProgressBar *lpProgressBar)
 {
 	cEXIFFlashList	flashList;
 	QSqlQuery		query;
@@ -924,7 +947,7 @@ bool cPictureList::load(cPersonList& personList, cFlagList& flagList, cSplashScr
 		}
 	}
 
-	query.prepare("SELECT	COUNT(1) cnt FROM picture_flag;");
+	query.prepare("SELECT	COUNT(1) cnt FROM picture_location;");
 
 	if(!query.exec())
 	{
@@ -941,8 +964,8 @@ bool cPictureList::load(cPersonList& personList, cFlagList& flagList, cSplashScr
 		lpSplashScreen->setMax(max);
 
 	query.prepare("SELECT   pictureID, "
-				  "         flagID "
-				  "FROM     picture_flag;");
+				  "         locationID "
+				  "FROM     picture_location;");
 
 	if(!query.exec())
 	{
@@ -959,10 +982,61 @@ bool cPictureList::load(cPersonList& personList, cFlagList& flagList, cSplashScr
 	while(query.next())
 	{
 		cPicture*	lpPicture	= find(query.value("pictureID").toInt());
-		cFlag*		lpFlag		= flagList.find(query.value("flagID").toInt());
+		cLocation*	lpLocation	= locationList.find(query.value("locationID").toInt());
 
-		if(lpPicture && lpFlag)
-			lpPicture->addFlag(lpFlag);
+		if(lpPicture && lpLocation)
+			lpPicture->addLocation(lpLocation);
+
+		count++;
+		if(!(count % step))
+		{
+			if(lpProgressBar)
+				lpProgressBar->setValue(count);
+			else if(lpSplashScreen)
+				lpSplashScreen->setProgress(count);
+			qApp->processEvents();
+		}
+	}
+
+	query.prepare("SELECT	COUNT(1) cnt FROM picture_tag;");
+
+	if(!query.exec())
+	{
+		myDebug << query.lastError().text();
+		return(false);
+	}
+	query.next();
+
+	max		= static_cast<qint32>(query.value("cnt").toLongLong());
+
+	if(lpProgressBar)
+		lpProgressBar->setMaximum(max);
+	else if(lpSplashScreen)
+		lpSplashScreen->setMax(max);
+
+	query.prepare("SELECT   pictureID, "
+				  "         tagID "
+				  "FROM     picture_tag;");
+
+	if(!query.exec())
+	{
+		myDebug << query.lastError().text();
+		return(false);
+	}
+
+	count	= 0;
+	step	= max/200;
+
+	if(!step)
+		step = 1;
+
+	while(query.next())
+	{
+		cPicture*	lpPicture	= find(query.value("pictureID").toInt());
+		cTag*		lpTag		= tagList.find(query.value("tagID").toInt());
+
+		if(lpPicture && lpTag)
+			lpPicture->addTag(lpTag);
 
 		count++;
 		if(!(count % step))

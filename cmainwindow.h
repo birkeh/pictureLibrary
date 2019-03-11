@@ -10,7 +10,7 @@
 #include "cpicturelibrary.h"
 #include "csplashscreen.h"
 #include "cpicture.h"
-#include "cflag.h"
+#include "ctag.h"
 #include "cperson.h"
 
 #include "cfoldersortfilterproxymodel.h"
@@ -76,7 +76,7 @@ private:
 	cPictureLibrary					m_pictureLibrary;						/*!< TODO: describe */
 	cPictureList					m_pictureList;							/*!< TODO: describe */
 	cPersonList						m_personList;							/*!< TODO: describe */
-	cFlagList						m_flagList;								/*!< TODO: describe */
+	cTagList						m_tagList;								/*!< TODO: describe */
 
 	QMenu*							m_lpFileMenu;							/*!< TODO: describe */
 

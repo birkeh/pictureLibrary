@@ -1,10 +1,10 @@
 /*!
- \file cperson.h
+ \file clocation.h
 
 */
 
-#ifndef CPERSON_H
-#define CPERSON_H
+#ifndef CLOCATION_H
+#define CLOCATION_H
 
 
 #include "csplashscreen.h"
@@ -20,19 +20,19 @@
 /*!
  \brief
 
- \class cPerson cperson.h "cperson.h"
+ \class cLocation clocation.h "clocation.h"
 */
-class cPerson : public QObject
+class cLocation : public QObject
 {
 	Q_OBJECT
 public:
 	/*!
 	 \brief
 
-	 \fn cPerson
+	 \fn cLocation
 	 \param parent
 	*/
-	explicit cPerson(qint32 iID = -1, QObject *parent = nullptr);
+	explicit cLocation(qint32 iID = -1, QObject *parent = nullptr);
 
 	/*!
 	 \brief
@@ -79,7 +79,7 @@ public:
 	 \param other
 	 \return bool
 	*/
-	bool					operator==(const cPerson& other) const;
+	bool					operator==(const cLocation& other) const;
 
 	/*!
 	 \brief
@@ -88,7 +88,7 @@ public:
 	 \param other
 	 \return bool
 	*/
-	bool					operator==(const cPerson*& other) const;
+	bool					operator==(const cLocation*& other) const;
 
 	/*!
 	 \brief
@@ -97,7 +97,7 @@ public:
 	 \param other
 	 \return bool
 	*/
-	bool					operator==(const cPerson* other) const;
+	bool					operator==(const cLocation* other) const;
 
 	/*!
 	 \brief
@@ -106,7 +106,7 @@ public:
 	 \param other
 	 \return bool
 	*/
-	bool					operator==(cPerson* other);
+	bool					operator==(cLocation* other);
 
 signals:
 
@@ -117,24 +117,24 @@ private:
 	QString					m_szName;				/*!< TODO: describe */
 };
 
-Q_DECLARE_METATYPE(cPerson*)
+Q_DECLARE_METATYPE(cLocation*)
 
 /*!
  \brief
 
- \class cPersonList cperson.h "cperson.h"
+ \class ccLocation clocation.h "clocation.h"
 */
-class cPersonList : public QObject, public QList<cPerson*>
+class cLocationList : public QObject, public QList<cLocation*>
 {
 	Q_OBJECT
 public:
 	/*!
 	 \brief
 
-	 \fn cPersonList
+	 \fn cLocationList
 	 \param parent
 	*/
-	explicit				cPersonList(QObject *parent = nullptr);
+	explicit				cLocationList(QObject *parent = nullptr);
 
 	/*!
 	 \brief
@@ -152,54 +152,54 @@ public:
 	 \fn add
 	 \param iID
 	 \param bNoCheck
-	 \return cPerson
+	 \return cLocation
 	*/
-	cPerson*				add(qint32 iID = -1, bool bNoCheck = false);
+	cLocation*				add(qint32 iID = -1, bool bNoCheck = false);
 	/*!
 	 \brief
 
 	 \fn add
-	 \param cPerson
+	 \param cLocation
 	 \param bNoCheck
 	 \return bool
 	*/
-	bool					add(cPerson* lpPerson, bool bNoCheck = false);
+	bool					add(cLocation* lpLocation, bool bNoCheck = false);
 
 	/*!
 	 \brief
 
 	 \fn find
 	 \param iID
-	 \return cPerson
+	 \return cTag
 	*/
-	cPerson*				find(qint32 iID);
+	cLocation*				find(qint32 iID);
 	/*!
 	 \brief
 
 	 \fn find
 	 \param iID
-	 \return cPerson
+	 \return cTag
 	*/
-	cPerson*				find(cPerson* lpPerson);
+	cLocation*				find(cLocation* lpLocation);
 	/*!
 	 \brief
 
 	 \fn remove
-	 \param lpPerson
+	 \param lpLocation
 	 \return bool
 	*/
-	bool					remove(cPerson* lpPerson);
+	bool					remove(cLocation* lpLocation);
 
 	/*!
 	 \brief
 
-	 \fn PersonList
+	 \fn locationList
 	 \return QStringList
 	*/
-	QStringList				personList();
+	QStringList				locationList();
 signals:
 
 public slots:
 };
 
-#endif // CPERSON_H
+#endif // CLOCATION_H

@@ -1,10 +1,10 @@
 /*!
- \file cFlag.h
+ \file ctag.h
 
 */
 
-#ifndef cFlag_H
-#define cFlag_H
+#ifndef CTAG_H
+#define CTAG_H
 
 
 #include "csplashscreen.h"
@@ -20,19 +20,19 @@
 /*!
  \brief
 
- \class cFlag cflag.h "cflag.h"
+ \class cTag ctag.h "ctag.h"
 */
-class cFlag : public QObject
+class cTag : public QObject
 {
 	Q_OBJECT
 public:
 	/*!
 	 \brief
 
-	 \fn cFlag
+	 \fn cTag
 	 \param parent
 	*/
-	explicit cFlag(qint32 iID = -1, QObject *parent = nullptr);
+	explicit cTag(qint32 iID = -1, QObject *parent = nullptr);
 
 	/*!
 	 \brief
@@ -79,7 +79,7 @@ public:
 	 \param other
 	 \return bool
 	*/
-	bool					operator==(const cFlag& other) const;
+	bool					operator==(const cTag& other) const;
 
 	/*!
 	 \brief
@@ -88,7 +88,7 @@ public:
 	 \param other
 	 \return bool
 	*/
-	bool					operator==(const cFlag*& other) const;
+	bool					operator==(const cTag*& other) const;
 
 	/*!
 	 \brief
@@ -97,7 +97,7 @@ public:
 	 \param other
 	 \return bool
 	*/
-	bool					operator==(const cFlag* other) const;
+	bool					operator==(const cTag* other) const;
 
 	/*!
 	 \brief
@@ -106,7 +106,7 @@ public:
 	 \param other
 	 \return bool
 	*/
-	bool					operator==(cFlag* other);
+	bool					operator==(cTag* other);
 
 signals:
 
@@ -117,24 +117,24 @@ private:
 	QString					m_szName;				/*!< TODO: describe */
 };
 
-Q_DECLARE_METATYPE(cFlag*)
+Q_DECLARE_METATYPE(cTag*)
 
 /*!
  \brief
 
- \class cFlagList cflag.h "cflag.h"
+ \class cTagList ctag.h "ctag.h"
 */
-class cFlagList : public QObject, public QList<cFlag*>
+class cTagList : public QObject, public QList<cTag*>
 {
 	Q_OBJECT
 public:
 	/*!
 	 \brief
 
-	 \fn cFlagList
+	 \fn cTagList
 	 \param parent
 	*/
-	explicit				cFlagList(QObject *parent = nullptr);
+	explicit				cTagList(QObject *parent = nullptr);
 
 	/*!
 	 \brief
@@ -152,46 +152,46 @@ public:
 	 \fn add
 	 \param iID
 	 \param bNoCheck
-	 \return cFlag
+	 \return cTag
 	*/
-	cFlag*					add(qint32 iID = -1, bool bNoCheck = false);
+	cTag*					add(qint32 iID = -1, bool bNoCheck = false);
 	/*!
 	 \brief
 
 	 \fn add
-	 \param cFlag
+	 \param cTag
 	 \param bNoCheck
 	 \return bool
 	*/
-	bool					add(cFlag* lpFlag, bool bNoCheck = false);
+	bool					add(cTag* lpTag, bool bNoCheck = false);
 
 	/*!
 	 \brief
 
 	 \fn find
 	 \param iID
-	 \return cFlag
+	 \return cTag
 	*/
-	cFlag*					find(qint32 iID);
+	cTag*					find(qint32 iID);
 	/*!
 	 \brief
 
 	 \fn find
 	 \param iID
-	 \return cFlag
+	 \return cTag
 	*/
-	cFlag*					find(cFlag* lpFlag);
+	cTag*					find(cTag* lpTag);
 
 	/*!
 	 \brief
 
-	 \fn flagList
+	 \fn tagList
 	 \return QStringList
 	*/
-	QStringList				flagList();
+	QStringList				tagList();
 signals:
 
 public slots:
 };
 
-#endif // cFlag_H
+#endif // CTAG_H

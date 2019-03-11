@@ -138,21 +138,27 @@ bool cPictureLibrary::createDatabase()
 					"); "))
 		return(false);
 
-	if(!createTable("CREATE TABLE flags ( "
+	if(!createTable("CREATE TABLE location ( "
 					"    id                       INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE, "
 					"    name                     TEXT "
 					"); "))
 		return(false);
 
-	if(!createTable("CREATE TABLE picture_flags ( "
-					"    pictureID INTEGER REFERENCES picture (id), "
-					"    flagsID   INTEGER REFERENCES flags (id) "
+	if(!createTable("CREATE TABLE tag ( "
+					"    id                       INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE, "
+					"    name                     TEXT "
 					"); "))
 		return(false);
 
-	if(!createTable("CREATE UNIQUE INDEX picture_flag_idx ON picture_flags ( "
+	if(!createTable("CREATE TABLE picture_tag ( "
+					"    pictureID INTEGER REFERENCES picture (id), "
+					"    tagID   INTEGER REFERENCES tag (id) "
+					"); "))
+		return(false);
+
+	if(!createTable("CREATE UNIQUE INDEX picture_tag_idx ON picture_tag ( "
 					"    pictureID, "
-					"    flagsID "
+					"    tagID "
 					"); "))
 		return(false);
 
@@ -163,6 +169,18 @@ bool cPictureLibrary::createDatabase()
 		return(false);
 
 	if(!createTable("CREATE UNIQUE INDEX picture_person_idx ON picture_person ( "
+					"    pictureID, "
+					"    personID "
+					"); "))
+		return(false);
+
+	if(!createTable("CREATE TABLE picture_location ( "
+					"    pictureID INTEGER REFERENCES picture (id), "
+					"    locationID   INTEGER REFERENCES location (id)  "
+					"); "))
+		return(false);
+
+	if(!createTable("CREATE UNIQUE INDEX picture_location_idx ON picture_location ( "
 					"    pictureID, "
 					"    personID "
 					"); "))

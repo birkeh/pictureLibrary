@@ -10,7 +10,8 @@
 #include "csplashscreen.h"
 
 #include "cperson.h"
-#include "cflag.h"
+#include "clocation.h"
+#include "ctag.h"
 
 #include <QObject>
 #include <QList>
@@ -537,30 +538,58 @@ public:
 	/*!
 	 \brief
 
-	 \fn addFlag
-	 \param lpFlag
+	 \fn addLocation
+	 \param lpLocation
 	*/
-	void					addFlag(cFlag* lpFlag);
+	void					addLocation(cLocation* lpLocation);
 	/*!
 	 \brief
 
-	 \fn removeFlag
-	 \param lpFlag
+	 \fn removeLocation
+	 \param lpLocation
 	*/
-	void					removeFlag(cFlag* lpFlag);
+	void					removeLocation(cLocation* lpLocation);
 	/*!
 	 \brief
 
-	 \fn clearFlagList
+	 \fn clearLocationList
 	*/
-	void					clearFlagList();
+	void					clearLocationList();
 	/*!
 	 \brief
 
-	 \fn flagList
-	 \return cFlagList
+	 \fn tagList
+	 \return cLocationList
 	*/
-	cFlagList&				flagList();
+	cLocationList&			locationList();
+
+	/*!
+	 \brief
+
+	 \fn addTag
+	 \param lpTag
+	*/
+	void					addTag(cTag* lpTag);
+	/*!
+	 \brief
+
+	 \fn removeTag
+	 \param lpTag
+	*/
+	void					removeTag(cTag* lpTag);
+	/*!
+	 \brief
+
+	 \fn clearTagList
+	*/
+	void					clearTagList();
+	/*!
+	 \brief
+
+	 \fn tagList
+	 \return cTagList
+	*/
+	cTagList&				tagList();
 
 	/*!
 	 \brief
@@ -635,7 +664,8 @@ private:
 	bool					m_hdr;					/*!< TODO: describe */
 
 	cPersonList				m_personList;			/*!< TODO: describe */
-	cFlagList				m_flagList;				/*!< TODO: describe */
+	cLocationList			m_locationList;			/*!< TODO: describe */
+	cTagList				m_tagList;				/*!< TODO: describe */
 };
 
 Q_DECLARE_METATYPE(cPicture*)
@@ -665,7 +695,7 @@ public:
 	 \param lpProgressBar
 	 \return bool
 	*/
-	bool					load(cPersonList& personList, cFlagList& flagList, cSplashScreen* lpSplashScreen, QProgressBar* lpProgressBar = nullptr);
+	bool					load(cPersonList& personList, cLocationList& locationList, cTagList& tagList, cSplashScreen* lpSplashScreen, QProgressBar* lpProgressBar = nullptr);
 
 	/*!
 	 \brief

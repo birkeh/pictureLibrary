@@ -153,11 +153,11 @@ void cMainWindow::loadData(bool bProgressBar)
 	m_personList.load(m_lpSplashScreen, bProgressBar ? m_lpProgressBar : nullptr);
 	ui->m_lpToolBoxPerson->setPersonList(&m_personList);
 
-	m_flagList.clear();
-	m_flagList.load(m_lpSplashScreen, bProgressBar ? m_lpProgressBar : nullptr);
+	m_tagList.clear();
+	m_tagList.load(m_lpSplashScreen, bProgressBar ? m_lpProgressBar : nullptr);
 
 	m_pictureList.clear();
-	m_pictureList.load(m_personList, m_flagList, m_lpSplashScreen, bProgressBar ? m_lpProgressBar : nullptr);
+	m_pictureList.load(m_personList, m_tagList, m_lpSplashScreen, bProgressBar ? m_lpProgressBar : nullptr);
 
 	displayData();
 

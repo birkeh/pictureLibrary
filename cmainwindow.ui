@@ -107,7 +107,7 @@
          <item row="0" column="0">
           <widget class="QToolBox" name="m_lpToolBox">
            <property name="currentIndex">
-            <number>1</number>
+            <number>3</number>
            </property>
            <widget class="cToolBoxInfo" name="m_lpToolBoxInfo">
             <property name="geometry">
@@ -115,7 +115,7 @@
               <x>0</x>
               <y>0</y>
               <width>69</width>
-              <height>510</height>
+              <height>483</height>
              </rect>
             </property>
             <attribute name="label">
@@ -128,24 +128,37 @@
               <x>0</x>
               <y>0</y>
               <width>69</width>
-              <height>510</height>
+              <height>483</height>
              </rect>
             </property>
             <attribute name="label">
              <string>Person</string>
             </attribute>
            </widget>
-           <widget class="QWidget" name="m_lpToolBoxFlags">
+           <widget class="cToolBoxLocation" name="m_lpToolBoxLocation">
             <property name="geometry">
              <rect>
               <x>0</x>
               <y>0</y>
               <width>69</width>
-              <height>510</height>
+              <height>483</height>
              </rect>
             </property>
             <attribute name="label">
-             <string>Flags</string>
+             <string>Location</string>
+            </attribute>
+           </widget>
+           <widget class="ctoolBoxTag" name="m_lpToolBoxTags">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>69</width>
+              <height>483</height>
+             </rect>
+            </property>
+            <attribute name="label">
+             <string>Tags</string>
             </attribute>
            </widget>
           </widget>
@@ -194,6 +207,18 @@
    <class>cToolBoxPerson</class>
    <extends>QWidget</extends>
    <header>ctoolboxperson.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>cToolBoxLocation</class>
+   <extends>QWidget</extends>
+   <header>ctoolboxlocation.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ctoolBoxTag</class>
+   <extends>QWidget</extends>
+   <header>ctoolboxtag.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
