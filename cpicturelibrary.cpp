@@ -16,16 +16,15 @@
 
 cPictureLibrary::cPictureLibrary(QObject *parent) : QObject(parent)
 {
-	if(!openDatabase())
-		return;
 }
 
-bool cPictureLibrary::openDatabase()
+bool cPictureLibrary::openDatabase(const QString& szPath)
 {
-	QSettings	settings;
-	m_szRootPath	= settings.value("database/rootPath", QDir::homePath()).toString();
+	if(m_db.isOpen())
+		m_db.close();
 
-	QString		szDB	= m_szRootPath + "/" + "pictureLibrary.db";
+	m_szRootPath		= "";
+	QString		szDB	= szPath + "/" + "pictureLibrary.db";
 
 	m_db	= QSqlDatabase::addDatabase("QSQLITE");
 	m_db.setHostName("localhost");
@@ -55,6 +54,8 @@ bool cPictureLibrary::openDatabase()
 			updateDatabase(query.value("version").toInt());
 		query.finish();
 	}
+
+	m_szRootPath	= szPath;
 
 	return(true);
 }

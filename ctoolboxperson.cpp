@@ -64,6 +64,11 @@ void cToolBoxPerson::createActions()
 	connect(m_lpPersonListModel,					&QStandardItemModel::itemChanged,				this,	&cToolBoxPerson::onPersonChanged);
 }
 
+void cToolBoxPerson::clearPersonList()
+{
+	m_lpPersonListModel->clear();
+}
+
 void cToolBoxPerson::setPersonList(cPersonList* lpPersonList)
 {
 	m_bLoading	= true;

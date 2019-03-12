@@ -35,7 +35,7 @@ public:
 	 \fn openDatabase
 	 \return bool
 	*/
-	bool						openDatabase();
+	bool						openDatabase(const QString& szPath);
 	/*!
 	 \brief
 

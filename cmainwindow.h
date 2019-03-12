@@ -80,12 +80,15 @@ private:
 	cLocationList					m_locationList;							/*!< TODO: describe */
 	cTagList						m_tagList;								/*!< TODO: describe */
 
+	QString							m_szOldPath;							/*!< TODO: describe */
+
 	QMenu*							m_lpFileMenu;							/*!< TODO: describe */
 
 	QToolBar*						m_lpFileToolBar;						/*!< TODO: describe */
 
 	QAction*						m_lpFileNewAction;						/*!< TODO: describe */
 	QAction*						m_lpFileOpenAction;						/*!< TODO: describe */
+	QAction*						m_lpFileSaveAsAction;					/*!< TODO: describe */
 	QAction*						m_lpFileImportAction;					/*!< TODO: describe */
 	QAction*						m_lpFileQuitAction;						/*!< TODO: describe */
 
@@ -212,6 +215,13 @@ private slots:
 	 \fn onFileOpen
 	*/
 	void							onFileOpen();
+	/*!
+	 \brief
+
+	 \fn onFileSaveAs
+	 \return bool
+	*/
+	bool							onFileSaveAs();
 	/*!
 	 \brief
 

@@ -64,6 +64,11 @@ void cToolBoxTag::createActions()
 	connect(m_lpTagListModel,						&QStandardItemModel::itemChanged,				this,	&cToolBoxTag::onTagChanged);
 }
 
+void cToolBoxTag::clearTagList()
+{
+	m_lpTagListModel->clear();
+}
+
 void cToolBoxTag::setTagList(cTagList* lpTagList)
 {
 	m_bLoading	= true;

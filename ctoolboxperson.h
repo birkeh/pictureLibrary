@@ -46,6 +46,12 @@ public:
 	/*!
 	 \brief
 
+	 \fn clearPersonList
+	*/
+	void					clearPersonList();
+	/*!
+	 \brief
+
 	 \param lpPersonList
 	 \fn setPersonList
 	*/

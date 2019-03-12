@@ -59,6 +59,11 @@ void cToolBoxLocation::createActions()
 	connect(m_lpLocationListModel,					&QStandardItemModel::itemChanged,				this,	&cToolBoxLocation::onLocationChanged);
 }
 
+void cToolBoxLocation::clearLocationList()
+{
+	m_lpLocationListModel->clear();
+}
+
 void cToolBoxLocation::setLocationList(cLocationList* lpLocationList)
 {
 	m_bLoading	= true;

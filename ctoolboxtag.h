@@ -46,6 +46,12 @@ public:
 	/*!
 	 \brief
 
+	 \fn clearTagList
+	*/
+	void					clearTagList();
+	/*!
+	 \brief
+
 	 \param lpTagList
 	 \fn setTagList
 	*/

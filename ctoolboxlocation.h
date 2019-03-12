@@ -46,6 +46,12 @@ public:
 	/*!
 	 \brief
 
+	 \fn clearLocationList
+	*/
+	void					clearLocationList();
+	/*!
+	 \brief
+
 	 \param lpLocationList
 	 \fn setLocationList
 	*/

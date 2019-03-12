@@ -30,6 +30,7 @@
 #include <QIcon>
 #include <QPixmap>
 #include <QInputDialog>
+#include <QFileDialog>
 
 
 cMainWindow::cMainWindow(cSplashScreen* lpSplashScreen, QWidget *parent) :
@@ -48,7 +49,12 @@ cMainWindow::cMainWindow(cSplashScreen* lpSplashScreen, QWidget *parent) :
 {
 	initUI();
 	createActions();
-	loadData();
+
+//	onFileNew();
+	QSettings	settings;
+	m_szOldPath	= settings.value("file/lastPath", QDir::homePath()).toString();
+	m_pictureLibrary.openDatabase(m_szOldPath);
+	loadData(true);
 
 	updateRecentFileActions();
 }
@@ -66,6 +72,8 @@ cMainWindow::~cMainWindow()
 void cMainWindow::initUI()
 {
 	ui->setupUi(this);
+
+	QIcon::setThemeName("TangoMFK");
 
 	m_lpFolderViewModel	= new QStandardItemModel;
 	m_lpFolderSortFilterProxyModel	= new cFolderSortFilterProxyModel(this);
@@ -145,21 +153,77 @@ void cMainWindow::createContextActions()
 	connect(m_lpUnsetHDRAction,			&QAction::triggered,	this,	&cMainWindow::onUnsetHDR);
 }
 
+void cMainWindow::closeEvent(QCloseEvent *event)
+{
+	QSettings	settings;
+	settings.setValue("main/width", QVariant::fromValue(size().width()));
+	settings.setValue("main/height", QVariant::fromValue(size().height()));
+	settings.setValue("main/x", QVariant::fromValue(x()));
+	settings.setValue("main/y", QVariant::fromValue(y()));
+	if(this->isMaximized())
+		settings.setValue("main/maximized", QVariant::fromValue(true));
+	else
+		settings.setValue("main/maximized", QVariant::fromValue(false));
+
+	QList<qint32>	sizes	= ui->m_lpSplitter->sizes();
+
+	for(int x = 0;x < sizes.count();x++)
+		settings.setValue(QString("main/splitter%1").arg(x+1), QVariant::fromValue(sizes[x]));
+
+	event->accept();
+}
+
+void cMainWindow::createFileActions()
+{
+	m_lpFileMenu				= menuBar()->addMenu(tr("&File"));
+	m_lpFileToolBar				= addToolBar(tr("File Actions"));
+
+	const QIcon	newIcon			= QIcon::fromTheme("document-new");
+	m_lpFileNewAction			= m_lpFileMenu->addAction(newIcon, tr("&New"), this, &cMainWindow::onFileNew);
+	m_lpFileToolBar->addAction(m_lpFileNewAction);
+	m_lpFileNewAction->setPriority(QAction::LowPriority);
+	m_lpFileNewAction->setShortcut(QKeySequence::New);
+
+	const QIcon	openIcon		= QIcon::fromTheme("document-open");
+	m_lpFileOpenAction			= m_lpFileMenu->addAction(openIcon, tr("&Open..."), this, &cMainWindow::onFileOpen);
+	m_lpFileOpenAction->setShortcut(QKeySequence::Open);
+	m_lpFileToolBar->addAction(m_lpFileOpenAction);
+
+	m_lpFileSaveAsAction		= m_lpFileMenu->addAction(tr("Save &As..."), this, &cMainWindow::onFileSaveAs);
+	m_lpFileSaveAsAction->setPriority(QAction::LowPriority);
+	m_lpFileMenu->addSeparator();
+
+	m_lpFileImportAction		= m_lpFileMenu->addAction(tr("&Import..."), this, &cMainWindow::onFileImport);
+	m_lpFileToolBar->addAction(m_lpFileImportAction);
+
+	m_lpFileMenu->addSeparator();
+
+	for(int i = 0; i < MaxRecentFiles;i++)
+	{
+		m_lpRecentFileAction[i]	= new QAction(this);
+		m_lpRecentFileAction[i]->setVisible(false);
+		m_lpFileMenu->addAction(m_lpRecentFileAction[i]);
+		connect(m_lpRecentFileAction[i], &QAction::triggered, this, &cMainWindow::openRecentFile);
+	}
+	m_lpSeparatorRecent			= m_lpFileMenu->addSeparator();
+	m_lpSeparatorRecent->setVisible(false);
+
+	m_lpFileQuitAction			= m_lpFileMenu->addAction(tr("&Quit"), this, &QWidget::close);
+	m_lpFileQuitAction->setShortcut(Qt::CTRL + Qt::Key_Q);
+}
+
 void cMainWindow::loadData(bool bProgressBar)
 {
 	m_bLoading	= true;
 
 	m_personList.clear();
 	m_personList.load(m_lpSplashScreen, bProgressBar ? m_lpProgressBar : nullptr);
-	ui->m_lpToolBoxPerson->setPersonList(&m_personList);
 
 	m_locationList.clear();
 	m_locationList.load(m_lpSplashScreen, bProgressBar ? m_lpProgressBar : nullptr);
-	ui->m_lpToolBoxLocation->setLocationList(&m_locationList);
 
 	m_tagList.clear();
 	m_tagList.load(m_lpSplashScreen, bProgressBar ? m_lpProgressBar : nullptr);
-	ui->m_lpToolBoxTags->setTagList(&m_tagList);
 
 	m_pictureList.clear();
 	m_pictureList.load(m_personList, m_locationList, m_tagList, m_lpSplashScreen, bProgressBar ? m_lpProgressBar : nullptr);
@@ -173,8 +237,16 @@ void cMainWindow::displayData()
 {
 	m_lpThumbnailViewModel->clear();
 	m_lpFolderViewModel->clear();
+	ui->m_lpToolBoxPerson->clearPersonList();
+	ui->m_lpToolBoxLocation->clearLocationList();
+	ui->m_lpToolBoxTags->clearTagList();
+
 	ui->m_lpStatusBar->showMessage(tr("refreshing..."));
 	qApp->processEvents();
+
+	ui->m_lpToolBoxPerson->setPersonList(&m_personList);
+	ui->m_lpToolBoxLocation->setLocationList(&m_locationList);
+	ui->m_lpToolBoxTags->setTagList(&m_tagList);
 
 	m_lpRootItem	= new QStandardItem("library");
 	m_lpFolderViewModel->appendRow(m_lpRootItem);
@@ -298,63 +370,6 @@ void cMainWindow::cleanFolderTree(const QString& folder)
 	}
 }
 
-void cMainWindow::closeEvent(QCloseEvent *event)
-{
-	QSettings	settings;
-	settings.setValue("main/width", QVariant::fromValue(size().width()));
-	settings.setValue("main/height", QVariant::fromValue(size().height()));
-	settings.setValue("main/x", QVariant::fromValue(x()));
-	settings.setValue("main/y", QVariant::fromValue(y()));
-	if(this->isMaximized())
-		settings.setValue("main/maximized", QVariant::fromValue(true));
-	else
-		settings.setValue("main/maximized", QVariant::fromValue(false));
-
-	QList<qint32>	sizes	= ui->m_lpSplitter->sizes();
-
-	for(int x = 0;x < sizes.count();x++)
-		settings.setValue(QString("main/splitter%1").arg(x+1), QVariant::fromValue(sizes[x]));
-
-	event->accept();
-}
-
-void cMainWindow::createFileActions()
-{
-	m_lpFileMenu				= menuBar()->addMenu(tr("&File"));
-	m_lpFileToolBar				= addToolBar(tr("File Actions"));
-
-	const QIcon	newIcon			= QIcon::fromTheme("document-new");
-	m_lpFileNewAction			= m_lpFileMenu->addAction(newIcon, tr("&New"), this, &cMainWindow::onFileNew);
-	m_lpFileToolBar->addAction(m_lpFileNewAction);
-	m_lpFileNewAction->setPriority(QAction::LowPriority);
-	m_lpFileNewAction->setShortcut(QKeySequence::New);
-
-	const QIcon	openIcon		= QIcon::fromTheme("document-open");
-	m_lpFileOpenAction			= m_lpFileMenu->addAction(openIcon, tr("&Open..."), this, &cMainWindow::onFileOpen);
-	m_lpFileOpenAction->setShortcut(QKeySequence::Open);
-	m_lpFileToolBar->addAction(m_lpFileOpenAction);
-
-	m_lpFileMenu->addSeparator();
-
-	m_lpFileImportAction		= m_lpFileMenu->addAction(tr("&Import..."), this, &cMainWindow::onFileImport);
-	m_lpFileToolBar->addAction(m_lpFileImportAction);
-
-	m_lpFileMenu->addSeparator();
-
-	for(int i = 0; i < MaxRecentFiles;i++)
-	{
-		m_lpRecentFileAction[i]	= new QAction(this);
-		m_lpRecentFileAction[i]->setVisible(false);
-		m_lpFileMenu->addAction(m_lpRecentFileAction[i]);
-		connect(m_lpRecentFileAction[i], &QAction::triggered, this, &cMainWindow::openRecentFile);
-	}
-	m_lpSeparatorRecent			= m_lpFileMenu->addSeparator();
-	m_lpSeparatorRecent->setVisible(false);
-
-	m_lpFileQuitAction			= m_lpFileMenu->addAction(tr("&Quit"), this, &QWidget::close);
-	m_lpFileQuitAction->setShortcut(Qt::CTRL + Qt::Key_Q);
-}
-
 void cMainWindow::onThumbnailSelected(const QItemSelection& /*selection*/, const QItemSelection& /*previous*/)
 {
 	cPictureList	pictureList;
@@ -449,42 +464,21 @@ void cMainWindow::openRecentFile()
 	QAction*	lpAction	= qobject_cast<QAction*>(sender());
 	if(lpAction)
 	{
-//		if(m_lpStoryBook)
-//		{
-//			if(m_bSomethingChanged)
-//			{
-//				switch(QMessageBox::question(this, tr("Save"), m_lpStoryBook->title() + tr(" has been changed.\nDo you want to save?"), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel))
-//				{
-//				case QMessageBox::Yes:
-//					if(!onFileSave())
-//						return;
-//					break;
-//				case QMessageBox::No:
-//					break;
-//				case QMessageBox::Cancel:
-//					return;
-//				default:
-//					return;
-//				}
-//			}
-//		}
+		QSettings	settings;
+		QString		szPath	= lpAction->data().toString();
+		if(szPath.isEmpty())
+			return;
 
-//		QString	szProjectName	= lpAction->data().toString();
-//		if(szProjectName.isEmpty())
-//			return;
+		if(!m_pictureLibrary.openDatabase(szPath))
+			return;
 
-//		delete m_lpStoryBook;
+		loadData(true);
 
-//		m_lpStoryBook	= new cStoryBook(szProjectName);
+		setCurrentFile(szPath);
+		m_szOldPath	= szPath;
+		settings.setValue("file/lastPath", QVariant::fromValue(m_szOldPath));
 
-//		m_lpStoryBook->fillOutlineList(ui->m_lpOutlineList);
-//		m_lpStoryBook->fillCharacterList(ui->m_lpCharacterList);
-//		m_lpStoryBook->fillPlaceList(ui->m_lpPlaceList);
-//		m_lpStoryBook->fillObjectList(ui->m_lpObjectList);
-//		m_lpStoryBook->fillRechercheList(ui->m_lpRechercheList);
-
-//		setCurrentFile(szProjectName);
-//		updateWindowTitle();
+		//		updateWindowTitle();
 	}
 }
 
@@ -525,45 +519,43 @@ void cMainWindow::onFileNew()
 
 void cMainWindow::onFileOpen()
 {
-//	if(m_lpStoryBook)
-//	{
-//		if(m_bSomethingChanged)
-//		{
-//			switch(QMessageBox::question(this, tr("Save"), m_lpStoryBook->title() + tr(" has been changed.\nDo you want to save?"), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel))
-//			{
-//			case QMessageBox::Yes:
-//				if(!onFileSave())
-//					return;
-//				break;
-//			case QMessageBox::No:
-//				break;
-//			case QMessageBox::Cancel:
-//				return;
-//			default:
-//				return;
-//			}
-//		}
-//	}
+	QSettings	settings;
+	QString		szPath	= settings.value("file/lastPath", QDir::homePath()).toString();
+	szPath	= QFileDialog::getExistingDirectory(this, tr("Open Database"), szPath, QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 
-//	QString	szProjectName	= getProjectLoadName();
+	if(szPath.isEmpty())
+		return;
+
+	if(!m_pictureLibrary.openDatabase(szPath))
+		return;
+
+	loadData(m_lpProgressBar);
+
+	setCurrentFile(szPath);
+	m_szOldPath	= szPath;
+	settings.setValue("file/lastPath", QVariant::fromValue(m_szOldPath));
+
+//	updateWindowTitle();
+}
+
+bool cMainWindow::onFileSaveAs()
+{
+//	QString	szProjectName	= getProjectSaveName();
 //	if(szProjectName.isEmpty())
-//		return;
+//		return(false);
 
-//	ui->m_lpMdiArea->closeAllSubWindows();
+//	QFile	file(szProjectName);
+//	if(file.exists())
+//		file.remove();
 
-//	if(m_lpStoryBook)
-//		delete m_lpStoryBook;
+//	if(!m_lpStoryBook->saveAs(szProjectName))
+//		return(false);
 
-//	m_lpStoryBook	= new cStoryBook(szProjectName);
-
-//	m_lpStoryBook->fillOutlineList(ui->m_lpOutlineList);
-//	m_lpStoryBook->fillCharacterList(ui->m_lpCharacterList);
-//	m_lpStoryBook->fillPlaceList(ui->m_lpPlaceList);
-//	m_lpStoryBook->fillObjectList(ui->m_lpObjectList);
-//	m_lpStoryBook->fillRechercheList(ui->m_lpRechercheList);
-
+//	m_bSomethingChanged	= false;
 //	setCurrentFile(szProjectName);
 //	updateWindowTitle();
+
+	return(true);
 }
 
 void cMainWindow::onFileImport()
