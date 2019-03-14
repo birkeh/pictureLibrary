@@ -351,7 +351,8 @@ void cMainWindow::cleanFolderTree(const QString& folder)
 		if(m_pictureList.hasPath(lpItem->data(Qt::UserRole+1).toString()))
 			break;
 
-		if(indexSource.child(0, 0).isValid())
+//		if(indexSource.child(0, 0).isValid())
+		if(m_lpFolderViewModel->index(0, 0, indexSource).isValid())
 			break;
 	}
 
