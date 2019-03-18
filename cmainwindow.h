@@ -19,6 +19,8 @@
 
 #include "ctoolboxinfo.h"
 
+#include "cfilterpanel.h"
+
 #include <QMainWindow>
 #include <QCloseEvent>
 
@@ -64,6 +66,7 @@ public:
 
 private:
 	Ui::cMainWindow*				ui;										/*!< TODO: describe */
+	cFilterPanel*					m_lpFilterPanel;						/*!< TODO: describe */
 	QProgressBar*					m_lpProgressBar;						/*!< TODO: describe */
 	QStandardItemModel*				m_lpFolderViewModel;					/*!< TODO: describe */
 	cFolderSortFilterProxyModel*	m_lpFolderSortFilterProxyModel;			/*!< TODO: describe */

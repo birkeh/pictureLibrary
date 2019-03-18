@@ -15,158 +15,165 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout_2">
-    <item row="0" column="0">
-     <widget class="QSplitter" name="m_lpSplitter">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <widget class="QTreeView" name="m_lpFolderView">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>10</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="baseSize">
-        <size>
-         <width>0</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="contextMenuPolicy">
-        <enum>Qt::CustomContextMenu</enum>
-       </property>
-       <property name="editTriggers">
-        <set>QAbstractItemView::NoEditTriggers</set>
-       </property>
-       <property name="wordWrap">
-        <bool>true</bool>
-       </property>
-       <property name="headerHidden">
-        <bool>true</bool>
-       </property>
-      </widget>
-      <widget class="QListView" name="m_lpThumbnailView">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-         <horstretch>1</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="contextMenuPolicy">
-        <enum>Qt::CustomContextMenu</enum>
-       </property>
-       <property name="editTriggers">
-        <set>QAbstractItemView::NoEditTriggers</set>
-       </property>
-       <property name="selectionMode">
-        <enum>QAbstractItemView::ExtendedSelection</enum>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>160</width>
-         <height>120</height>
-        </size>
-       </property>
-       <property name="resizeMode">
-        <enum>QListView::Adjust</enum>
-       </property>
-       <property name="gridSize">
-        <size>
-         <width>180</width>
-         <height>180</height>
-        </size>
-       </property>
-       <property name="viewMode">
-        <enum>QListView::IconMode</enum>
-       </property>
-       <property name="wordWrap">
-        <bool>true</bool>
-       </property>
-      </widget>
-      <widget class="QScrollArea" name="m_lpInfoScrollArea">
-       <property name="widgetResizable">
-        <bool>true</bool>
-       </property>
-       <widget class="QWidget" name="scrollAreaWidgetContents">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>0</y>
-          <width>87</width>
-          <height>609</height>
-         </rect>
+    <item row="1" column="0">
+     <layout class="QVBoxLayout" name="verticalLayout" stretch="1">
+      <item>
+       <widget class="QSplitter" name="m_lpSplitter">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
         </property>
-        <layout class="QGridLayout" name="gridLayout">
-         <item row="0" column="0">
-          <widget class="QToolBox" name="m_lpToolBox">
-           <property name="currentIndex">
-            <number>3</number>
-           </property>
-           <widget class="cToolBoxInfo" name="m_lpToolBoxInfo">
-            <property name="geometry">
-             <rect>
-              <x>0</x>
-              <y>0</y>
-              <width>69</width>
-              <height>483</height>
-             </rect>
-            </property>
-            <attribute name="label">
-             <string>Information</string>
-            </attribute>
-           </widget>
-           <widget class="cToolBoxPerson" name="m_lpToolBoxPerson">
-            <property name="geometry">
-             <rect>
-              <x>0</x>
-              <y>0</y>
-              <width>69</width>
-              <height>483</height>
-             </rect>
-            </property>
-            <attribute name="label">
-             <string>Person</string>
-            </attribute>
-           </widget>
-           <widget class="cToolBoxLocation" name="m_lpToolBoxLocation">
-            <property name="geometry">
-             <rect>
-              <x>0</x>
-              <y>0</y>
-              <width>69</width>
-              <height>483</height>
-             </rect>
-            </property>
-            <attribute name="label">
-             <string>Location</string>
-            </attribute>
-           </widget>
-           <widget class="cToolBoxTag" name="m_lpToolBoxTags">
-            <property name="geometry">
-             <rect>
-              <x>0</x>
-              <y>0</y>
-              <width>69</width>
-              <height>483</height>
-             </rect>
-            </property>
-            <attribute name="label">
-             <string>Tags</string>
-            </attribute>
-           </widget>
-          </widget>
-         </item>
-        </layout>
+        <widget class="QTreeView" name="m_lpFolderView">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>10</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="baseSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="contextMenuPolicy">
+          <enum>Qt::CustomContextMenu</enum>
+         </property>
+         <property name="editTriggers">
+          <set>QAbstractItemView::NoEditTriggers</set>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+         <property name="headerHidden">
+          <bool>true</bool>
+         </property>
+        </widget>
+        <widget class="QListView" name="m_lpThumbnailView">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>1</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="contextMenuPolicy">
+          <enum>Qt::CustomContextMenu</enum>
+         </property>
+         <property name="editTriggers">
+          <set>QAbstractItemView::NoEditTriggers</set>
+         </property>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::ExtendedSelection</enum>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>160</width>
+           <height>120</height>
+          </size>
+         </property>
+         <property name="resizeMode">
+          <enum>QListView::Adjust</enum>
+         </property>
+         <property name="gridSize">
+          <size>
+           <width>180</width>
+           <height>180</height>
+          </size>
+         </property>
+         <property name="viewMode">
+          <enum>QListView::IconMode</enum>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+        </widget>
+        <widget class="QScrollArea" name="m_lpInfoScrollArea">
+         <property name="widgetResizable">
+          <bool>true</bool>
+         </property>
+         <widget class="QWidget" name="scrollAreaWidgetContents">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>87</width>
+            <height>591</height>
+           </rect>
+          </property>
+          <layout class="QGridLayout" name="gridLayout">
+           <item row="0" column="0">
+            <widget class="QToolBox" name="m_lpToolBox">
+             <property name="currentIndex">
+              <number>3</number>
+             </property>
+             <widget class="cToolBoxInfo" name="m_lpToolBoxInfo">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>69</width>
+                <height>465</height>
+               </rect>
+              </property>
+              <attribute name="label">
+               <string>Information</string>
+              </attribute>
+             </widget>
+             <widget class="cToolBoxPerson" name="m_lpToolBoxPerson">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>69</width>
+                <height>465</height>
+               </rect>
+              </property>
+              <attribute name="label">
+               <string>Person</string>
+              </attribute>
+             </widget>
+             <widget class="cToolBoxLocation" name="m_lpToolBoxLocation">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>69</width>
+                <height>465</height>
+               </rect>
+              </property>
+              <attribute name="label">
+               <string>Location</string>
+              </attribute>
+             </widget>
+             <widget class="cToolBoxTag" name="m_lpToolBoxTags">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>69</width>
+                <height>465</height>
+               </rect>
+              </property>
+              <attribute name="label">
+               <string>Tags</string>
+              </attribute>
+             </widget>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </widget>
        </widget>
-      </widget>
-     </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="0" column="0">
+     <widget class="cSpoiler" name="m_lpSpoiler" native="true"/>
     </item>
    </layout>
   </widget>
@@ -219,6 +226,12 @@
    <class>cToolBoxTag</class>
    <extends>QWidget</extends>
    <header>ctoolboxtag.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>cSpoiler</class>
+   <extends>QWidget</extends>
+   <header>cspoiler.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

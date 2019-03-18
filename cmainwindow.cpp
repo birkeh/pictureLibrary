@@ -13,7 +13,6 @@
 #include "ccombopicker.h"
 
 #include "cimage.h"
-
 #include "cimageviewer.h"
 
 #include "ui_cmainwindow.h"
@@ -31,11 +30,13 @@
 #include <QPixmap>
 #include <QInputDialog>
 #include <QFileDialog>
+#include <QPushButton>
 
 
 cMainWindow::cMainWindow(cSplashScreen* lpSplashScreen, QWidget *parent) :
 	QMainWindow(parent),
 	ui(new Ui::cMainWindow),
+	m_lpFilterPanel(nullptr),
 	m_lpProgressBar(nullptr),
 	m_lpFolderViewModel(nullptr),
 	m_lpFolderSortFilterProxyModel(nullptr),
@@ -61,6 +62,9 @@ cMainWindow::cMainWindow(cSplashScreen* lpSplashScreen, QWidget *parent) :
 
 cMainWindow::~cMainWindow()
 {
+	if(m_lpFilterPanel)
+		delete m_lpFilterPanel;
+
 	delete m_lpThumbnailViewModel;
 	delete m_lpFolderViewModel;
 	delete m_lpThumbnailSortFilterProxyModel;
@@ -74,6 +78,10 @@ void cMainWindow::initUI()
 	ui->setupUi(this);
 
 	QIcon::setThemeName("TangoMFK");
+
+	ui->m_lpSpoiler->setTitle(tr("Filter"));
+	m_lpFilterPanel	= new cFilterPanel(this);
+	ui->m_lpSpoiler->setContentWidget(m_lpFilterPanel);
 
 	m_lpFolderViewModel	= new QStandardItemModel;
 	m_lpFolderSortFilterProxyModel	= new cFolderSortFilterProxyModel(this);

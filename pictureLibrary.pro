@@ -76,7 +76,9 @@ SOURCES += \
     ctag.cpp \
     clocation.cpp \
     ctoolboxlocation.cpp \
-    ctoolboxtag.cpp
+    ctoolboxtag.cpp \
+    cspoiler.cpp \
+    cfilterpanel.cpp
 
 HEADERS += \
         cmainwindow.h \
@@ -101,7 +103,9 @@ HEADERS += \
     ctag.h \
     clocation.h \
     ctoolboxlocation.h \
-    ctoolboxtag.h
+    ctoolboxtag.h \
+    cspoiler.h \
+    cfilterpanel.h
 
 FORMS += \
         cmainwindow.ui \
@@ -113,7 +117,8 @@ FORMS += \
     ctoolboxperson.ui \
     cimageviewer.ui \
     ctoolboxlocation.ui \
-    ctoolboxtag.ui
+    ctoolboxtag.ui \
+    cfilterpanel.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
