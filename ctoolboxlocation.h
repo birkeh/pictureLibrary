@@ -143,6 +143,35 @@ private slots:
 	 \param lpItem
 	*/
 	void					onLocationChanged(QStandardItem* lpItem);
+
+signals:
+	/*!
+	 \brief
+
+	 \fn locationAdded
+	 \param lpTag
+	*/
+	void					locationAdded(cLocation* lpLocation);
+	/*!
+	 \brief
+
+	 \fn locationRemoved
+	 \param lpTag
+	*/
+	void					locationRemoved(cLocation* lpLocation);
+	/*!
+	 \brief
+
+	 \fn locationEdited
+	 \param lpTag
+	*/
+	void					locationEdited(cLocation* lpLocation);
+	/*!
+	 \brief
+
+	 \fn locationListChanged
+	*/
+	void					locationListChanged();
 };
 
 #endif // CTOOLBOXLOCATION_H

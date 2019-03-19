@@ -173,7 +173,7 @@
      </layout>
     </item>
     <item row="0" column="0">
-     <widget class="cSpoiler" name="m_lpSpoiler" native="true"/>
+     <widget class="cSpoiler" name="m_lpFilter" native="true"/>
     </item>
    </layout>
   </widget>

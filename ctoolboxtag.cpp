@@ -213,6 +213,9 @@ void cToolBoxTag::onTagAdd()
 	m_lpTagListModel->appendRow(lpItem);
 	m_lpTagListModel->sort(0);
 
+	emit tagAdded(lpTag);
+	emit tagListChanged();
+
 	m_bLoading	= false;
 }
 
@@ -242,6 +245,9 @@ void cToolBoxTag::onTagEdit()
 		return;
 
 	lpItem->setText(input.textValue());
+
+	emit tagEdited(lpTag);
+	emit tagListChanged();
 }
 
 void cToolBoxTag::onTagDelete()
@@ -260,12 +266,15 @@ void cToolBoxTag::onTagDelete()
 					if(!m_lpTagList->remove(lpTag))
 						QMessageBox::critical(this, tr("Delete Tag"), QString(tr("%1 is in use and can't be deleted!")).arg(lpTag->name()));
 					else
+					{
 						m_lpTagListModel->removeRow(index.row());
+						emit tagRemoved(lpTag);
+					}
 				}
 			}
 		}
 	}
-
+	emit tagListChanged();
 }
 
 void cToolBoxTag::onTagViewContextMenu(const QPoint& pos)

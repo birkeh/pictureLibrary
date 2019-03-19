@@ -208,6 +208,9 @@ void cToolBoxLocation::onLocationAdd()
 	m_lpLocationListModel->appendRow(lpItem);
 	m_lpLocationListModel->sort(0);
 
+	emit locationAdded(lpLocation);
+	emit locationListChanged();
+
 	m_bLoading	= false;
 }
 
@@ -237,6 +240,9 @@ void cToolBoxLocation::onLocationEdit()
 		return;
 
 	lpItem->setText(input.textValue());
+
+	emit locationEdited(lpLocation);
+	emit locationListChanged();
 }
 
 void cToolBoxLocation::onLocationDelete()
@@ -255,12 +261,15 @@ void cToolBoxLocation::onLocationDelete()
 					if(!m_lpLocationList->remove(lpLocation))
 						QMessageBox::critical(this, tr("Delete Location"), QString(tr("%1 is in use and can't be deleted!")).arg(lpLocation->name()));
 					else
+					{
 						m_lpLocationListModel->removeRow(index.row());
+						emit locationRemoved(lpLocation);
+					}
 				}
 			}
 		}
 	}
-
+	emit locationListChanged();
 }
 
 void cToolBoxLocation::onLocationViewContextMenu(const QPoint& pos)

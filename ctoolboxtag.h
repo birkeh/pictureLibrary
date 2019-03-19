@@ -143,6 +143,35 @@ private slots:
 	 \param lpItem
 	*/
 	void					onTagChanged(QStandardItem* lpItem);
+
+signals:
+	/*!
+	 \brief
+
+	 \fn tagAdded
+	 \param lpTag
+	*/
+	void					tagAdded(cTag* lpTag);
+	/*!
+	 \brief
+
+	 \fn tagRemoved
+	 \param lpTag
+	*/
+	void					tagRemoved(cTag* lpTag);
+	/*!
+	 \brief
+
+	 \fn tagEdited
+	 \param lpTag
+	*/
+	void					tagEdited(cTag* lpTag);
+	/*!
+	 \brief
+
+	 \fn tagListChanged
+	*/
+	void					tagListChanged();
 };
 
 #endif // CTOOLBOXTAG_H

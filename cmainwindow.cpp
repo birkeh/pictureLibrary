@@ -79,9 +79,9 @@ void cMainWindow::initUI()
 
 	QIcon::setThemeName("TangoMFK");
 
-	ui->m_lpSpoiler->setTitle(tr("Filter"));
+	ui->m_lpFilter->setTitle(tr("Filter"));
 	m_lpFilterPanel	= new cFilterPanel(this);
-	ui->m_lpSpoiler->setContentWidget(m_lpFilterPanel);
+	ui->m_lpFilter->setContentWidget(m_lpFilterPanel);
 
 	m_lpFolderViewModel	= new QStandardItemModel;
 	m_lpFolderSortFilterProxyModel	= new cFolderSortFilterProxyModel(this);
@@ -136,6 +136,21 @@ void cMainWindow::createActions()
 	connect(ui->m_lpThumbnailView,						&QListView::customContextMenuRequested,	this,	&cMainWindow::onThumbnailViewContextMenu);
 
 	connect(ui->m_lpThumbnailView,						&QListView::doubleClicked,				this,	&cMainWindow::onThumbnailDoubleClicked);
+
+	connect(ui->m_lpToolBoxTags,						&cToolBoxTag::tagAdded,					this,	&cMainWindow::onTagAdded);
+	connect(ui->m_lpToolBoxTags,						&cToolBoxTag::tagRemoved,				this,	&cMainWindow::onTagRemoved);
+	connect(ui->m_lpToolBoxTags,						&cToolBoxTag::tagEdited,				this,	&cMainWindow::onTagEdited);
+	connect(ui->m_lpToolBoxTags,						&cToolBoxTag::tagListChanged,			this,	&cMainWindow::onTagListChanged);
+
+	connect(ui->m_lpToolBoxPerson,						&cToolBoxPerson::personAdded,			this,	&cMainWindow::onPersonAdded);
+	connect(ui->m_lpToolBoxPerson,						&cToolBoxPerson::personRemoved,			this,	&cMainWindow::onPersonRemoved);
+	connect(ui->m_lpToolBoxPerson,						&cToolBoxPerson::personEdited,			this,	&cMainWindow::onPersonEdited);
+	connect(ui->m_lpToolBoxPerson,						&cToolBoxPerson::personListChanged,		this,	&cMainWindow::onPersonListChanged);
+
+	connect(ui->m_lpToolBoxLocation,					&cToolBoxLocation::locationAdded,		this,	&cMainWindow::onLocationAdded);
+	connect(ui->m_lpToolBoxLocation,					&cToolBoxLocation::locationRemoved,		this,	&cMainWindow::onLocationRemoved);
+	connect(ui->m_lpToolBoxLocation,					&cToolBoxLocation::locationEdited,		this,	&cMainWindow::onLocationEdited);
+	connect(ui->m_lpToolBoxLocation,					&cToolBoxLocation::locationListChanged,	this,	&cMainWindow::onLocationListChanged);
 }
 
 void cMainWindow::createContextActions()
@@ -255,6 +270,10 @@ void cMainWindow::displayData()
 	ui->m_lpToolBoxPerson->setPersonList(&m_personList);
 	ui->m_lpToolBoxLocation->setLocationList(&m_locationList);
 	ui->m_lpToolBoxTags->setTagList(&m_tagList);
+
+	m_lpFilterPanel->setPersonList(&m_personList);
+	m_lpFilterPanel->setLocationList(&m_locationList);
+	m_lpFilterPanel->setTagList(&m_tagList);
 
 	m_lpRootItem	= new QStandardItem("library");
 	m_lpFolderViewModel->appendRow(m_lpRootItem);
@@ -819,4 +838,58 @@ void cMainWindow::onUnsetHDR()
 	}
 	m_lpFolderSortFilterProxyModel->sort(0);
 	m_lpThumbnailSortFilterProxyModel->invalidate();
+}
+
+void cMainWindow::onTagAdded(cTag* /*lpTag*/)
+{
+}
+
+void cMainWindow::onTagRemoved(cTag* /*lpTag*/)
+{
+}
+
+void cMainWindow::onTagEdited(cTag* /*lpTag*/)
+{
+}
+
+void cMainWindow::onTagListChanged()
+{
+	m_lpFilterPanel->clearTagList();
+	m_lpFilterPanel->setTagList(&m_tagList);
+}
+
+void cMainWindow::onPersonAdded(cPerson* /*lpPerson*/)
+{
+}
+
+void cMainWindow::onPersonRemoved(cPerson* /*lpPerson*/)
+{
+}
+
+void cMainWindow::onPersonEdited(cPerson* /*lpPerson*/)
+{
+}
+
+void cMainWindow::onPersonListChanged()
+{
+	m_lpFilterPanel->clearPersonList();
+	m_lpFilterPanel->setPersonList(&m_personList);
+}
+
+void cMainWindow::onLocationAdded(cLocation* /*lpLocation*/)
+{
+}
+
+void cMainWindow::onLocationRemoved(cLocation* /*lpLocation*/)
+{
+}
+
+void cMainWindow::onLocationEdited(cLocation* /*lpLocation*/)
+{
+}
+
+void cMainWindow::onLocationListChanged()
+{
+	m_lpFilterPanel->clearLocationList();
+	m_lpFilterPanel->setLocationList(&m_locationList);
 }

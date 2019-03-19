@@ -213,6 +213,9 @@ void cToolBoxPerson::onPersonAdd()
 	m_lpPersonListModel->appendRow(lpItem);
 	m_lpPersonListModel->sort(0);
 
+	emit personAdded(lpPerson);
+	emit personListChanged();
+
 	m_bLoading	= false;
 }
 
@@ -242,6 +245,9 @@ void cToolBoxPerson::onPersonEdit()
 		return;
 
 	lpItem->setText(input.textValue());
+
+	emit personEdited(lpPerson);
+	emit personListChanged();
 }
 
 void cToolBoxPerson::onPersonDelete()
@@ -260,12 +266,15 @@ void cToolBoxPerson::onPersonDelete()
 					if(!m_lpPersonList->remove(lpPerson))
 						QMessageBox::critical(this, tr("Delete Person"), QString(tr("%1 is in use and can't be deleted!")).arg(lpPerson->name()));
 					else
+					{
 						m_lpPersonListModel->removeRow(index.row());
+						emit personRemoved(lpPerson);
+					}
 				}
 			}
 		}
 	}
-
+	emit personListChanged();
 }
 
 void cToolBoxPerson::onPersonViewContextMenu(const QPoint& pos)

@@ -270,6 +270,87 @@ private slots:
 	 \fn onUnsetHDR
 	*/
 	void							onUnsetHDR();
+	/*!
+	 \brief
+
+	 \fn onTagAdded
+	 \param lpTag
+	*/
+	void							onTagAdded(cTag* lpTag);
+	/*!
+	 \brief
+
+	 \fn onTagRemoved
+	 \param lpTag
+	*/
+	void							onTagRemoved(cTag* lpTag);
+	/*!
+	 \brief
+
+	 \fn onTagEdited
+	 \param lpTag
+	*/
+	void							onTagEdited(cTag* lpTag);
+	/*!
+	 \brief
+
+	 \fn onTagListChanged
+	*/
+	void							onTagListChanged();
+	/*!
+	 \brief
+
+	 \fn onPersonAdded
+	 \param lpPerson
+	*/
+	void							onPersonAdded(cPerson* lpPerson);
+	/*!
+	 \brief
+
+	 \fn onPersonRemoved
+	 \param lpPerson
+	*/
+	void							onPersonRemoved(cPerson* lpPerson);
+	/*!
+	 \brief
+
+	 \fn onPersonEdited
+	 \param lpPerson
+	*/
+	void							onPersonEdited(cPerson* lpPerson);
+	/*!
+	 \brief
+
+	 \fn onPersonListChanged
+	*/
+	void							onPersonListChanged();
+	/*!
+	 \brief
+
+	 \fn onLocationAdded
+	 \param lpLocation
+	*/
+	void							onLocationAdded(cLocation* lpLocation);
+	/*!
+	 \brief
+
+	 \fn onLocationRemoved
+	 \param lpLocation
+	*/
+	void							onLocationRemoved(cLocation* lpLocation);
+	/*!
+	 \brief
+
+	 \fn onLocationEdited
+	 \param lpLocation
+	*/
+	void							onLocationEdited(cLocation* lpLocation);
+	/*!
+	 \brief
+
+	 \fn onLocationListChanged
+	*/
+	void							onLocationListChanged();
 };
 
 #endif // CMAINWINDOW_H

@@ -142,6 +142,35 @@ private slots:
 	 \param lpItem
 	*/
 	void					onPersonChanged(QStandardItem* lpItem);
+
+signals:
+	/*!
+	 \brief
+
+	 \fn personAdded
+	 \param lpPerson
+	*/
+	void					personAdded(cPerson* lpPerson);
+	/*!
+	 \brief
+
+	 \fn personRemoved
+	 \param lpPerson
+	*/
+	void					personRemoved(cPerson* lpPerson);
+	/*!
+	 \brief
+
+	 \fn personEdited
+	 \param lpPerson
+	*/
+	void					personEdited(cPerson* lpPerson);
+	/*!
+	 \brief
+
+	 \fn personListChanged
+	*/
+	void					personListChanged();
 };
 
 #endif // CTOOLBOXPERSON_H
