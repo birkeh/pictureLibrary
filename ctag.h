@@ -184,6 +184,14 @@ public:
 	/*!
 	 \brief
 
+	 \fn find
+	 \param szName
+	 \return cTag
+	*/
+	cTag*				find(const QString& szName);
+	/*!
+	 \brief
+
 	 \fn remove
 	 \param lpTag
 	 \return bool

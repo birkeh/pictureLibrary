@@ -854,8 +854,7 @@ void cMainWindow::onTagEdited(cTag* /*lpTag*/)
 
 void cMainWindow::onTagListChanged()
 {
-	m_lpFilterPanel->clearTagList();
-	m_lpFilterPanel->setTagList(&m_tagList);
+	m_lpFilterPanel->updateTagList();
 }
 
 void cMainWindow::onPersonAdded(cPerson* /*lpPerson*/)
@@ -872,8 +871,7 @@ void cMainWindow::onPersonEdited(cPerson* /*lpPerson*/)
 
 void cMainWindow::onPersonListChanged()
 {
-	m_lpFilterPanel->clearPersonList();
-	m_lpFilterPanel->setPersonList(&m_personList);
+	m_lpFilterPanel->updatePersonList();
 }
 
 void cMainWindow::onLocationAdded(cLocation* /*lpLocation*/)
@@ -890,6 +888,5 @@ void cMainWindow::onLocationEdited(cLocation* /*lpLocation*/)
 
 void cMainWindow::onLocationListChanged()
 {
-	m_lpFilterPanel->clearLocationList();
-	m_lpFilterPanel->setLocationList(&m_locationList);
+	m_lpFilterPanel->updateLocationList();
 }

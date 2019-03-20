@@ -36,6 +36,12 @@ public:
 	 \fn setPersonList
 	*/
 	void					setPersonList(cPersonList* lpPersonList);
+	/*!
+	 \brief
+
+	 \fn updatePersonList
+	*/
+	void					updatePersonList();
 
 	/*!
 	 \brief
@@ -50,6 +56,12 @@ public:
 	 \fn setLocationList
 	*/
 	void					setLocationList(cLocationList* lpLocationList);
+	/*!
+	 \brief
+
+	 \fn updateLocationList
+	*/
+	void					updateLocationList();
 
 	/*!
 	 \brief
@@ -64,6 +76,12 @@ public:
 	 \fn setTagList
 	*/
 	void					setTagList(cTagList* lpTagList);
+	/*!
+	 \brief
+
+	 \fn updateTagList
+	*/
+	void					updateTagList();
 
 private:
 	Ui::cFilterPanel*		ui;

@@ -177,10 +177,18 @@ public:
 	 \brief
 
 	 \fn find
-	 \param iID
+	 \param lpPerson
 	 \return cPerson
 	*/
 	cPerson*				find(cPerson* lpPerson);
+	/*!
+	 \brief
+
+	 \fn find
+	 \param szName
+	 \return cPerson
+	*/
+	cPerson*				find(const QString& szName);
 	/*!
 	 \brief
 

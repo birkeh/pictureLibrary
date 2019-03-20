@@ -184,6 +184,14 @@ public:
 	/*!
 	 \brief
 
+	 \fn find
+	 \param szName
+	 \return cLocation
+	*/
+	cLocation*				find(const QString& szLocation);
+	/*!
+	 \brief
+
 	 \fn remove
 	 \param lpLocation
 	 \return bool

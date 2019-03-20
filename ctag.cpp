@@ -230,6 +230,16 @@ cTag* cTagList::find(cTag* lpTag)
 	return(nullptr);
 }
 
+cTag* cTagList::find(const QString& szName)
+{
+	for(cTagList::iterator i = begin(); i != end(); i++)
+	{
+		if(szName == (*i)->name())
+			return(*i);
+	}
+	return(nullptr);
+}
+
 bool cTagList::remove(cTag* lpTag)
 {
 	if(!find(lpTag))

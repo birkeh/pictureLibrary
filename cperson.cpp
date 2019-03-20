@@ -237,6 +237,16 @@ cPerson* cPersonList::find(cPerson* lpPerson)
 	return(nullptr);
 }
 
+cPerson* cPersonList::find(const QString& szName)
+{
+	for(cPersonList::iterator i = begin(); i != end(); i++)
+	{
+		if(szName == (*i)->name())
+			return(*i);
+	}
+	return(nullptr);
+}
+
 bool cPersonList::remove(cPerson* lpPerson)
 {
 	if(!find(lpPerson))

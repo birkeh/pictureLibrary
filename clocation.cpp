@@ -230,6 +230,16 @@ cLocation* cLocationList::find(cLocation* lpLocation)
 	return(nullptr);
 }
 
+cLocation* cLocationList::find(const QString& szName)
+{
+	for(cLocationList::iterator i = begin(); i != end(); i++)
+	{
+		if(szName == (*i)->name())
+			return(*i);
+	}
+	return(nullptr);
+}
+
 bool cLocationList::remove(cLocation* lpLocation)
 {
 	if(!find(lpLocation))
