@@ -289,3 +289,40 @@ QStringList cPersonList::personList()
 	szPersonList.sort(Qt::CaseInsensitive);
 	return(szPersonList);
 }
+
+bool cPersonList::contains(cPerson* const& lpPerson)
+{
+	return(QList::contains(lpPerson));
+}
+
+bool cPersonList::contains(QList<qint32> idList, bool bAnd)
+{
+	if(bAnd)
+	{
+		int	found	= 0;
+
+		for(QList<qint32>::iterator z = idList.begin();z != idList.end();z++)
+		{
+			for(cPersonList::iterator i = begin();i != end();i++)
+			{
+				if((*i)->id() == (*z))
+				{
+					found++;
+					break;
+				}
+			}
+		}
+		if(found == idList.count())
+			return(true);
+		return(false);
+	}
+	else
+	{
+		for(cPersonList::iterator i = begin();i != end();i++)
+		{
+			if(idList.contains((*i)->id()))
+				return(true);
+		}
+		return(false);
+	}
+}

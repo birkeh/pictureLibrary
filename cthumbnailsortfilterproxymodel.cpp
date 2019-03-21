@@ -25,10 +25,48 @@ QString cThumbnailSortFilterProxyModel::filterPath()
 	return(m_szPath);
 }
 
+QList<qint32> cThumbnailSortFilterProxyModel::personList()
+{
+	return(m_personList);
+}
+
+void cThumbnailSortFilterProxyModel::setPersonList(const QList<qint32>& personList, bool bAnd)
+{
+	m_personList	= personList;
+	m_bPersonAnd	= bAnd;
+
+	invalidateFilter();
+}
+
+QList<qint32> cThumbnailSortFilterProxyModel::locationList()
+{
+	return(m_locationList);
+}
+
+void cThumbnailSortFilterProxyModel::setLocationList(const QList<qint32>& locationList, bool bAnd)
+{
+	m_locationList	= locationList;
+	m_bLocationAnd	= bAnd;
+
+	invalidateFilter();
+}
+
+QList<qint32> cThumbnailSortFilterProxyModel::tagList()
+{
+	return(m_tagList);
+}
+
+void cThumbnailSortFilterProxyModel::setTagList(const QList<qint32>& tagList, bool bAnd)
+{
+	m_tagList	= tagList;
+	m_bTagAnd	= bAnd;
+
+	invalidateFilter();
+}
+
 bool cThumbnailSortFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
 {
-	if(m_szPath.isEmpty())
-		return(true);
+	bool		bValid		= false;
 
 	QModelIndex	index0		= sourceModel()->index(sourceRow, 0, sourceParent);
 	cPicture*	lpPicture	= sourceModel()->data(index0, Qt::UserRole+1).value<cPicture*>();
@@ -36,16 +74,42 @@ bool cThumbnailSortFilterProxyModel::filterAcceptsRow(int sourceRow, const QMode
 	if(!lpPicture)
 		return(false);
 
-	QString		szPath		= lpPicture->filePath();
+	if(m_szPath.isEmpty())
+		bValid	= true;
+	else
+	{
+		QString		szPath		= lpPicture->filePath();
 
-	if(!szPath.startsWith(m_szPath))
+		if(!szPath.startsWith(m_szPath))
+			return(false);
+
+		if(szPath.length() == m_szPath.length())
+			bValid	= true;
+
+		if(szPath.mid(m_szPath.length(), 1) == "/")
+			bValid	= true;
+	}
+
+	if(!bValid)
 		return(false);
 
-	if(szPath.length() == m_szPath.length())
-		return(true);
+	if(!m_personList.isEmpty())
+	{
+		if(!lpPicture->personList().contains(m_personList, m_bPersonAnd))
+			return(false);
+	}
 
-	if(szPath.mid(m_szPath.length(), 1) == "/")
-		return(true);
+	if(!m_locationList.isEmpty())
+	{
+		if(!lpPicture->locationList().contains(m_locationList, m_bLocationAnd))
+			return(false);
+	}
 
-	return(false);
+	if(!m_tagList.isEmpty())
+	{
+		if(!lpPicture->tagList().contains(m_tagList, m_bTagAnd))
+			return(false);
+	}
+
+	return(true);
 }

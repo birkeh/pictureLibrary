@@ -282,3 +282,40 @@ QStringList cTagList::tagList()
 	szTagList.sort(Qt::CaseInsensitive);
 	return(szTagList);
 }
+
+bool cTagList::contains(cTag* const& lpTag)
+{
+	return(QList::contains(lpTag));
+}
+
+bool cTagList::contains(QList<qint32> idList, bool bAnd)
+{
+	if(bAnd)
+	{
+		int	found	= 0;
+
+		for(QList<qint32>::iterator z = idList.begin();z != idList.end();z++)
+		{
+			for(cTagList::iterator i = begin();i != end();i++)
+			{
+				if((*i)->id() == (*z))
+				{
+					found++;
+					break;
+				}
+			}
+		}
+		if(found == idList.count())
+			return(true);
+		return(false);
+	}
+	else
+	{
+		for(cTagList::iterator i = begin();i != end();i++)
+		{
+			if(idList.contains((*i)->id()))
+				return(true);
+		}
+		return(false);
+	}
+}

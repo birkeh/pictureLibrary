@@ -151,6 +151,10 @@ void cMainWindow::createActions()
 	connect(ui->m_lpToolBoxLocation,					&cToolBoxLocation::locationRemoved,		this,	&cMainWindow::onLocationRemoved);
 	connect(ui->m_lpToolBoxLocation,					&cToolBoxLocation::locationEdited,		this,	&cMainWindow::onLocationEdited);
 	connect(ui->m_lpToolBoxLocation,					&cToolBoxLocation::locationListChanged,	this,	&cMainWindow::onLocationListChanged);
+
+	connect(m_lpFilterPanel,							&cFilterPanel::personChanged,			this,	&cMainWindow::onFilterPersonChanged);
+	connect(m_lpFilterPanel,							&cFilterPanel::locationChanged,			this,	&cMainWindow::onFilterLocationChanged);
+	connect(m_lpFilterPanel,							&cFilterPanel::tagChanged,				this,	&cMainWindow::onFilterTagChanged);
 }
 
 void cMainWindow::createContextActions()
@@ -889,4 +893,28 @@ void cMainWindow::onLocationEdited(cLocation* /*lpLocation*/)
 void cMainWindow::onLocationListChanged()
 {
 	m_lpFilterPanel->updateLocationList();
+}
+
+void cMainWindow::onFilterPersonChanged(QList<qint32> idList, bool bAnd)
+{
+	if(m_bLoading)
+		return;
+
+	m_lpThumbnailSortFilterProxyModel->setPersonList(idList, bAnd);
+}
+
+void cMainWindow::onFilterLocationChanged(QList<qint32> idList, bool bAnd)
+{
+	if(m_bLoading)
+		return;
+
+	m_lpThumbnailSortFilterProxyModel->setLocationList(idList, bAnd);
+}
+
+void cMainWindow::onFilterTagChanged(QList<qint32> idList, bool bAnd)
+{
+	if(m_bLoading)
+		return;
+
+	m_lpThumbnailSortFilterProxyModel->setTagList(idList, bAnd);
 }

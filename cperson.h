@@ -197,6 +197,22 @@ public:
 	 \return bool
 	*/
 	bool					remove(cPerson* lpPerson);
+	/*!
+	 \brief
+
+	 \fn contains
+	 \param lpPerson
+	 \return bool
+	*/
+	bool					contains(cPerson * const &lpPerson);
+	/*!
+	 \brief
+
+	 \fn contains
+	 \param idList
+	 \return bool
+	*/
+	bool					contains(QList<qint32> idList, bool bAnd);
 
 	/*!
 	 \brief

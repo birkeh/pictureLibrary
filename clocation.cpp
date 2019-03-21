@@ -282,3 +282,40 @@ QStringList cLocationList::locationList()
 	szLocationList.sort(Qt::CaseInsensitive);
 	return(szLocationList);
 }
+
+bool cLocationList::contains(cLocation* const& lpLocation)
+{
+	return(QList::contains(lpLocation));
+}
+
+bool cLocationList::contains(QList<qint32> idList, bool bAnd)
+{
+	if(bAnd)
+	{
+		int	found	= 0;
+
+		for(QList<qint32>::iterator z = idList.begin();z != idList.end();z++)
+		{
+			for(cLocationList::iterator i = begin();i != end();i++)
+			{
+				if((*i)->id() == (*z))
+				{
+					found++;
+					break;
+				}
+			}
+		}
+		if(found == idList.count())
+			return(true);
+		return(false);
+	}
+	else
+	{
+		for(cLocationList::iterator i = begin();i != end();i++)
+		{
+			if(idList.contains((*i)->id()))
+				return(true);
+		}
+		return(false);
+	}
+}

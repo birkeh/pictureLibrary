@@ -188,7 +188,7 @@ public:
 	 \param szName
 	 \return cTag
 	*/
-	cTag*				find(const QString& szName);
+	cTag*					find(const QString& szName);
 	/*!
 	 \brief
 
@@ -197,6 +197,22 @@ public:
 	 \return bool
 	*/
 	bool					remove(cTag* lpTag);
+	/*!
+	 \brief
+
+	 \fn contains
+	 \param lpTag
+	 \return bool
+	*/
+	bool					contains(cTag* const &lpTag);
+	/*!
+	 \brief
+
+	 \fn contains
+	 \param idList
+	 \return bool
+	*/
+	bool					contains(QList<qint32> idList, bool bAnd);
 
 	/*!
 	 \brief

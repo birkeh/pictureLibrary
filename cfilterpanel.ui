@@ -25,7 +25,7 @@
         <bool>true</bool>
        </property>
        <layout class="QGridLayout" name="gridLayout_2">
-        <item row="0" column="0">
+        <item row="2" column="0">
          <widget class="QTreeView" name="m_lpPersonList">
           <property name="editTriggers">
            <set>QAbstractItemView::NoEditTriggers</set>
@@ -41,6 +41,40 @@
           </attribute>
          </widget>
         </item>
+        <item row="0" column="0">
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="QRadioButton" name="m_lpPersonAnd">
+            <property name="text">
+             <string>and</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="m_lpPersonOr">
+            <property name="text">
+             <string>or</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
        </layout>
       </widget>
      </item>
@@ -53,7 +87,7 @@
         <bool>true</bool>
        </property>
        <layout class="QGridLayout" name="gridLayout_3">
-        <item row="0" column="0">
+        <item row="1" column="0">
          <widget class="QTreeView" name="m_lpLocationList">
           <property name="editTriggers">
            <set>QAbstractItemView::NoEditTriggers</set>
@@ -69,6 +103,40 @@
           </attribute>
          </widget>
         </item>
+        <item row="0" column="0">
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <item>
+           <widget class="QRadioButton" name="m_lpLocationAnd">
+            <property name="text">
+             <string>and</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="m_lpLocationOr">
+            <property name="text">
+             <string>or</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
        </layout>
       </widget>
      </item>
@@ -81,7 +149,7 @@
         <bool>true</bool>
        </property>
        <layout class="QGridLayout" name="gridLayout_4">
-        <item row="0" column="0">
+        <item row="1" column="0">
          <widget class="QTreeView" name="m_lpTagList">
           <property name="editTriggers">
            <set>QAbstractItemView::NoEditTriggers</set>
@@ -96,6 +164,40 @@
            <bool>false</bool>
           </attribute>
          </widget>
+        </item>
+        <item row="0" column="0">
+         <layout class="QHBoxLayout" name="horizontalLayout_4">
+          <item>
+           <widget class="QRadioButton" name="m_lpTagsAnd">
+            <property name="text">
+             <string>and</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="m_lpTagsOr">
+            <property name="text">
+             <string>or</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_3">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
         </item>
        </layout>
       </widget>

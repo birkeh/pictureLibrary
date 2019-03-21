@@ -108,6 +108,117 @@ private:
 	 \fn createActions
 	*/
 	void					createActions();
+
+	/*!
+	 \brief
+
+	 \fn onPersonChanged
+	*/
+	void					onPersonChanged();
+	/*!
+	 \brief
+
+	 \fn onLocationChanged
+	*/
+	void					onLocationChanged();
+	/*!
+	 \brief
+
+	 \fn onTagChanged
+	*/
+	void					onTagChanged();
+private slots:
+	/*!
+	 \brief
+
+	 \fn onPersonFilter
+	 \param bToggle
+	*/
+	void					onPersonFilter(bool bToggle);
+	/*!
+	 \brief
+
+	 \fn onPersonAnd
+	 \param bToggle
+	*/
+	void					onPersonAnd(bool bToggle);
+	/*!
+	 \brief
+
+	 \fn onPersonChanged
+	 \param topLeft
+	 \param bottomright
+	 \param roles
+	*/
+	void					onPersonChanged(const QModelIndex& topLeft, const QModelIndex& bottomright, const QVector<int>& roles);
+	/*!
+	 \brief
+
+	 \fn onLocationFilter
+	 \param bToggle
+	*/
+	void					onLocationFilter(bool bToggle);
+	/*!
+	 \brief
+
+	 \fn onLocationAnd
+	 \param bToggle
+	*/
+	void					onLocationAnd(bool bToggle);
+	/*!
+	 \brief
+
+	 \fn onLocationChanged
+	 \param topLeft
+	 \param bottomright
+	 \param roles
+	*/
+	void					onLocationChanged(const QModelIndex& topLeft, const QModelIndex& bottomright, const QVector<int>& roles);
+	/*!
+	 \brief
+
+	 \fn onTagFilter
+	 \param bToggle
+	*/
+	void					onTagFilter(bool bToggle);
+	/*!
+	 \brief
+
+	 \fn onTagAnd
+	 \param bToggle
+	*/
+	void					onTagAnd(bool bToggle);
+	/*!
+	 \brief
+
+	 \fn onTagChanged
+	 \param topLeft
+	 \param bottomright
+	 \param roles
+	*/
+	void					onTagChanged(const QModelIndex& topLeft, const QModelIndex& bottomright, const QVector<int>& roles);
+signals:
+	/*!
+	 \brief
+
+	 \fn personChanged
+	 \param idList
+	*/
+	void					personChanged(QList<qint32> idList, bool bAnd);
+	/*!
+	 \brief
+
+	 \fn locationChanged
+	 \param idList
+	*/
+	void					locationChanged(QList<qint32> idList, bool bAnd);
+	/*!
+	 \brief
+
+	 \fn tagChanged
+	 \param idList
+	*/
+	void					tagChanged(QList<qint32> idList, bool bAnd);
 };
 
 #endif // CFILTERPANEL_H

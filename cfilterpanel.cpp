@@ -35,6 +35,17 @@ void cFilterPanel::initUI()
 
 void cFilterPanel::createActions()
 {
+	connect(ui->m_lpPersonFilter,	&QGroupBox::toggled,	this,	&cFilterPanel::onPersonFilter);
+	connect(ui->m_lpLocationFilter,	&QGroupBox::toggled,	this,	&cFilterPanel::onLocationFilter);
+	connect(ui->m_lpTagFilter,		&QGroupBox::toggled,	this,	&cFilterPanel::onTagFilter);
+
+	connect(ui->m_lpPersonAnd,		&QRadioButton::toggled,	this,	&cFilterPanel::onPersonAnd);
+	connect(ui->m_lpLocationAnd,	&QRadioButton::toggled,	this,	&cFilterPanel::onLocationAnd);
+	connect(ui->m_lpTagsAnd,		&QRadioButton::toggled,	this,	&cFilterPanel::onTagAnd);
+
+	connect(m_lpPersonListModel,	SIGNAL(dataChanged(QModelIndex,	QModelIndex, QVector<int>)),	SLOT(onPersonChanged(QModelIndex, QModelIndex, QVector<int>)));
+	connect(m_lpLocationListModel,	SIGNAL(dataChanged(QModelIndex,	QModelIndex, QVector<int>)),	SLOT(onLocationChanged(QModelIndex, QModelIndex, QVector<int>)));
+	connect(m_lpTagListModel,		SIGNAL(dataChanged(QModelIndex,	QModelIndex, QVector<int>)),	SLOT(onTagChanged(QModelIndex, QModelIndex, QVector<int>)));
 }
 
 void cFilterPanel::clearPersonList()
@@ -181,4 +192,121 @@ void cFilterPanel::updateTagList()
 	m_lpTagListModel->sort(0);
 
 	m_bLoading	= false;
+}
+
+void cFilterPanel::onPersonChanged()
+{
+	if(m_bLoading)
+		return;
+
+	QList<qint32>	idList;
+
+	for(int x = 0;x < m_lpPersonListModel->rowCount();x++)
+	{
+		QStandardItem*	lpItem	= m_lpPersonListModel->item(x, 0);
+
+		if(lpItem->checkState() == Qt::Checked)
+		{
+			cPerson*	lpPerson		= lpItem->data(Qt::UserRole+1).value<cPerson*>();
+			if(lpPerson)
+				idList.append(lpPerson->id());
+		}
+	}
+	emit personChanged(idList, ui->m_lpPersonAnd->isChecked());
+}
+
+void cFilterPanel::onPersonAnd(bool /*bToggle*/)
+{
+	onPersonChanged();
+}
+
+void cFilterPanel::onPersonFilter(bool bToggle)
+{
+	if(bToggle)
+		onPersonChanged();
+	else
+		emit(personChanged(QList<qint32>(), false));
+}
+
+void cFilterPanel::onPersonChanged(const QModelIndex& /*topLeft*/, const QModelIndex& /*bottomright*/, const QVector<int>& /*roles*/)
+{
+	onPersonChanged();
+}
+
+void cFilterPanel::onLocationChanged()
+{
+	if(m_bLoading)
+		return;
+
+	QList<qint32>	idList;
+
+	for(int x = 0;x < m_lpLocationListModel->rowCount();x++)
+	{
+		QStandardItem*	lpItem	= m_lpLocationListModel->item(x, 0);
+
+		if(lpItem->checkState() == Qt::Checked)
+		{
+			cLocation*	lpLocation		= lpItem->data(Qt::UserRole+1).value<cLocation*>();
+			if(lpLocation)
+				idList.append(lpLocation->id());
+		}
+	}
+	emit locationChanged(idList, ui->m_lpLocationAnd->isChecked());
+}
+
+void cFilterPanel::onLocationFilter(bool bToggle)
+{
+	if(bToggle)
+		onLocationChanged();
+	else
+		emit(locationChanged(QList<qint32>(), false));
+}
+
+void cFilterPanel::onLocationAnd(bool /*bToggle*/)
+{
+	onLocationChanged();
+}
+
+void cFilterPanel::onLocationChanged(const QModelIndex& /*topLeft*/, const QModelIndex& /*bottomright*/, const QVector<int>& /*roles*/)
+{
+	onLocationChanged();
+}
+
+void cFilterPanel::onTagChanged()
+{
+	if(m_bLoading)
+		return;
+
+	QList<qint32>	idList;
+
+	for(int x = 0;x < m_lpTagListModel->rowCount();x++)
+	{
+		QStandardItem*	lpItem	= m_lpTagListModel->item(x, 0);
+
+		if(lpItem->checkState() == Qt::Checked)
+		{
+			cTag*	lpTag		= lpItem->data(Qt::UserRole+1).value<cTag*>();
+			if(lpTag)
+				idList.append(lpTag->id());
+		}
+	}
+	emit tagChanged(idList, ui->m_lpTagsAnd->isChecked());
+}
+
+void cFilterPanel::onTagFilter(bool bToggle)
+{
+	if(bToggle)
+		onTagChanged();
+	else
+		emit(tagChanged(QList<qint32>(), false));
+}
+
+void cFilterPanel::onTagAnd(bool /*bToggle*/)
+{
+	onTagChanged();
+}
+
+void cFilterPanel::onTagChanged(const QModelIndex& /*topLeft*/, const QModelIndex& /*bottomright*/, const QVector<int>& /*roles*/)
+{
+	onTagChanged();
 }

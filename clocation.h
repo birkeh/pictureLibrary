@@ -197,6 +197,22 @@ public:
 	 \return bool
 	*/
 	bool					remove(cLocation* lpLocation);
+	/*!
+	 \brief
+
+	 \fn contains
+	 \param lpLocation
+	 \return bool
+	*/
+	bool					contains(cLocation* const &lpLocation);
+	/*!
+	 \brief
+
+	 \fn contains
+	 \param idList
+	 \return bool
+	*/
+	bool					contains(QList<qint32> idList, bool bAnd);
 
 	/*!
 	 \brief

@@ -351,6 +351,28 @@ private slots:
 	 \fn onLocationListChanged
 	*/
 	void							onLocationListChanged();
+
+	/*!
+	 \brief
+
+	 \fn onFilterPersonChanged
+	 \param idList
+	*/
+	void							onFilterPersonChanged(QList<qint32> idList, bool bAnd);
+	/*!
+	 \brief
+
+	 \fn onFilterLocationChanged
+	 \param idList
+	*/
+	void							onFilterLocationChanged(QList<qint32> idList, bool bAnd);
+	/*!
+	 \brief
+
+	 \fn onFilterTagChanged
+	 \param idList
+	*/
+	void							onFilterTagChanged(QList<qint32> idList, bool bAnd);
 };
 
 #endif // CMAINWINDOW_H
