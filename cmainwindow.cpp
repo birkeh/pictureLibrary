@@ -7,6 +7,7 @@
 
 #include "cmainwindow.h"
 #include "cimportdialog.h"
+#include "cexportdialog.h"
 
 #include "cdatepicker.h"
 #include "cdatetimepicker.h"
@@ -51,7 +52,6 @@ cMainWindow::cMainWindow(cSplashScreen* lpSplashScreen, QWidget *parent) :
 	initUI();
 	createActions();
 
-//	onFileNew();
 	QSettings	settings;
 	m_szOldPath	= settings.value("file/lastPath", QDir::homePath()).toString();
 	m_pictureLibrary.openDatabase(m_szOldPath);
@@ -71,6 +71,28 @@ cMainWindow::~cMainWindow()
 	delete m_lpFolderSortFilterProxyModel;
 
 	delete ui;
+}
+
+void cMainWindow::closeEvent(QCloseEvent *event)
+{
+	QSettings	settings;
+	settings.setValue("main/width", QVariant::fromValue(size().width()));
+	settings.setValue("main/height", QVariant::fromValue(size().height()));
+	settings.setValue("main/x", QVariant::fromValue(x()));
+	settings.setValue("main/y", QVariant::fromValue(y()));
+	if(this->isMaximized())
+		settings.setValue("main/maximized", QVariant::fromValue(true));
+	else
+		settings.setValue("main/maximized", QVariant::fromValue(false));
+
+	QList<qint32>	sizes	= ui->m_lpSplitter->sizes();
+
+	for(int x = 0;x < sizes.count();x++)
+		settings.setValue(QString("main/splitter%1").arg(x+1), QVariant::fromValue(sizes[x]));
+
+	m_lpFilterPanel->saveSettings();
+
+	event->accept();
 }
 
 void cMainWindow::initUI()
@@ -180,26 +202,6 @@ void cMainWindow::createContextActions()
 	connect(m_lpUnsetHDRAction,			&QAction::triggered,	this,	&cMainWindow::onUnsetHDR);
 }
 
-void cMainWindow::closeEvent(QCloseEvent *event)
-{
-	QSettings	settings;
-	settings.setValue("main/width", QVariant::fromValue(size().width()));
-	settings.setValue("main/height", QVariant::fromValue(size().height()));
-	settings.setValue("main/x", QVariant::fromValue(x()));
-	settings.setValue("main/y", QVariant::fromValue(y()));
-	if(this->isMaximized())
-		settings.setValue("main/maximized", QVariant::fromValue(true));
-	else
-		settings.setValue("main/maximized", QVariant::fromValue(false));
-
-	QList<qint32>	sizes	= ui->m_lpSplitter->sizes();
-
-	for(int x = 0;x < sizes.count();x++)
-		settings.setValue(QString("main/splitter%1").arg(x+1), QVariant::fromValue(sizes[x]));
-
-	event->accept();
-}
-
 void cMainWindow::createFileActions()
 {
 	m_lpFileMenu				= menuBar()->addMenu(tr("&File"));
@@ -222,6 +224,9 @@ void cMainWindow::createFileActions()
 
 	m_lpFileImportAction		= m_lpFileMenu->addAction(tr("&Import..."), this, &cMainWindow::onFileImport);
 	m_lpFileToolBar->addAction(m_lpFileImportAction);
+
+	m_lpFileExportAction		= m_lpFileMenu->addAction(tr("&Export..."), this, &cMainWindow::onFileExport);
+	m_lpFileToolBar->addAction(m_lpFileExportAction);
 
 	m_lpFileMenu->addSeparator();
 
@@ -597,6 +602,13 @@ void cMainWindow::onFileImport()
 	importDialog.exec();
 	if(importDialog.hasImported())
 		displayData();
+}
+
+void cMainWindow::onFileExport()
+{
+	cExportDialog	exportDialog(this);
+	if(exportDialog.exec() == QDialog::Rejected)
+		return;
 }
 
 void cMainWindow::onThumbnailViewContextMenu(const QPoint& pos)

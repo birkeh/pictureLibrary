@@ -93,6 +93,7 @@ private:
 	QAction*						m_lpFileOpenAction;						/*!< TODO: describe */
 	QAction*						m_lpFileSaveAsAction;					/*!< TODO: describe */
 	QAction*						m_lpFileImportAction;					/*!< TODO: describe */
+	QAction*						m_lpFileExportAction;					/*!< TODO: describe */
 	QAction*						m_lpFileQuitAction;						/*!< TODO: describe */
 
 	QAction*						m_lpSeparatorRecent;					/*!< TODO: describe */
@@ -231,6 +232,12 @@ private slots:
 	 \fn onFileImport
 	*/
 	void							onFileImport();
+	/*!
+	 \brief
+
+	 \fn onFileExport
+	*/
+	void							onFileExport();
 
 	/*!
 	 \brief
