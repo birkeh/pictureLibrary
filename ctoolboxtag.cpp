@@ -60,7 +60,7 @@ void cToolBoxTag::createActions()
 	connect(ui->m_lpTagList->selectionModel(),		&QItemSelectionModel::selectionChanged,			this,	&cToolBoxTag::onTagSelected);
 
 	connect(m_lpTagListModel,	SIGNAL(dataChanged(QModelIndex,	QModelIndex, QVector<int>)),	SLOT(tagChanged(QModelIndex, QModelIndex, QVector<int>)));
-	connect(ui->m_lpTagList,						&QTreeView::customContextMenuRequested,			this,	&cToolBoxTag::onTagViewContextMenu);
+	connect(ui->m_lpTagList,						&QListView::customContextMenuRequested,			this,	&cToolBoxTag::onTagViewContextMenu);
 	connect(m_lpTagListModel,						&QStandardItemModel::itemChanged,				this,	&cToolBoxTag::onTagChanged);
 }
 

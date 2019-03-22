@@ -1,6 +1,8 @@
 #include "cfilterpanel.h"
 #include "ui_cfilterpanel.h"
 
+#include <QSettings>
+
 
 cFilterPanel::cFilterPanel(QWidget *parent) :
 	QWidget(parent),
@@ -19,6 +21,59 @@ cFilterPanel::~cFilterPanel()
 	delete ui;
 }
 
+void cFilterPanel::saveSettings()
+{
+	QSettings		settings;
+	QStringList		szIDs;
+
+	for(int x = 0;x < m_lpPersonListModel->rowCount();x++)
+	{
+		QStandardItem*	lpItem	= m_lpPersonListModel->item(x, 0);
+
+		if(lpItem->checkState() == Qt::Checked)
+		{
+			cPerson*	lpPerson		= lpItem->data(Qt::UserRole+1).value<cPerson*>();
+			if(lpPerson)
+				szIDs.append(QString::number(lpPerson->id()));
+		}
+	}
+	settings.setValue("filter/person", QVariant::fromValue(szIDs));
+	settings.setValue("filter/personActive", QVariant::fromValue(ui->m_lpPersonFilter->isChecked()));
+	settings.setValue("filter/personAnd", QVariant::fromValue(ui->m_lpPersonAnd->isChecked()));
+	szIDs.clear();
+
+	for(int x = 0;x < m_lpLocationListModel->rowCount();x++)
+	{
+		QStandardItem*	lpItem	= m_lpLocationListModel->item(x, 0);
+
+		if(lpItem->checkState() == Qt::Checked)
+		{
+			cLocation*	lpLocation		= lpItem->data(Qt::UserRole+1).value<cLocation*>();
+			if(lpLocation)
+				szIDs.append(QString::number(lpLocation->id()));
+		}
+	}
+	settings.setValue("filter/location", QVariant::fromValue(szIDs));
+	settings.setValue("filter/locationActive", QVariant::fromValue(ui->m_lpLocationFilter->isChecked()));
+	settings.setValue("filter/locationAnd", QVariant::fromValue(ui->m_lpLocationAnd->isChecked()));
+	szIDs.clear();
+
+	for(int x = 0;x < m_lpTagListModel->rowCount();x++)
+	{
+		QStandardItem*	lpItem	= m_lpTagListModel->item(x, 0);
+
+		if(lpItem->checkState() == Qt::Checked)
+		{
+			cTag*	lpTag		= lpItem->data(Qt::UserRole+1).value<cTag*>();
+			if(lpTag)
+				szIDs.append(QString::number(lpTag->id()));
+		}
+	}
+	settings.setValue("filter/tag", QVariant::fromValue(szIDs));
+	settings.setValue("filter/tagActive", QVariant::fromValue(ui->m_lpTagFilter->isChecked()));
+	settings.setValue("filter/tagAnd", QVariant::fromValue(ui->m_lpTagsAnd->isChecked()));
+}
+
 void cFilterPanel::initUI()
 {
 	ui->setupUi(this);
@@ -31,6 +86,20 @@ void cFilterPanel::initUI()
 
 	m_lpTagListModel	= new QStandardItemModel;
 	ui->m_lpTagList->setModel(m_lpTagListModel);
+
+	QSettings	settings;
+
+	ui->m_lpPersonFilter->setChecked(settings.value("filter/personActive", true).toBool());
+	ui->m_lpPersonAnd->setChecked(settings.value("filter/personAnd", true).toBool());
+	ui->m_lpPersonOr->setChecked(!settings.value("filter/personAnd", true).toBool());
+
+	ui->m_lpLocationFilter->setChecked(settings.value("filter/locationActive", true).toBool());
+	ui->m_lpLocationAnd->setChecked(settings.value("filter/locationAnd", true).toBool());
+	ui->m_lpLocationOr->setChecked(!settings.value("filter/locationAnd", true).toBool());
+
+	ui->m_lpTagFilter->setChecked(settings.value("filter/tagActive", true).toBool());
+	ui->m_lpTagsAnd->setChecked(settings.value("filter/tagAnd", true).toBool());
+	ui->m_lpTagsOr->setChecked(!settings.value("filter/tagAnd", true).toBool());
 }
 
 void cFilterPanel::createActions()
@@ -57,6 +126,10 @@ void cFilterPanel::setPersonList(cPersonList* lpPersonList)
 {
 	m_bLoading		= true;
 
+	QSettings		settings;
+	QStringList		szIDs;
+
+	szIDs			= settings.value("filter/person").toStringList();
 	m_lpPersonList	= lpPersonList;
 
 	for(cPersonList::iterator i = lpPersonList->begin();i != lpPersonList->end();i++)
@@ -65,6 +138,8 @@ void cFilterPanel::setPersonList(cPersonList* lpPersonList)
 		lpItem->setData(QVariant::fromValue(*i), Qt::UserRole+1);
 		lpItem->setCheckable(true);
 		m_lpPersonListModel->appendRow(lpItem);
+		if(szIDs.contains(QString::number((*i)->id())))
+			lpItem->setCheckState(Qt::Checked);
 	}
 
 	m_lpPersonListModel->sort(0);
@@ -98,6 +173,24 @@ void cFilterPanel::updatePersonList()
 	m_bLoading	= false;
 }
 
+QList<qint32> cFilterPanel::selectedPerson()
+{
+	QList<qint32>	idList;
+
+	for(int x = 0;x < m_lpPersonListModel->rowCount();x++)
+	{
+		QStandardItem*	lpItem	= m_lpPersonListModel->item(x, 0);
+
+		if(lpItem->checkState() == Qt::Checked)
+		{
+			cPerson*	lpPerson		= lpItem->data(Qt::UserRole+1).value<cPerson*>();
+			if(lpPerson)
+				idList.append(lpPerson->id());
+		}
+	}
+	return(idList);
+}
+
 void cFilterPanel::clearLocationList()
 {
 	m_lpLocationListModel->clear();
@@ -105,8 +198,12 @@ void cFilterPanel::clearLocationList()
 
 void cFilterPanel::setLocationList(cLocationList* lpLocationList)
 {
-	m_bLoading	= true;
+	m_bLoading		= true;
 
+	QSettings		settings;
+	QStringList		szIDs;
+
+	szIDs			= settings.value("filter/location").toStringList();
 	m_lpLocationList	= lpLocationList;
 
 	for(cLocationList::iterator i = lpLocationList->begin();i != lpLocationList->end();i++)
@@ -115,7 +212,11 @@ void cFilterPanel::setLocationList(cLocationList* lpLocationList)
 		lpItem->setData(QVariant::fromValue(*i), Qt::UserRole+1);
 		lpItem->setCheckable(true);
 		m_lpLocationListModel->appendRow(lpItem);
+		if(szIDs.contains(QString::number((*i)->id())))
+			lpItem->setCheckState(Qt::Checked);
 	}
+
+	m_lpLocationListModel->sort(0);
 
 	m_bLoading	= false;
 }
@@ -146,6 +247,24 @@ void cFilterPanel::updateLocationList()
 	m_bLoading	= false;
 }
 
+QList<qint32> cFilterPanel::selectedLocation()
+{
+	QList<qint32>	idList;
+
+	for(int x = 0;x < m_lpLocationListModel->rowCount();x++)
+	{
+		QStandardItem*	lpItem	= m_lpLocationListModel->item(x, 0);
+
+		if(lpItem->checkState() == Qt::Checked)
+		{
+			cLocation*	lpLocation		= lpItem->data(Qt::UserRole+1).value<cLocation*>();
+			if(lpLocation)
+				idList.append(lpLocation->id());
+		}
+	}
+	return(idList);
+}
+
 void cFilterPanel::clearTagList()
 {
 	m_lpTagListModel->clear();
@@ -153,8 +272,12 @@ void cFilterPanel::clearTagList()
 
 void cFilterPanel::setTagList(cTagList* lpTagList)
 {
-	m_bLoading	= true;
+	m_bLoading		= true;
 
+	QSettings		settings;
+	QStringList		szIDs;
+
+	szIDs			= settings.value("filter/tag").toStringList();
 	m_lpTagList	= lpTagList;
 
 	for(cTagList::iterator i = lpTagList->begin();i != lpTagList->end();i++)
@@ -163,7 +286,11 @@ void cFilterPanel::setTagList(cTagList* lpTagList)
 		lpItem->setData(QVariant::fromValue(*i), Qt::UserRole+1);
 		lpItem->setCheckable(true);
 		m_lpTagListModel->appendRow(lpItem);
+		if(szIDs.contains(QString::number((*i)->id())))
+			lpItem->setCheckState(Qt::Checked);
 	}
+
+	m_lpTagListModel->sort(0);
 
 	m_bLoading	= false;
 }
@@ -192,6 +319,24 @@ void cFilterPanel::updateTagList()
 	m_lpTagListModel->sort(0);
 
 	m_bLoading	= false;
+}
+
+QList<qint32> cFilterPanel::selectedTag()
+{
+	QList<qint32>	idList;
+
+	for(int x = 0;x < m_lpTagListModel->rowCount();x++)
+	{
+		QStandardItem*	lpItem	= m_lpTagListModel->item(x, 0);
+
+		if(lpItem->checkState() == Qt::Checked)
+		{
+			cTag*	lpTag		= lpItem->data(Qt::UserRole+1).value<cTag*>();
+			if(lpTag)
+				idList.append(lpTag->id());
+		}
+	}
+	return(idList);
 }
 
 void cFilterPanel::onPersonChanged()

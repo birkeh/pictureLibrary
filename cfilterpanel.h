@@ -26,6 +26,13 @@ public:
 	/*!
 	 \brief
 
+	 \fn saveSettings
+	*/
+	void					saveSettings();
+
+	/*!
+	 \brief
+
 	 \fn clearPersonList
 	*/
 	void					clearPersonList();
@@ -42,6 +49,13 @@ public:
 	 \fn updatePersonList
 	*/
 	void					updatePersonList();
+	/*!
+	 \brief
+
+	 \fn selectedPerson
+	 \return QList<qint32>
+	*/
+	QList<qint32>			selectedPerson();
 
 	/*!
 	 \brief
@@ -62,6 +76,13 @@ public:
 	 \fn updateLocationList
 	*/
 	void					updateLocationList();
+	/*!
+	 \brief
+
+	 \fn selectedLocation
+	 \return QList<qint32>
+	*/
+	QList<qint32>			selectedLocation();
 
 	/*!
 	 \brief
@@ -82,6 +103,13 @@ public:
 	 \fn updateTagList
 	*/
 	void					updateTagList();
+	/*!
+	 \brief
+
+	 \fn selectedTag
+	 \return QList<qint32>
+	*/
+	QList<qint32>			selectedTag();
 
 private:
 	Ui::cFilterPanel*		ui;

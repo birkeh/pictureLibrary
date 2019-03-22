@@ -17,7 +17,7 @@
    <item row="0" column="0">
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QTreeView" name="m_lpLocationList">
+      <widget class="QListView" name="m_lpLocationList">
        <property name="contextMenuPolicy">
         <enum>Qt::CustomContextMenu</enum>
        </property>
@@ -30,12 +30,12 @@
        <property name="selectionMode">
         <enum>QAbstractItemView::ExtendedSelection</enum>
        </property>
-       <property name="rootIsDecorated">
-        <bool>false</bool>
+       <property name="flow">
+        <enum>QListView::TopToBottom</enum>
        </property>
-       <attribute name="headerVisible">
-        <bool>false</bool>
-       </attribute>
+       <property name="isWrapping" stdset="0">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
      <item>

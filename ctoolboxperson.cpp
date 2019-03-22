@@ -60,7 +60,7 @@ void cToolBoxPerson::createActions()
 	connect(ui->m_lpPersonList->selectionModel(),	&QItemSelectionModel::selectionChanged,			this,	&cToolBoxPerson::onPersonSelected);
 
 	connect(m_lpPersonListModel,	SIGNAL(dataChanged(QModelIndex,	QModelIndex, QVector<int>)),	SLOT(personChanged(QModelIndex, QModelIndex, QVector<int>)));
-	connect(ui->m_lpPersonList,						&QTreeView::customContextMenuRequested,			this,	&cToolBoxPerson::onPersonViewContextMenu);
+	connect(ui->m_lpPersonList,						&QListView::customContextMenuRequested,			this,	&cToolBoxPerson::onPersonViewContextMenu);
 	connect(m_lpPersonListModel,					&QStandardItemModel::itemChanged,				this,	&cToolBoxPerson::onPersonChanged);
 }
 

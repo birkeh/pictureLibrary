@@ -55,7 +55,7 @@ void cToolBoxLocation::createActions()
 	connect(ui->m_lpLocationList->selectionModel(),	&QItemSelectionModel::selectionChanged,			this,	&cToolBoxLocation::onLocationSelected);
 
 	connect(m_lpLocationListModel,	SIGNAL(dataChanged(QModelIndex,	QModelIndex, QVector<int>)),	SLOT(locationChanged(QModelIndex, QModelIndex, QVector<int>)));
-	connect(ui->m_lpLocationList,					&QTreeView::customContextMenuRequested,			this,	&cToolBoxLocation::onLocationViewContextMenu);
+	connect(ui->m_lpLocationList,					&QListView::customContextMenuRequested,			this,	&cToolBoxLocation::onLocationViewContextMenu);
 	connect(m_lpLocationListModel,					&QStandardItemModel::itemChanged,				this,	&cToolBoxLocation::onLocationChanged);
 }
 
