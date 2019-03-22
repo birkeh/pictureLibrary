@@ -108,32 +108,15 @@ void cExportDialog::savePosition()
 	settings.setValue("export/y", QVariant::fromValue(y()));
 
 	if(ui->m_lpExportAll->isChecked())
-		settings.setValue()
-	QString		str		= settings.value("export/filter", "exportAll").toString();
-	if(str == "exportAll")
-	{
-		ui->m_lpExportAll->setChecked(true);
-		ui->m_lpExportSelection->setChecked(false);
-		ui->m_lpExportFilter->setChecked(false);
-	}
-	else if(str == "exportSelection")
-	{
-		ui->m_lpExportAll->setChecked(false);
-		ui->m_lpExportSelection->setChecked(true);
-		ui->m_lpExportFilter->setChecked(false);
-	}
+		settings.setValue("export/filter", "exportAll");
+	else if(ui->m_lpExportSelection->isChecked())
+		settings.setValue("export/filter", "exportSelection");
 	else
-	{
-		ui->m_lpExportAll->setChecked(false);
-		ui->m_lpExportSelection->setChecked(false);
-		ui->m_lpExportFilter->setChecked(true);
-	}
+		settings.setValue("export/filter", "exportFilter");
 
-	ui->m_lpKeepFilename->setChecked(settings.value("export/keepFilename", true).toBool());
-	ui->m_lpRenameFilename->setChecked(!settings.value("export/keepFilename", true).toBool());
-	ui->m_lpFilePattern->setText(settings.value("export/filePattern", "%o").toString());
+	settings.setValue("export/keepFile", QVariant::fromValue(ui->m_lpKeepFilename->isChecked()));
+	settings.setValue("export/filePattern", ui->m_lpFilePattern->text());
 
-	ui->m_lpKeepStructure->setChecked(settings.value("export/keepStructure", true).toBool());
-	ui->m_lpRenameStructure->setChecked(!settings.value("export/keepStructure", true).toBool());
-	ui->m_lpStructurePattern->setText(settings.value("export/structurePattern", "%o").toString());
+	settings.setValue("export/keepStructure", QVariant::fromValue(ui->m_lpKeepStructure->isChecked()));
+	settings.setValue("export/structurePattern", ui->m_lpStructurePattern->text());
 }
