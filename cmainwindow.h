@@ -173,6 +173,12 @@ private:
 	*/
 	void							cleanFolderTree(const QString& folder);
 
+	/*!
+	 \brief
+
+	 \fn showCount
+	*/
+	void							showCount();
 protected:
 	/*!
 	 \brief

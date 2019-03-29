@@ -58,6 +58,7 @@ cMainWindow::cMainWindow(cSplashScreen* lpSplashScreen, QWidget *parent) :
 	loadData(true);
 
 	updateRecentFileActions();
+	showCount();
 }
 
 cMainWindow::~cMainWindow()
@@ -263,6 +264,8 @@ void cMainWindow::loadData(bool bProgressBar)
 	displayData();
 
 	m_bLoading	= false;
+
+	showCount();
 }
 
 void cMainWindow::displayData()
@@ -407,6 +410,12 @@ void cMainWindow::cleanFolderTree(const QString& folder)
 	}
 }
 
+void cMainWindow::showCount()
+{
+	qint32			iCount			= ui->m_lpThumbnailView->selectionModel()->selectedRows().count();
+	ui->m_lpStatusBar->showMessage(QString("count: %1, selected: %2").arg(m_lpThumbnailViewModel->rowCount()).arg(iCount));
+}
+
 void cMainWindow::onThumbnailSelected(const QItemSelection& /*selection*/, const QItemSelection& /*previous*/)
 {
 	cPictureList	pictureList;
@@ -423,6 +432,8 @@ void cMainWindow::onThumbnailSelected(const QItemSelection& /*selection*/, const
 	ui->m_lpToolBoxPerson->setPicture(pictureList);
 	ui->m_lpToolBoxLocation->setPicture(pictureList);
 	ui->m_lpToolBoxTags->setPicture(pictureList);
+
+	showCount();
 }
 
 void cMainWindow::onThumbnailDoubleClicked(const QModelIndex& index)
