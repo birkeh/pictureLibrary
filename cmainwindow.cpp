@@ -55,7 +55,7 @@ cMainWindow::cMainWindow(cSplashScreen* lpSplashScreen, QWidget *parent) :
 	QSettings	settings;
 	m_szOldPath	= settings.value("file/lastPath", QDir::homePath()).toString();
 	m_pictureLibrary.openDatabase(m_szOldPath);
-	loadData(true);
+	loadData(false);
 
 	updateRecentFileActions();
 	showCount();
@@ -709,6 +709,7 @@ void cMainWindow::onChangeTitle()
 	}
 	m_lpFolderSortFilterProxyModel->sort(0);
 	m_lpThumbnailSortFilterProxyModel->invalidate();
+	showCount();
 }
 
 void cMainWindow::onChangeDate()
@@ -766,6 +767,7 @@ void cMainWindow::onChangeDate()
 	}
 	m_lpFolderSortFilterProxyModel->sort(0);
 	m_lpThumbnailSortFilterProxyModel->invalidate();
+	showCount();
 }
 
 void cMainWindow::onChangeDateTime()
@@ -806,6 +808,7 @@ void cMainWindow::onChangeDateTime()
 
 			m_lpThumbnailSortFilterProxyModel->invalidate();
 		}
+		showCount();
 	}
 }
 
@@ -898,6 +901,7 @@ void cMainWindow::onTagEdited(cTag* /*lpTag*/)
 void cMainWindow::onTagListChanged()
 {
 	m_lpFilterPanel->updateTagList();
+	showCount();
 }
 
 void cMainWindow::onPersonAdded(cPerson* /*lpPerson*/)
@@ -915,6 +919,7 @@ void cMainWindow::onPersonEdited(cPerson* /*lpPerson*/)
 void cMainWindow::onPersonListChanged()
 {
 	m_lpFilterPanel->updatePersonList();
+	showCount();
 }
 
 void cMainWindow::onLocationAdded(cLocation* /*lpLocation*/)
@@ -940,6 +945,7 @@ void cMainWindow::onFilterTitleChanged(QStringList titleList)
 		return;
 
 	m_lpThumbnailSortFilterProxyModel->setTitleList(titleList);
+	showCount();
 }
 
 void cMainWindow::onFilterPersonChanged(QList<qint32> idList, bool bAnd)
@@ -948,6 +954,7 @@ void cMainWindow::onFilterPersonChanged(QList<qint32> idList, bool bAnd)
 		return;
 
 	m_lpThumbnailSortFilterProxyModel->setPersonList(idList, bAnd);
+	showCount();
 }
 
 void cMainWindow::onFilterLocationChanged(QList<qint32> idList, bool bAnd)
@@ -956,6 +963,7 @@ void cMainWindow::onFilterLocationChanged(QList<qint32> idList, bool bAnd)
 		return;
 
 	m_lpThumbnailSortFilterProxyModel->setLocationList(idList, bAnd);
+	showCount();
 }
 
 void cMainWindow::onFilterTagChanged(QList<qint32> idList, bool bAnd)
@@ -964,4 +972,5 @@ void cMainWindow::onFilterTagChanged(QList<qint32> idList, bool bAnd)
 		return;
 
 	m_lpThumbnailSortFilterProxyModel->setTagList(idList, bAnd);
+	showCount();
 }

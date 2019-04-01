@@ -33,6 +33,8 @@ QStringList cThumbnailSortFilterProxyModel::titleList()
 void cThumbnailSortFilterProxyModel::setTitleList(const QStringList& titleList)
 {
 	m_titleList		= titleList;
+
+	invalidateFilter();
 }
 
 QList<qint32> cThumbnailSortFilterProxyModel::personList()
@@ -103,7 +105,7 @@ bool cThumbnailSortFilterProxyModel::filterAcceptsRow(int sourceRow, const QMode
 	if(!bValid)
 		return(false);
 
-	if(!m_titleList.contains(lpPicture->title()))
+	if(!m_titleList.contains(lpPicture->title()) && !m_titleList.isEmpty())
 		return(false);
 
 	if(!m_personList.isEmpty())
