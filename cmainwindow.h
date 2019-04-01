@@ -368,6 +368,13 @@ private slots:
 	/*!
 	 \brief
 
+	 \fn onFilterTitleChanged
+	 \param titleList
+	*/
+	void							onFilterTitleChanged(QStringList titleList);
+	/*!
+	 \brief
+
 	 \fn onFilterPersonChanged
 	 \param idList
 	*/

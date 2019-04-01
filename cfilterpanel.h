@@ -33,6 +33,34 @@ public:
 	/*!
 	 \brief
 
+	 \fn clearTitleList
+	*/
+	void					clearTitleList();
+	/*!
+	 \brief
+
+	 \param titleList
+	 \fn setTitleList
+	*/
+	void					setTitleList(QStringList titleList);
+	/*!
+	 \brief
+
+	 \param titleList
+	 \fn updateTitleList
+	*/
+	void					updateTitleList(QStringList& titleList);
+	/*!
+	 \brief
+
+	 \fn selectedTitle
+	 \return QStringList
+	*/
+	QStringList				selectedTitle();
+
+	/*!
+	 \brief
+
 	 \fn clearPersonList
 	*/
 	void					clearPersonList();
@@ -111,9 +139,36 @@ public:
 	*/
 	QList<qint32>			selectedTag();
 
+	/*!
+	 \brief
+
+	 \fn onTitleChanged
+	*/
+	void					onTitleChanged();
+	/*!
+	 \brief
+
+	 \fn onPersonChanged
+	*/
+	void					onPersonChanged();
+	/*!
+	 \brief
+
+	 \fn onLocationChanged
+	*/
+	void					onLocationChanged();
+	/*!
+	 \brief
+
+	 \fn onTagChanged
+	*/
+	void					onTagChanged();
+
 private:
 	Ui::cFilterPanel*		ui;
 	bool					m_bLoading;					/*!< TODO: describe */
+
+	QStandardItemModel*		m_lpTitleListModel;			/*!< TODO: describe */
 
 	QStandardItemModel*		m_lpPersonListModel;		/*!< TODO: describe */
 	cPersonList*			m_lpPersonList;				/*!< TODO: describe */
@@ -136,26 +191,23 @@ private:
 	 \fn createActions
 	*/
 	void					createActions();
-
-	/*!
-	 \brief
-
-	 \fn onPersonChanged
-	*/
-	void					onPersonChanged();
-	/*!
-	 \brief
-
-	 \fn onLocationChanged
-	*/
-	void					onLocationChanged();
-	/*!
-	 \brief
-
-	 \fn onTagChanged
-	*/
-	void					onTagChanged();
 private slots:
+	/*!
+	 \brief
+
+	 \fn onTitleFilter
+	 \param bToggle
+	*/
+	void					onTitleFilter(bool bToggle);
+	/*!
+	 \brief
+
+	 \fn onTitleChanged
+	 \param topLeft
+	 \param bottomright
+	 \param roles
+	*/
+	void					onTitleChanged(const QModelIndex& topLeft, const QModelIndex& bottomright, const QVector<int>& roles);
 	/*!
 	 \brief
 
@@ -226,6 +278,13 @@ private slots:
 	*/
 	void					onTagChanged(const QModelIndex& topLeft, const QModelIndex& bottomright, const QVector<int>& roles);
 signals:
+	/*!
+	 \brief
+
+	 \fn titleChanged
+	 \param titleList
+	*/
+	void					titleChanged(QStringList titleList);
 	/*!
 	 \brief
 

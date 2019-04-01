@@ -39,6 +39,20 @@ public:
 	/*!
 	 \brief
 
+	 \fn titleList
+	*/
+	QStringList				titleList();
+	/*!
+	 \brief
+
+	 \fn setTitleList
+	 \param titleList
+	*/
+	void					setTitleList(const QStringList& titleList);
+
+	/*!
+	 \brief
+
 	 \fn personList
 	*/
 	QList<qint32>			personList();
@@ -91,6 +105,7 @@ protected:
 
 private:
 	QString					m_szPath;					/*!< TODO: describe */
+	QStringList				m_titleList;				/*!< TODO: describe */
 	QList<qint32>			m_personList;				/*!< TODO: describe */
 	QList<qint32>			m_locationList;				/*!< TODO: describe */
 	QList<qint32>			m_tagList;					/*!< TODO: describe */

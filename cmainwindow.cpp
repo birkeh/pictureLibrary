@@ -175,6 +175,7 @@ void cMainWindow::createActions()
 	connect(ui->m_lpToolBoxLocation,					&cToolBoxLocation::locationEdited,		this,	&cMainWindow::onLocationEdited);
 	connect(ui->m_lpToolBoxLocation,					&cToolBoxLocation::locationListChanged,	this,	&cMainWindow::onLocationListChanged);
 
+	connect(m_lpFilterPanel,							&cFilterPanel::titleChanged,			this,	&cMainWindow::onFilterTitleChanged);
 	connect(m_lpFilterPanel,							&cFilterPanel::personChanged,			this,	&cMainWindow::onFilterPersonChanged);
 	connect(m_lpFilterPanel,							&cFilterPanel::locationChanged,			this,	&cMainWindow::onFilterLocationChanged);
 	connect(m_lpFilterPanel,							&cFilterPanel::tagChanged,				this,	&cMainWindow::onFilterTagChanged);
@@ -281,6 +282,7 @@ void cMainWindow::displayData()
 	ui->m_lpToolBoxLocation->setLocationList(&m_locationList);
 	ui->m_lpToolBoxTags->setTagList(&m_tagList);
 
+	m_lpFilterPanel->setTitleList(m_pictureList.titleList());
 	m_lpFilterPanel->setPersonList(&m_personList);
 	m_lpFilterPanel->setLocationList(&m_locationList);
 	m_lpFilterPanel->setTagList(&m_tagList);
@@ -329,7 +331,14 @@ void cMainWindow::displayData()
 	m_lpFolderSortFilterProxyModel->sort(0);
 	m_lpThumbnailSortFilterProxyModel->sort(0);
 
+	m_lpFilterPanel->onTitleChanged();
+	m_lpFilterPanel->onPersonChanged();
+	m_lpFilterPanel->onLocationChanged();
+	m_lpFilterPanel->onTagChanged();
+
 	ui->m_lpStatusBar->showMessage(tr("done."), 3);
+
+	m_lpThumbnailSortFilterProxyModel->invalidate();
 
 	showCount();
 }
@@ -923,6 +932,14 @@ void cMainWindow::onLocationEdited(cLocation* /*lpLocation*/)
 void cMainWindow::onLocationListChanged()
 {
 	m_lpFilterPanel->updateLocationList();
+}
+
+void cMainWindow::onFilterTitleChanged(QStringList titleList)
+{
+	if(m_bLoading)
+		return;
+
+	m_lpThumbnailSortFilterProxyModel->setTitleList(titleList);
 }
 
 void cMainWindow::onFilterPersonChanged(QList<qint32> idList, bool bAnd)

@@ -26,6 +26,16 @@ void cFilterPanel::saveSettings()
 	QSettings		settings;
 	QStringList		szIDs;
 
+	for(int x = 0;x < m_lpTitleListModel->rowCount();x++)
+	{
+		QStandardItem*	lpItem	= m_lpTitleListModel->item(x, 0);
+
+		if(lpItem->checkState() == Qt::Checked)
+			szIDs.append(lpItem->text());
+	}
+	settings.setValue("filter/title", QVariant::fromValue(szIDs));
+	settings.setValue("filter/titleActive", QVariant::fromValue(ui->m_lpTitleFilter->isChecked()));
+
 	for(int x = 0;x < m_lpPersonListModel->rowCount();x++)
 	{
 		QStandardItem*	lpItem	= m_lpPersonListModel->item(x, 0);
@@ -78,6 +88,9 @@ void cFilterPanel::initUI()
 {
 	ui->setupUi(this);
 
+	m_lpTitleListModel		= new QStandardItemModel;
+	ui->m_lpTitleList->setModel(m_lpTitleListModel);
+
 	m_lpPersonListModel		= new QStandardItemModel;
 	ui->m_lpPersonList->setModel(m_lpPersonListModel);
 
@@ -88,6 +101,8 @@ void cFilterPanel::initUI()
 	ui->m_lpTagList->setModel(m_lpTagListModel);
 
 	QSettings	settings;
+
+	ui->m_lpTitleFilter->setChecked(settings.value("filter/titleActive", true).toBool());
 
 	ui->m_lpPersonFilter->setChecked(settings.value("filter/personActive", true).toBool());
 	ui->m_lpPersonAnd->setChecked(settings.value("filter/personAnd", true).toBool());
@@ -104,6 +119,7 @@ void cFilterPanel::initUI()
 
 void cFilterPanel::createActions()
 {
+	connect(ui->m_lpTitleFilter,	&QGroupBox::toggled,	this,	&cFilterPanel::onTitleFilter);
 	connect(ui->m_lpPersonFilter,	&QGroupBox::toggled,	this,	&cFilterPanel::onPersonFilter);
 	connect(ui->m_lpLocationFilter,	&QGroupBox::toggled,	this,	&cFilterPanel::onLocationFilter);
 	connect(ui->m_lpTagFilter,		&QGroupBox::toggled,	this,	&cFilterPanel::onTagFilter);
@@ -112,9 +128,71 @@ void cFilterPanel::createActions()
 	connect(ui->m_lpLocationAnd,	&QRadioButton::toggled,	this,	&cFilterPanel::onLocationAnd);
 	connect(ui->m_lpTagsAnd,		&QRadioButton::toggled,	this,	&cFilterPanel::onTagAnd);
 
+	connect(m_lpTitleListModel,		SIGNAL(dataChanged(QModelIndex,	QModelIndex, QVector<int>)),	SLOT(onTitleChanged(QModelIndex, QModelIndex, QVector<int>)));
 	connect(m_lpPersonListModel,	SIGNAL(dataChanged(QModelIndex,	QModelIndex, QVector<int>)),	SLOT(onPersonChanged(QModelIndex, QModelIndex, QVector<int>)));
 	connect(m_lpLocationListModel,	SIGNAL(dataChanged(QModelIndex,	QModelIndex, QVector<int>)),	SLOT(onLocationChanged(QModelIndex, QModelIndex, QVector<int>)));
 	connect(m_lpTagListModel,		SIGNAL(dataChanged(QModelIndex,	QModelIndex, QVector<int>)),	SLOT(onTagChanged(QModelIndex, QModelIndex, QVector<int>)));
+}
+
+void cFilterPanel::clearTitleList()
+{
+	m_lpTitleListModel->clear();
+}
+
+void cFilterPanel::setTitleList(QStringList titleList)
+{
+	m_bLoading		= true;
+
+	QSettings		settings;
+	QStringList		szIDs;
+
+	szIDs			= settings.value("filter/title").toStringList();
+
+	for(QStringList::iterator i = titleList.begin();i != titleList.end();i++)
+	{
+		QStandardItem*	lpItem	= new QStandardItem(*i);
+		lpItem->setCheckable(true);
+		m_lpTitleListModel->appendRow(lpItem);
+		if(szIDs.contains(*i))
+			lpItem->setCheckState(Qt::Checked);
+	}
+
+	m_lpPersonListModel->sort(0);
+
+	m_bLoading	= false;
+}
+
+void cFilterPanel::updateTitleList(QStringList& titleList)
+{
+	m_bLoading		= true;
+
+	for(QStringList::iterator i = titleList.begin();i != titleList.end();i++)
+	{
+		if(m_lpTitleListModel->findItems(*i).isEmpty())
+		{
+			QStandardItem*	lpItem	= new QStandardItem(*i);
+			lpItem->setCheckable(true);
+			m_lpTitleListModel->appendRow(lpItem);
+		}
+	}
+
+	m_lpPersonListModel->sort(0);
+
+	m_bLoading	= false;
+}
+
+QStringList cFilterPanel::selectedTitle()
+{
+	QStringList	titleList;
+
+	for(int x = 0;x < m_lpTitleListModel->rowCount();x++)
+	{
+		QStandardItem*	lpItem	= m_lpTitleListModel->item(x, 0);
+
+		if(lpItem->checkState() == Qt::Checked)
+			titleList.append(lpItem->text());
+	}
+	return(titleList);
 }
 
 void cFilterPanel::clearPersonList()
@@ -337,6 +415,37 @@ QList<qint32> cFilterPanel::selectedTag()
 		}
 	}
 	return(idList);
+}
+
+void cFilterPanel::onTitleFilter(bool bToggle)
+{
+	if(bToggle)
+		onTitleChanged();
+	else {
+		emit(titleChanged(QStringList()));
+	}
+}
+
+void cFilterPanel::onTitleChanged(const QModelIndex& /*topLeft*/, const QModelIndex& /*bottomright*/, const QVector<int>& /*roles*/)
+{
+	onTitleChanged();
+}
+
+void cFilterPanel::onTitleChanged()
+{
+	if(m_bLoading)
+		return;
+
+	QStringList	titleList;
+
+	for(int x = 0;x < m_lpTitleListModel->rowCount();x++)
+	{
+		QStandardItem*	lpItem	= m_lpTitleListModel->item(x, 0);
+
+		if(lpItem->checkState() == Qt::Checked)
+			titleList.append(lpItem->text());
+	}
+	emit titleChanged(titleList);
 }
 
 void cFilterPanel::onPersonChanged()

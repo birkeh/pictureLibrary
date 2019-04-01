@@ -25,6 +25,16 @@ QString cThumbnailSortFilterProxyModel::filterPath()
 	return(m_szPath);
 }
 
+QStringList cThumbnailSortFilterProxyModel::titleList()
+{
+	return(m_titleList);
+}
+
+void cThumbnailSortFilterProxyModel::setTitleList(const QStringList& titleList)
+{
+	m_titleList		= titleList;
+}
+
 QList<qint32> cThumbnailSortFilterProxyModel::personList()
 {
 	return(m_personList);
@@ -91,6 +101,9 @@ bool cThumbnailSortFilterProxyModel::filterAcceptsRow(int sourceRow, const QMode
 	}
 
 	if(!bValid)
+		return(false);
+
+	if(!m_titleList.contains(lpPicture->title()))
 		return(false);
 
 	if(!m_personList.isEmpty())

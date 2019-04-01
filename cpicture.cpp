@@ -1128,7 +1128,10 @@ QStringList cPictureList::titleList()
 	QStringList	szTitleList;
 
 	for(cPictureList::iterator i = begin(); i != end();i++)
-		szTitleList.append((*i)->title());
+	{
+		if(!(*i)->title().isEmpty())
+			szTitleList.append((*i)->title());
+	}
 
 	szTitleList.removeDuplicates();
 	szTitleList.sort(Qt::CaseInsensitive);
