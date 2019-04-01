@@ -148,6 +148,8 @@ void cFilterPanel::setTitleList(QStringList titleList)
 
 	szIDs			= settings.value("filter/title").toStringList();
 
+	m_lpTitleListModel->clear();
+
 	for(QStringList::iterator i = titleList.begin();i != titleList.end();i++)
 	{
 		QStandardItem*	lpItem	= new QStandardItem(*i);
@@ -209,6 +211,8 @@ void cFilterPanel::setPersonList(cPersonList* lpPersonList)
 
 	szIDs			= settings.value("filter/person").toStringList();
 	m_lpPersonList	= lpPersonList;
+
+	m_lpPersonListModel->clear();
 
 	for(cPersonList::iterator i = lpPersonList->begin();i != lpPersonList->end();i++)
 	{
@@ -284,6 +288,8 @@ void cFilterPanel::setLocationList(cLocationList* lpLocationList)
 	szIDs			= settings.value("filter/location").toStringList();
 	m_lpLocationList	= lpLocationList;
 
+	m_lpPersonListModel->clear();
+
 	for(cLocationList::iterator i = lpLocationList->begin();i != lpLocationList->end();i++)
 	{
 		QStandardItem*	lpItem	= new QStandardItem((*i)->name());
@@ -356,7 +362,9 @@ void cFilterPanel::setTagList(cTagList* lpTagList)
 	QStringList		szIDs;
 
 	szIDs			= settings.value("filter/tag").toStringList();
-	m_lpTagList	= lpTagList;
+	m_lpTagList		= lpTagList;
+
+	m_lpTagListModel->clear();
 
 	for(cTagList::iterator i = lpTagList->begin();i != lpTagList->end();i++)
 	{
@@ -438,13 +446,17 @@ void cFilterPanel::onTitleChanged()
 
 	QStringList	titleList;
 
-	for(int x = 0;x < m_lpTitleListModel->rowCount();x++)
+	if(ui->m_lpTitleFilter->isChecked())
 	{
-		QStandardItem*	lpItem	= m_lpTitleListModel->item(x, 0);
+		for(int x = 0;x < m_lpTitleListModel->rowCount();x++)
+		{
+			QStandardItem*	lpItem	= m_lpTitleListModel->item(x, 0);
 
-		if(lpItem->checkState() == Qt::Checked)
-			titleList.append(lpItem->text());
+			if(lpItem->checkState() == Qt::Checked)
+				titleList.append(lpItem->text());
+		}
 	}
+
 	emit titleChanged(titleList);
 }
 
@@ -455,17 +467,21 @@ void cFilterPanel::onPersonChanged()
 
 	QList<qint32>	idList;
 
-	for(int x = 0;x < m_lpPersonListModel->rowCount();x++)
+	if(ui->m_lpPersonFilter->isChecked())
 	{
-		QStandardItem*	lpItem	= m_lpPersonListModel->item(x, 0);
-
-		if(lpItem->checkState() == Qt::Checked)
+		for(int x = 0;x < m_lpPersonListModel->rowCount();x++)
 		{
-			cPerson*	lpPerson		= lpItem->data(Qt::UserRole+1).value<cPerson*>();
-			if(lpPerson)
-				idList.append(lpPerson->id());
+			QStandardItem*	lpItem	= m_lpPersonListModel->item(x, 0);
+
+			if(lpItem->checkState() == Qt::Checked)
+			{
+				cPerson*	lpPerson		= lpItem->data(Qt::UserRole+1).value<cPerson*>();
+				if(lpPerson)
+					idList.append(lpPerson->id());
+			}
 		}
 	}
+
 	emit personChanged(idList, ui->m_lpPersonAnd->isChecked());
 }
 
@@ -494,17 +510,21 @@ void cFilterPanel::onLocationChanged()
 
 	QList<qint32>	idList;
 
-	for(int x = 0;x < m_lpLocationListModel->rowCount();x++)
+	if(ui->m_lpLocationFilter->isChecked())
 	{
-		QStandardItem*	lpItem	= m_lpLocationListModel->item(x, 0);
-
-		if(lpItem->checkState() == Qt::Checked)
+		for(int x = 0;x < m_lpLocationListModel->rowCount();x++)
 		{
-			cLocation*	lpLocation		= lpItem->data(Qt::UserRole+1).value<cLocation*>();
-			if(lpLocation)
-				idList.append(lpLocation->id());
+			QStandardItem*	lpItem	= m_lpLocationListModel->item(x, 0);
+
+			if(lpItem->checkState() == Qt::Checked)
+			{
+				cLocation*	lpLocation		= lpItem->data(Qt::UserRole+1).value<cLocation*>();
+				if(lpLocation)
+					idList.append(lpLocation->id());
+			}
 		}
 	}
+
 	emit locationChanged(idList, ui->m_lpLocationAnd->isChecked());
 }
 
@@ -533,17 +553,21 @@ void cFilterPanel::onTagChanged()
 
 	QList<qint32>	idList;
 
-	for(int x = 0;x < m_lpTagListModel->rowCount();x++)
+	if(ui->m_lpTagFilter->isChecked())
 	{
-		QStandardItem*	lpItem	= m_lpTagListModel->item(x, 0);
-
-		if(lpItem->checkState() == Qt::Checked)
+		for(int x = 0;x < m_lpTagListModel->rowCount();x++)
 		{
-			cTag*	lpTag		= lpItem->data(Qt::UserRole+1).value<cTag*>();
-			if(lpTag)
-				idList.append(lpTag->id());
+			QStandardItem*	lpItem	= m_lpTagListModel->item(x, 0);
+
+			if(lpItem->checkState() == Qt::Checked)
+			{
+				cTag*	lpTag		= lpItem->data(Qt::UserRole+1).value<cTag*>();
+				if(lpTag)
+					idList.append(lpTag->id());
+			}
 		}
 	}
+
 	emit tagChanged(idList, ui->m_lpTagsAnd->isChecked());
 }
 
