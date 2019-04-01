@@ -264,8 +264,6 @@ void cMainWindow::loadData(bool bProgressBar)
 	displayData();
 
 	m_bLoading	= false;
-
-	showCount();
 }
 
 void cMainWindow::displayData()
@@ -332,6 +330,8 @@ void cMainWindow::displayData()
 	m_lpThumbnailSortFilterProxyModel->sort(0);
 
 	ui->m_lpStatusBar->showMessage(tr("done."), 3);
+
+	showCount();
 }
 
 QStandardItem*	findItem(QStandardItemModel* lpModel, QModelIndex parent, const QString& text)
@@ -412,8 +412,11 @@ void cMainWindow::cleanFolderTree(const QString& folder)
 
 void cMainWindow::showCount()
 {
-	qint32			iCount			= ui->m_lpThumbnailView->selectionModel()->selectedRows().count();
-	ui->m_lpStatusBar->showMessage(QString("count: %1, selected: %2").arg(m_lpThumbnailViewModel->rowCount()).arg(iCount));
+	qint32	iCount			= m_lpThumbnailViewModel->rowCount();
+	qint32	iFilter			= m_lpThumbnailSortFilterProxyModel->rowCount();
+	qint32	iSelected		= ui->m_lpThumbnailView->selectionModel()->selectedRows().count();
+
+	ui->m_lpStatusBar->showMessage(QString("count: %1, filter: %2, selected: %3").arg(iCount).arg(iFilter).arg(iSelected));
 }
 
 void cMainWindow::onThumbnailSelected(const QItemSelection& /*selection*/, const QItemSelection& /*previous*/)
@@ -470,6 +473,8 @@ void cMainWindow::onFolderSelected(const QItemSelection& /*selection*/, const QI
 		return;
 
 	m_lpThumbnailSortFilterProxyModel->setFilterPath(m_lpFolderSortFilterProxyModel->data(index, Qt::UserRole+1).toString());
+
+	showCount();
 }
 
 void cMainWindow::setCurrentFile(const QString& fileName)
@@ -613,6 +618,8 @@ void cMainWindow::onFileImport()
 	importDialog.exec();
 	if(importDialog.hasImported())
 		displayData();
+
+	showCount();
 }
 
 void cMainWindow::onFileExport()
