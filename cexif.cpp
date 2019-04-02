@@ -342,11 +342,15 @@ QString cEXIF::cameraModel()
 
 QDateTime cEXIF::dateTime()
 {
-	QDateTime	dateTime	= QDateTime::fromString(getEXIFTag(0x0132, 1).value<QString>(), "yyyy:MM:dd hh:mm:ss");
+	QDateTime	dateTime	= QDateTime::fromString(getEXIFTag(0x9004, 1).value<QString>(), "yyyy:MM:dd hh:mm:ss");
 	if(dateTime.isValid())
 		return(dateTime);
 
 	dateTime	= QDateTime::fromString(getXMPTag("Xmp.video.DateTimeDigitized").toString(), "yyyy-MM-ddThh:mm:ssZ");
+	if(dateTime.isValid())
+		return(dateTime);
+
+	dateTime	= QDateTime::fromString(getEXIFTag(0x0132, 1).value<QString>(), "yyyy:MM:dd hh:mm:ss");
 	if(dateTime.isValid())
 		return(dateTime);
 

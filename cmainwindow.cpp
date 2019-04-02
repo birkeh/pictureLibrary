@@ -260,7 +260,11 @@ void cMainWindow::loadData(bool bProgressBar)
 	m_tagList.load(m_lpSplashScreen, bProgressBar ? m_lpProgressBar : nullptr);
 
 	m_pictureList.clear();
+	if(bProgressBar)
+		m_lpProgressBar->setVisible(true);
 	m_pictureList.load(m_personList, m_locationList, m_tagList, m_lpSplashScreen, bProgressBar ? m_lpProgressBar : nullptr);
+	if(bProgressBar)
+		m_lpProgressBar->setVisible(false);
 
 	displayData();
 
@@ -591,7 +595,7 @@ void cMainWindow::onFileOpen()
 	if(!m_pictureLibrary.openDatabase(szPath))
 		return;
 
-	loadData(m_lpProgressBar);
+	loadData(true);
 
 	setCurrentFile(szPath);
 	m_szOldPath	= szPath;
