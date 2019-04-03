@@ -14,7 +14,6 @@
 #include "ccombopicker.h"
 
 #include "cimage.h"
-#include "cimageviewer.h"
 
 #include "cstyleddelegate.h"
 
@@ -49,7 +48,8 @@ cMainWindow::cMainWindow(cSplashScreen* lpSplashScreen, QWidget *parent) :
 	m_bLoading(false),
 	m_lpSplashScreen(lpSplashScreen),
 	m_lpFileMenu(nullptr),
-	m_lpFileToolBar(nullptr)
+	m_lpFileToolBar(nullptr),
+	m_lpImageViewer(nullptr)
 {
 	initUI();
 	createActions();
@@ -65,6 +65,9 @@ cMainWindow::cMainWindow(cSplashScreen* lpSplashScreen, QWidget *parent) :
 
 cMainWindow::~cMainWindow()
 {
+	if(m_lpImageViewer)
+		delete m_lpImageViewer;
+
 	if(m_lpFilterPanel)
 		delete m_lpFilterPanel;
 
@@ -461,33 +464,26 @@ void cMainWindow::onThumbnailDoubleClicked(const QModelIndex& index)
 	if(!index.isValid())
 		return;
 
-	cPicture*		lpPicture	= m_lpThumbnailSortFilterProxyModel->data(index, Qt::UserRole+1).value<cPicture*>();
-	QFile			file(m_pictureLibrary.rootPath() + "/" + lpPicture->filePath() + "/" + lpPicture->fileName());
+	m_imageViewerIndex			= index;
+	if(!m_lpImageViewer)
+		m_lpImageViewer	= new cImageViewer(this);
 
-	if(!file.exists())
-		return;
+	connect(m_lpImageViewer,	&cImageViewer::imageNext,	this,	&cMainWindow::onImageNext);
+	connect(m_lpImageViewer,	&cImageViewer::imagePrev,	this,	&cMainWindow::onImagePrev);
+	connect(m_lpImageViewer,	&cImageViewer::imageFirst,	this,	&cMainWindow::onImageFirst);
+	connect(m_lpImageViewer,	&cImageViewer::imageLast,	this,	&cMainWindow::onImageLast);
 
-	QApplication::setOverrideCursor(Qt::WaitCursor);
-	cImageViewer	imageViewer(this);
+	viewImage();
 
-	cImage			image(file.fileName());
-	QApplication::restoreOverrideCursor();
+	m_lpImageViewer->exec();
 
-	if(image.isNull())
-		return;
+	disconnect(m_lpImageViewer,	&cImageViewer::imageNext,	this,	&cMainWindow::onImageNext);
+	disconnect(m_lpImageViewer,	&cImageViewer::imagePrev,	this,	&cMainWindow::onImagePrev);
+	disconnect(m_lpImageViewer,	&cImageViewer::imageFirst,	this,	&cMainWindow::onImageFirst);
+	disconnect(m_lpImageViewer,	&cImageViewer::imageLast,	this,	&cMainWindow::onImageLast);
 
-	connect(&imageViewer,	&cImageViewer::imageNext,	this,	&cMainWindow::onImageNext);
-	connect(&imageViewer,	&cImageViewer::imagePrev,	this,	&cMainWindow::onImagePrev);
-	connect(&imageViewer,	&cImageViewer::imageFirst,	this,	&cMainWindow::onImageFirst);
-	connect(&imageViewer,	&cImageViewer::imageLast,	this,	&cMainWindow::onImageLast);
-
-	imageViewer.setImage(&image);
-	imageViewer.exec();
-
-	disconnect(&imageViewer,	&cImageViewer::imageNext,	this,	&cMainWindow::onImageNext);
-	disconnect(&imageViewer,	&cImageViewer::imagePrev,	this,	&cMainWindow::onImagePrev);
-	disconnect(&imageViewer,	&cImageViewer::imageFirst,	this,	&cMainWindow::onImageFirst);
-	disconnect(&imageViewer,	&cImageViewer::imageLast,	this,	&cMainWindow::onImageLast);
+	delete m_lpImageViewer;
+	m_lpImageViewer		= nullptr;
 }
 
 void cMainWindow::onFolderSelected(const QItemSelection& /*selection*/, const QItemSelection& /*previous*/)
@@ -993,22 +989,44 @@ void cMainWindow::onFilterTagChanged(QList<qint32> idList, bool bAnd)
 	showCount();
 }
 
+void cMainWindow::viewImage()
+{
+	if(!m_lpImageViewer)
+		return;
+
+	cPicture*		lpPicture	= m_lpThumbnailSortFilterProxyModel->data(m_imageViewerIndex, Qt::UserRole+1).value<cPicture*>();
+
+	m_lpImageViewer->setPicture(QString("%1/%2").arg(m_imageViewerIndex.row()+1).arg(m_lpThumbnailSortFilterProxyModel->rowCount()), m_pictureLibrary.rootPath(), lpPicture);
+}
+
 void cMainWindow::onImageNext()
 {
-	qDebug() << "next image";
+	m_imageViewerIndex	= m_lpThumbnailSortFilterProxyModel->index(m_imageViewerIndex.row()+1, 0);
+	if(!m_imageViewerIndex.isValid())
+		m_imageViewerIndex	= m_lpThumbnailSortFilterProxyModel->index(0, 0);
+
+	viewImage();
 }
 
 void cMainWindow::onImagePrev()
 {
-	qDebug() << "prev image";
+	m_imageViewerIndex	= m_lpThumbnailSortFilterProxyModel->index(m_imageViewerIndex.row()-1, 0);
+	if(!m_imageViewerIndex.isValid())
+		m_imageViewerIndex	= m_lpThumbnailSortFilterProxyModel->index(m_lpThumbnailViewModel->rowCount()-1, 0);
+
+	viewImage();
 }
 
 void cMainWindow::onImageLast()
 {
-	qDebug() << "last image";
+	m_imageViewerIndex	= m_lpThumbnailSortFilterProxyModel->index(m_lpThumbnailViewModel->rowCount()-1, 0);
+
+	viewImage();
 }
 
 void cMainWindow::onImageFirst()
 {
-	qDebug() << "first image";
+	m_imageViewerIndex	= m_lpThumbnailSortFilterProxyModel->index(0, 0);
+
+	viewImage();
 }

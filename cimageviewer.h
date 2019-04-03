@@ -2,6 +2,7 @@
 #define CIMAGEVIEWER_H
 
 
+#include "cpicture.h"
 #include "cimage.h"
 
 #include <QDialog>
@@ -19,12 +20,12 @@ public:
 	explicit cImageViewer(QWidget *parent = nullptr);
 	~cImageViewer();
 
-	void					setImage(cImage* lpImage);
+	void					setPicture(QString szNumber, QString szRootPath, cPicture* lpPicture);
 private:
 	Ui::cImageViewer*		ui;
+	cImage*					m_lpImage;
 
 protected:
-	void					keyPressEvent(QKeyEvent* e);
 
 private slots:
 	/*!

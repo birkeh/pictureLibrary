@@ -21,6 +21,8 @@
 
 #include "cfilterpanel.h"
 
+#include "cimageviewer.h"
+
 #include <QMainWindow>
 #include <QCloseEvent>
 
@@ -106,6 +108,9 @@ private:
 	QAction*						m_lpSetHDRAction;						/*!< TODO: describe */
 	QAction*						m_lpUnsetHDRAction;						/*!< TODO: describe */
 
+	cImageViewer*					m_lpImageViewer;						/*!< TODO: describe */
+	QModelIndex						m_imageViewerIndex;						/*!< TODO: describe */
+
 	/*!
 	 \brief
 
@@ -179,6 +184,13 @@ private:
 	 \fn showCount
 	*/
 	void							showCount();
+
+	/*!
+	 \brief
+
+	 \fn viewImage
+	*/
+	void							viewImage();
 protected:
 	/*!
 	 \brief

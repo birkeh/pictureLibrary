@@ -1,60 +1,66 @@
 #include "cimageviewer.h"
 #include "ui_cimageviewer.h"
 
+#include "cimage.h"
+
 #include <QKeyEvent>
+#include <QFile>
 
 #include <QDebug>
 
 
 cImageViewer::cImageViewer(QWidget *parent) :
 	QDialog(parent),
-	ui(new Ui::cImageViewer)
+	ui(new Ui::cImageViewer),
+	m_lpImage(nullptr)
 {
 	ui->setupUi(this);
 	ui->m_lpImage->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
 
-//	connect(ui->m_lpImage,	&cLabel::imageNext,		this,	&cImageViewer::onImageNext);
-//	connect(ui->m_lpImage,	&cLabel::imagePrev,		this,	&cImageViewer::onImagePrev);
-//	connect(ui->m_lpImage,	&cLabel::imageFirst,	this,	&cImageViewer::onImageFirst);
-//	connect(ui->m_lpImage,	&cLabel::imageLast,		this,	&cImageViewer::onImageLast);
+	connect(ui->m_lpImage,	&cLabel::imageNext,		this,	&cImageViewer::onImageNext);
+	connect(ui->m_lpImage,	&cLabel::imagePrev,		this,	&cImageViewer::onImagePrev);
+	connect(ui->m_lpImage,	&cLabel::imageFirst,	this,	&cImageViewer::onImageFirst);
+	connect(ui->m_lpImage,	&cLabel::imageLast,		this,	&cImageViewer::onImageLast);
 }
 
 cImageViewer::~cImageViewer()
 {
+	if(m_lpImage)
+		delete m_lpImage;
+
 	delete ui;
 }
 
-void cImageViewer::setImage(cImage* lpImage)
+void cImageViewer::setPicture(QString szNumber, QString szRootPath, cPicture* lpPicture)
 {
-	ui->m_lpImage->setImage(lpImage);
+	QApplication::setOverrideCursor(Qt::WaitCursor);
 
-	setWindowFlag(Qt::Window);
-	showFullScreen();
+	if(m_lpImage)
+		delete m_lpImage;
 
-	ui->m_lpImage->setFocus();
-}
+	QFile			file(szRootPath + "/" + lpPicture->filePath() + "/" + lpPicture->fileName());
 
-void cImageViewer::keyPressEvent(QKeyEvent* e)
-{
-	switch(e->key())
+	if(!file.exists())
+		return;
+
+	m_lpImage	= new cImage(file.fileName());
+
+	QApplication::restoreOverrideCursor();
+
+	if(m_lpImage->isNull())
 	{
-	case Qt::Key_Left:
-		emit imagePrev();
-		break;
-	case Qt::Key_Right:
-		emit imageNext();
-		break;
-	case Qt::Key_Home:
-		emit imageFirst();
-		break;
-	case Qt::Key_End:
-		emit imageLast();
-		break;
-	default:
-		break;
+		delete m_lpImage;
+		m_lpImage	= nullptr;
+		return;
 	}
 
-	QDialog::keyPressEvent(e);
+	ui->m_lpImage->setImage(m_lpImage);
+	ui->m_lpFileName->setText(szNumber + " - " + lpPicture->filePath() + "/" + lpPicture->fileName());
+
+	setWindowFlag(Qt::Window);
+	showMaximized();
+
+	ui->m_lpImage->setFocus();
 }
 
 void cImageViewer::onImageNext()

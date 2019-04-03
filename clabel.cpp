@@ -3,6 +3,8 @@
 #include <QResizeEvent>
 #include <QKeyEvent>
 
+#include <QDebug>
+
 
 cLabel::cLabel(QWidget *parent, Qt::WindowFlags f) :
 	QLabel(parent, f)
@@ -18,6 +20,7 @@ cLabel::cLabel(const QString &text, QWidget *parent, Qt::WindowFlags f) :
 void cLabel::setImage(cImage* lpImage)
 {
 	m_lpImage	= lpImage;
+	setPixmap(QPixmap::fromImage(m_lpImage->scaled(width(), height(), Qt::AspectRatioMode::KeepAspectRatio, Qt::TransformationMode::SmoothTransformation)));
 }
 
 void cLabel::resizeEvent(QResizeEvent* e)
