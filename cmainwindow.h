@@ -393,6 +393,31 @@ private slots:
 	 \param idList
 	*/
 	void							onFilterTagChanged(QList<qint32> idList, bool bAnd);
+
+	/*!
+	 \brief
+
+	 \fn onImageNext
+	*/
+	void							onImageNext();
+	/*!
+	 \brief
+
+	 \fn onImagePrev
+	*/
+	void							onImagePrev();
+	/*!
+	 \brief
+
+	 \fn onImageLast
+	*/
+	void							onImageLast();
+	/*!
+	 \brief
+
+	 \fn onImageFirst
+	*/
+	void							onImageFirst();
 };
 
 #endif // CMAINWINDOW_H

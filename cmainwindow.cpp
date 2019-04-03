@@ -476,8 +476,18 @@ void cMainWindow::onThumbnailDoubleClicked(const QModelIndex& index)
 	if(image.isNull())
 		return;
 
+	connect(&imageViewer,	&cImageViewer::imageNext,	this,	&cMainWindow::onImageNext);
+	connect(&imageViewer,	&cImageViewer::imagePrev,	this,	&cMainWindow::onImagePrev);
+	connect(&imageViewer,	&cImageViewer::imageFirst,	this,	&cMainWindow::onImageFirst);
+	connect(&imageViewer,	&cImageViewer::imageLast,	this,	&cMainWindow::onImageLast);
+
 	imageViewer.setImage(&image);
 	imageViewer.exec();
+
+	disconnect(&imageViewer,	&cImageViewer::imageNext,	this,	&cMainWindow::onImageNext);
+	disconnect(&imageViewer,	&cImageViewer::imagePrev,	this,	&cMainWindow::onImagePrev);
+	disconnect(&imageViewer,	&cImageViewer::imageFirst,	this,	&cMainWindow::onImageFirst);
+	disconnect(&imageViewer,	&cImageViewer::imageLast,	this,	&cMainWindow::onImageLast);
 }
 
 void cMainWindow::onFolderSelected(const QItemSelection& /*selection*/, const QItemSelection& /*previous*/)
@@ -981,4 +991,24 @@ void cMainWindow::onFilterTagChanged(QList<qint32> idList, bool bAnd)
 
 	m_lpThumbnailSortFilterProxyModel->setTagList(idList, bAnd);
 	showCount();
+}
+
+void cMainWindow::onImageNext()
+{
+	qDebug() << "next image";
+}
+
+void cMainWindow::onImagePrev()
+{
+	qDebug() << "prev image";
+}
+
+void cMainWindow::onImageLast()
+{
+	qDebug() << "last image";
+}
+
+void cMainWindow::onImageFirst()
+{
+	qDebug() << "first image";
 }

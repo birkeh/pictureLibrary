@@ -127,11 +127,11 @@ QStandardItem* insertPath(QString szPath, QStandardItem* lpRootItem)
 		switch(path)
 		{
 		case 0:
-			lpNewItem->setData(QVariant::fromValue(true), STYLEDDELEGATE_BOLD);
+			lpNewItem->setData(QVariant::fromValue(false), STYLEDDELEGATE_BOLD);
 			lpNewItem->setData(QVariant::fromValue(false), STYLEDDELEGATE_ITALIC);
 			break;
 		case 1:
-			lpNewItem->setData(QVariant::fromValue(false), STYLEDDELEGATE_BOLD);
+			lpNewItem->setData(QVariant::fromValue(true), STYLEDDELEGATE_BOLD);
 			lpNewItem->setData(QVariant::fromValue(false), STYLEDDELEGATE_ITALIC);
 			break;
 		case 2:
