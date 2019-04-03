@@ -79,7 +79,9 @@ SOURCES += \
     ctoolboxtag.cpp \
     cspoiler.cpp \
     cfilterpanel.cpp \
-    cexportdialog.cpp
+    cexportdialog.cpp \
+    chtmldelegate.cpp \
+    cstyleddelegate.cpp
 
 HEADERS += \
         cmainwindow.h \
@@ -107,7 +109,9 @@ HEADERS += \
     ctoolboxtag.h \
     cspoiler.h \
     cfilterpanel.h \
-    cexportdialog.h
+    cexportdialog.h \
+    chtmldelegate.h \
+    cstyleddelegate.h
 
 FORMS += \
         cmainwindow.ui \

@@ -11,6 +11,7 @@
 #include "common.h"
 
 #include "ccopier.h"
+#include "cstyleddelegate.h"
 
 #include <QBuffer>
 #include <QDir>
@@ -120,8 +121,33 @@ QStandardItem* insertPath(QString szPath, QStandardItem* lpRootItem)
 	for(;path < szPathList.count();path++)
 	{
 		szPath1.append(szPathList[path]);
+
 		QStandardItem*	lpNewItem	= new QStandardItem(szPathList[path]);
+
+		switch(path)
+		{
+		case 0:
+			lpNewItem->setData(QVariant::fromValue(true), STYLEDDELEGATE_BOLD);
+			lpNewItem->setData(QVariant::fromValue(false), STYLEDDELEGATE_ITALIC);
+			break;
+		case 1:
+			lpNewItem->setData(QVariant::fromValue(false), STYLEDDELEGATE_BOLD);
+			lpNewItem->setData(QVariant::fromValue(false), STYLEDDELEGATE_ITALIC);
+			break;
+		case 2:
+			lpNewItem->setData(QVariant::fromValue(false), STYLEDDELEGATE_BOLD);
+			lpNewItem->setData(QVariant::fromValue(true), STYLEDDELEGATE_ITALIC);
+			lpNewItem->setData(QVariant::fromValue(QColor(Qt::gray)), STYLEDDELEGATE_COLOR);
+			break;
+		case 3:
+			lpNewItem->setData(QVariant::fromValue(false), STYLEDDELEGATE_BOLD);
+			lpNewItem->setData(QVariant::fromValue(false), STYLEDDELEGATE_ITALIC);
+			lpNewItem->setData(QVariant::fromValue(QColor(Qt::blue)), STYLEDDELEGATE_COLOR);
+			break;
+		}
+
 		lpCurRoot->appendRow(lpNewItem);
+
 		lpNewItem->setData(QVariant::fromValue(szPath1), Qt::UserRole+1);
 		szPath1.append("/");
 

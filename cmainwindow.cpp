@@ -16,6 +16,8 @@
 #include "cimage.h"
 #include "cimageviewer.h"
 
+#include "cstyleddelegate.h"
+
 #include "ui_cmainwindow.h"
 
 #include <QDebug>
@@ -99,6 +101,8 @@ void cMainWindow::closeEvent(QCloseEvent *event)
 void cMainWindow::initUI()
 {
 	ui->setupUi(this);
+
+	ui->m_lpFolderView->setItemDelegate(new cStyledDelegate);
 
 	QIcon::setThemeName("TangoMFK");
 
