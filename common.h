@@ -56,9 +56,37 @@ QByteArray		image2Blob(const QImage& image);
  \param lpPicture
  \param newDate
  \param szNewTitle
+ \param newHDR
  \return QString
 */
-QString		picture2Path(cPicture* lpPicture, const QDateTime& newDate = QDateTime(), const QString& szNewTitle = QString(), const qint8& newHDR = -1);
+QString			picture2Path(cPicture* lpPicture, const QDateTime& newDate = QDateTime(), const QString& szNewTitle = QString(), const qint8& newHDR = -1);
+/*!
+ \brief
+
+ \fn pattern2Text
+ \param lpPicture
+ \param szPattern
+ \return QString
+*/
+QString			pattern2Text(cPicture* lpPicture, const QString& szPattern);
+/*!
+ \brief
+
+ \fn pattern2Path
+ \param lpPicture
+ \param szPattern
+ \return QString
+*/
+QString			pattern2Path(cPicture* lpPicture, const QString& szPattern);
+/*!
+ \brief
+
+ \fn pattern2File
+ \param lpPicture
+ \param szPattern
+ \return QString
+*/
+QString			pattern2File(cPicture* lpPicture, const QString& szPattern);
 
 /*!
  \brief

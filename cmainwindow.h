@@ -191,6 +191,18 @@ private:
 	 \fn viewImage
 	*/
 	void							viewImage();
+
+	/*!
+	 \brief
+
+	 \param exportList
+	 \param szPath
+	 \param szFilePattern
+	 \param szStrucurePattern
+	 \fn viewImage
+	*/
+	void							doExport(const QList<cPicture*>& exportList, const QString& szPath, const QString& szFilePattern, const QString& szStructurePattern);
+
 protected:
 	/*!
 	 \brief

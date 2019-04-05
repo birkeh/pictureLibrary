@@ -650,6 +650,37 @@ void cMainWindow::onFileExport()
 	cExportDialog	exportDialog(this);
 	if(exportDialog.exec() == QDialog::Rejected)
 		return;
+
+	QString						szPath				= exportDialog.path();
+	cExportDialog::EXPORT_TYPE	exportType			= exportDialog.exportType();
+	QString						szFilePattern		= exportDialog.filePattern();
+	QString						szStructurePattern	= exportDialog.structurePattern();
+
+	QList<cPicture*>			exportList;
+
+	switch(exportType)
+	{
+	case cExportDialog::EXPORT_TYPE_ALL:
+		for(int x = 0;x < m_lpThumbnailViewModel->rowCount();x++)
+			exportList.append(m_lpThumbnailViewModel->item(x, 0)->data(Qt::UserRole+1).value<cPicture*>());
+		break;
+	case cExportDialog::EXPORT_TYPE_FILTER:
+		for(int x = 0;x < m_lpThumbnailSortFilterProxyModel->rowCount();x++)
+		{
+			QModelIndex		index	= m_lpThumbnailSortFilterProxyModel->index(x, 0);
+			exportList.append(m_lpThumbnailSortFilterProxyModel->data(index, Qt::UserRole+1).value<cPicture*>());
+		}
+		break;
+	case cExportDialog::EXPORT_TYPE_SELECTION:
+		for(int x = 0;x < ui->m_lpThumbnailView->selectionModel()->selectedIndexes().count();x++)
+		{
+			QModelIndex		index	= ui->m_lpThumbnailView->selectionModel()->selectedIndexes()[x];
+			exportList.append(m_lpThumbnailSortFilterProxyModel->data(index, Qt::UserRole+1).value<cPicture*>());
+		}
+		break;
+	}
+
+	doExport(exportList, szPath, szFilePattern, szStructurePattern);
 }
 
 void cMainWindow::onThumbnailViewContextMenu(const QPoint& pos)
@@ -1029,4 +1060,45 @@ void cMainWindow::onImageFirst()
 	m_imageViewerIndex	= m_lpThumbnailSortFilterProxyModel->index(0, 0);
 
 	viewImage();
+}
+
+void cMainWindow::doExport(const QList<cPicture*>& exportList, const QString& szPath, const QString& szFilePattern, const QString& szStructurePattern)
+{
+	m_lpProgressBar->setVisible(true);
+	m_lpProgressBar->setRange(0, exportList.count());
+
+	for(int x = 0;x < exportList.count();x++)
+	{
+		cPicture*	lpPicture	= exportList[x];
+
+		ui->m_lpStatusBar->showMessage(QString(tr("copying %1").arg(lpPicture->fileName())));
+		qApp->processEvents();
+
+		QString	szSourcePath	= m_pictureLibrary.rootPath() + "/" + picture2Path(lpPicture);
+		QString	szDestPath		= szPath;
+		QString	szSourceFile	= lpPicture->fileName();
+		QString	szDestFile;
+		QString	tmp;
+
+		if(szStructurePattern == ":::KEEP:::")
+			tmp	= picture2Path(lpPicture);
+		else
+			tmp	= pattern2Path(lpPicture, szStructurePattern);
+
+		if(!tmp.isEmpty())
+			szDestPath.append("/" + tmp);
+
+		if(szFilePattern == ":::KEEP:::")
+			szDestFile	= lpPicture->fileName();
+		else
+			szDestFile	= pattern2File(lpPicture, szFilePattern);
+
+qDebug() << "Copy " << szSourcePath + "/" + szSourceFile << " to " << szDestPath + "/" + szDestFile;
+
+		m_lpProgressBar->setValue(x);
+		qApp->processEvents();
+	}
+
+	ui->m_lpStatusBar->showMessage(tr("done"), 5);
+	m_lpProgressBar->setVisible(false);
 }

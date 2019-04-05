@@ -75,6 +75,31 @@ QString picture2Path(cPicture* lpPicture, const QDateTime& newDate, const QStrin
 	return(szPath);
 }
 
+QString pattern2Text(cPicture* lpPicture, const QString& szPattern)
+{
+	QString	szText	= szPattern;
+
+	szText.replace("%i", lpPicture->title());
+	szText.replace("%n", lpPicture->fileName());
+	szText.replace("%ot", lpPicture->dateTimeOriginal().toString("hh-mm-ss"));
+	szText.replace("%od", lpPicture->dateTimeOriginal().toString("yyyy-MM-dd"));
+	szText.replace("%t", lpPicture->dateTime().toString("hh-mm-ss"));
+	szText.replace("%d", lpPicture->dateTime().toString("yyyy-MM-dd"));
+	szText.replace("%m", lpPicture->cameraModel());
+
+	return(szText);
+}
+
+QString pattern2Path(cPicture* lpPicture, const QString& szPattern)
+{
+	return(pattern2Text(lpPicture, szPattern));
+}
+
+QString pattern2File(cPicture* lpPicture, const QString& szPattern)
+{
+	return(pattern2Text(lpPicture, szPattern));
+}
+
 QString ms2String(qint64 ms)
 {
 	qint64	h	= ms/3600000;

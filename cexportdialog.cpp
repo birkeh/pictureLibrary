@@ -27,6 +27,8 @@ void cExportDialog::initUI()
 {
 	ui->setupUi(this);
 
+	ui->m_lpButtonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
+
 	QSettings	settings;
 
 	qint32		iX		= settings.value("export/x", QVariant::fromValue(-1)).toInt();
@@ -38,6 +40,8 @@ void cExportDialog::initUI()
 		resize(iWidth, iHeight);
 	if(iX != -1 && iY != -1)
 		move(iX, iY);
+
+	ui->m_lpPath->setText(settings.value("export/path", QDir::homePath()).toString());
 
 	QString		str		= settings.value("export/filter", "exportAll").toString();
 	if(str == "exportAll")
@@ -59,18 +63,27 @@ void cExportDialog::initUI()
 		ui->m_lpExportFilter->setChecked(true);
 	}
 
-	ui->m_lpKeepFilename->setChecked(settings.value("export/keepFilename", true).toBool());
-	ui->m_lpRenameFilename->setChecked(!settings.value("export/keepFilename", true).toBool());
+	ui->m_lpKeepFilename->setChecked(settings.value("export/keepFile", true).toBool());
+	ui->m_lpRenameFilename->setChecked(!settings.value("export/keepFile", true).toBool());
 	ui->m_lpFilePattern->setText(settings.value("export/filePattern", "%o").toString());
 
 	ui->m_lpKeepStructure->setChecked(settings.value("export/keepStructure", true).toBool());
 	ui->m_lpRenameStructure->setChecked(!settings.value("export/keepStructure", true).toBool());
 	ui->m_lpStructurePattern->setText(settings.value("export/structurePattern", "%o").toString());
+
+	checkAccept();
 }
 
 void cExportDialog::createActions()
 {
-	connect(ui->m_lpPathSelect,	&QPushButton::clicked,	this,	&cExportDialog::onPathSelect);
+	connect(ui->m_lpPathSelect,			&QPushButton::clicked,		this,	&cExportDialog::onPathSelect);
+	connect(ui->m_lpPath,				&QLineEdit::textChanged,	this,	&cExportDialog::onPathChanged);
+	connect(ui->m_lpKeepFilename,		&QRadioButton::clicked,		this,	&cExportDialog::onFileOriginalClicked);
+	connect(ui->m_lpRenameFilename,		&QRadioButton::clicked,		this,	&cExportDialog::onFilePatternClicked);
+	connect(ui->m_lpFilePattern,		&QLineEdit::textChanged,	this,	&cExportDialog::onFilePatternChanged);
+	connect(ui->m_lpKeepStructure,		&QRadioButton::clicked,		this,	&cExportDialog::onStructureOriginalClicked);
+	connect(ui->m_lpRenameStructure,	&QRadioButton::clicked,		this,	&cExportDialog::onStructurePatternClicked);
+	connect(ui->m_lpStructurePattern,	&QLineEdit::textChanged,	this,	&cExportDialog::onStructurePatternChanged);
 }
 
 void cExportDialog::onPathSelect()
@@ -84,6 +97,41 @@ void cExportDialog::onPathSelect()
 
 	ui->m_lpPath->setText(szPath);
 	settings.setValue("export/path", szPath);
+}
+
+void cExportDialog::onPathChanged(const QString& /*text*/)
+{
+	checkAccept();
+}
+
+void cExportDialog::onFileOriginalClicked(bool /*selected*/)
+{
+	checkAccept();
+}
+
+void cExportDialog::onFilePatternClicked(bool /*selected*/)
+{
+	checkAccept();
+}
+
+void cExportDialog::onFilePatternChanged(const QString& /*text*/)
+{
+	checkAccept();
+}
+
+void cExportDialog::onStructureOriginalClicked(bool /*selected*/)
+{
+	checkAccept();
+}
+
+void cExportDialog::onStructurePatternClicked(bool /*selected*/)
+{
+	checkAccept();
+}
+
+void cExportDialog::onStructurePatternChanged(const QString& /*text*/)
+{
+	checkAccept();
 }
 
 void cExportDialog::accept()
@@ -107,6 +155,8 @@ void cExportDialog::savePosition()
 	settings.setValue("export/x", QVariant::fromValue(x()));
 	settings.setValue("export/y", QVariant::fromValue(y()));
 
+	settings.setValue("export/path", ui->m_lpPath->text());
+
 	if(ui->m_lpExportAll->isChecked())
 		settings.setValue("export/filter", "exportAll");
 	else if(ui->m_lpExportSelection->isChecked())
@@ -119,4 +169,51 @@ void cExportDialog::savePosition()
 
 	settings.setValue("export/keepStructure", QVariant::fromValue(ui->m_lpKeepStructure->isChecked()));
 	settings.setValue("export/structurePattern", ui->m_lpStructurePattern->text());
+}
+
+QString cExportDialog::path()
+{
+	return(ui->m_lpPath->text());
+}
+
+cExportDialog::EXPORT_TYPE cExportDialog::exportType()
+{
+	if(ui->m_lpExportAll->isChecked())
+		return(EXPORT_TYPE_ALL);
+	else if(ui->m_lpExportSelection->isChecked())
+		return(EXPORT_TYPE_SELECTION);
+	else
+		return(EXPORT_TYPE_FILTER);
+}
+
+QString cExportDialog::filePattern()
+{
+	if(ui->m_lpKeepFilename->isChecked())
+		return(":::KEEP:::");
+
+	return(ui->m_lpFilePattern->text());
+}
+
+QString cExportDialog::structurePattern()
+{
+	if(ui->m_lpKeepStructure->isChecked())
+		return(":::KEEP:::");
+
+	return(ui->m_lpStructurePattern->text());
+}
+
+void cExportDialog::checkAccept()
+{
+	bool	accept	= true;
+
+	if(ui->m_lpPath->text().isEmpty())
+		accept	= false;
+
+	if(ui->m_lpRenameFilename->isChecked() && ui->m_lpFilePattern->text().isEmpty())
+		accept	= false;
+
+	if(accept)
+		ui->m_lpButtonBox->button(QDialogButtonBox::Ok)->setEnabled(true);
+	else
+		ui->m_lpButtonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
 }
