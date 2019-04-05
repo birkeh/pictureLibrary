@@ -8,6 +8,8 @@
 
 #include <QSqlQuery>
 #include <QSqlError>
+#include <QSqlResult>
+#include <QSqlRecord>
 
 #include <QDir>
 
@@ -49,9 +51,12 @@ bool cPictureLibrary::openDatabase(const QString& szPath)
 			return(false);
 		}
 
-		query.next();
-		if(query.value("version").toInt() < 4)
-			updateDatabase(query.value("version").toInt());
+		if(!query.first())
+			myDebug << query.lastError().text();
+
+		qint32	version	= query.value("version").toInt();
+		if(version < 4)
+			updateDatabase(version);
 		query.finish();
 	}
 
